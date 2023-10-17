@@ -1,6 +1,7 @@
 <?php
 
-class booking
+namespace Entities;
+class Booking
 {
 
 }

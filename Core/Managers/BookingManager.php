@@ -2,7 +2,7 @@
 
 namespace Managers;
 
-class bookingManager
+class BookingManager
 {
 
 }
