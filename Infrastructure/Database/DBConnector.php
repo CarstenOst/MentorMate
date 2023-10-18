@@ -1,28 +1,31 @@
 <?php
+
 namespace Database;
-include_once 'DBConfig.php';
+include_once 'DBConfig.php'; // This file is not included on GitHub for security reasons. Make one yourself
+// with DB_HOST_NAME, DB_NAME and DB_PASSWORD constants
+// Note: you might have to add another constant for the username, as our db has same name and username for simplicity
+
 use PDOException;
 use PDO;
 
 class DBConnector
 {
-    private string $host = DB_HOST_NAME;
-    private string $dbName = DB_NAME;
-    private string $username = DB_NAME;
-    private string $password = DB_PASSWORD;
-    public $conn;
-
-    public function getConnection(): ?PDO
+    public static function getConnection(): ?PDO
     {
-        $this->conn = null;
-
         try {
-            $this->conn = new PDO("mysql:host=" . $this->host . ";dbname=" . $this->dbName, $this->username, $this->password);
-            $this->conn->exec("set names utf8");
+            $conn = new PDO(
+                "mysql:host=" . DB_HOST_NAME . ";dbname=" . DB_NAME,
+                DB_NAME,
+                DB_PASSWORD);
+
+            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $conn->exec("set names utf8");
         } catch (PDOException $exception) {
+            // TODO add logging
+            // TODO do not echo exceptions to the user
             echo "Connection error: " . $exception->getMessage();
         }
 
-        return $this->conn;
+        return $conn ?? null;
     }
 }
