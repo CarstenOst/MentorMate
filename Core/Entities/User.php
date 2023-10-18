@@ -1,6 +1,6 @@
 <?php
 
-namespace Entities;
+namespace Core\Entities;
 
 
 use DateTime;
@@ -13,6 +13,7 @@ class User
     private string $lastName;
     private string $email;
     private string $password;
+    private string $about;
     private DateTime $createdAt;
     private DateTime $updatedAt;
 
@@ -78,7 +79,18 @@ class User
 
     public function setPassword(string $password): self
     {
-        $this->password = password_hash($password, PASSWORD_DEFAULT);
+        $this->password = $password;
+        return $this;
+    }
+
+    public function getAbout(): string
+    {
+        return $this->about;
+    }
+
+    public function setAbout(string $about): self
+    {
+        $this->about = $about;
         return $this;
     }
 
