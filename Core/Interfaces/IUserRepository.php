@@ -2,8 +2,6 @@
 
 namespace Core\Interfaces;
 
-use PDO;
-
 interface IUserRepository
 {
     public static function create($user);

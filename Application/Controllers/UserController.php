@@ -1,4 +1,5 @@
 <?php
+namespace Application\Controllers;
 require '../../autoloader.php';
 
 use Infrastructure\Repositories\UserRepository;
