@@ -1,12 +1,14 @@
 <?php
 
-namespace Interfaces;
+namespace Core\Interfaces;
+
+use PDO;
 
 interface IUserRepository
 {
-    public function create($user);
-    public function read($conn, $id);
-    public function update($user);
-    public function delete($id);
+    public static function create($user);
+    public static function read($id);
+    public static function update($user);
+    public static function delete($id);
 
 }

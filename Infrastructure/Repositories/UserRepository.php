@@ -1,49 +1,56 @@
 <?php
 
-namespace Repositories;
-include_once '../../Core/Interfaces/IUserRepository.php';
-include_once '../../Core/Entities/User.php';
+namespace Infrastructure\Repositories;
 
-use Entities\User;
-use Interfaces\IUserRepository;
+use Core\Interfaces\IUserRepository;
+use Infrastructure\Database\DBConnector;
+use Core\Entities\User;
+use DateTime;
 use PDO;
 
 class UserRepository implements IUserRepository
 {
-    private User $user;
 
-    public function create($user)
+    public static function create($user)
     {
         // TODO: Implement create() method.
     }
 
 
-    public function read($conn, $id): User {
+
+    public static function read($id): User|String {
+
         $query = "SELECT * FROM User WHERE userId = ? LIMIT 0,1";
+        $connection = DBConnector::getConnection();
+        $sql = $connection->prepare($query);
+        $sql->bindParam(1, $id, PDO::PARAM_INT); // To avoid SQL injection
+        $sql->execute();
 
-        $stmt = $conn->prepare($query);
-        $stmt->bindParam(1, $id);
-        $stmt->execute();
-
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $sql->fetch(PDO::FETCH_ASSOC);
 
         $user = new User();
         if ($row) {
             // map results to object properties
-            $user->setUserType($row['userType']);
-            $user->setFirstName($row['firstName']);
+            $user->setUserId($id); // Faster lookup, as we already have the id
+            $user->setAbout($row['about']);
             $user->setEmail($row['email']);
+            $user->setUserType($row['userType']);
+            $user->setPassword($row['password']);
+            $user->setLastName($row['lastName']);
+            $user->setFirstName($row['firstName']);
+            $user->setCreatedAt(new DateTime($row['createdAt']) ?? null); // Could cause exception
+            $user->setUpdatedAt(new DateTime($row['updatedAt']) ?? null);
             // TODO (map other properties)
         }
         return $user;
     }
 
-    public function update($user)
+    public static function update($user)
     {
         // TODO: Implement update() method.
     }
 
-    public function delete($id)
+    public static function delete($id)
     {
         // TODO: Implement delete() method.
     }
