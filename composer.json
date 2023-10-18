@@ -1,0 +1,14 @@
+{
+  "autoload": {
+    "psr-4": {
+      "Infrastructure\\": "Infrastructure/",
+      "Application\\": "Application/"
+    },
+    "files": [
+      "Infrastructure/Database/DBConfig.php"
+    ]
+  },
+  "require": {
+    "ext-pdo": "*"
+  }
+}
