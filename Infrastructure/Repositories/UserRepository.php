@@ -2,9 +2,10 @@
 
 namespace Infrastructure\Repositories;
 
-use Core\Interfaces\IUserRepository;
 use Infrastructure\Database\DBConnector;
+use Core\Interfaces\IUserRepository;
 use Core\Entities\User;
+use Exception;
 use DateTime;
 use PDO;
 
@@ -17,7 +18,11 @@ class UserRepository implements IUserRepository
     }
 
 
-
+    /**
+     * @param $id
+     * @return User|String
+     * @throws Exception
+     */
     public static function read($id): User|String {
 
         $query = "SELECT * FROM User WHERE userId = ? LIMIT 0,1";
@@ -40,9 +45,9 @@ class UserRepository implements IUserRepository
             $user->setFirstName($row['firstName']);
             $user->setCreatedAt(new DateTime($row['createdAt']) ?? null); // Could cause exception
             $user->setUpdatedAt(new DateTime($row['updatedAt']) ?? null);
-            // TODO (map other properties)
+            return $user;
         }
-        return $user;
+        return 'User was not found';
     }
 
     public static function update($user)

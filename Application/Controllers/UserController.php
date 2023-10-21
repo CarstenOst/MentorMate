@@ -2,16 +2,24 @@
 namespace Application\Controllers;
 require '../../autoloader.php';
 
+use Exception;
 use Infrastructure\Repositories\UserRepository;
 
 class UserController
 {
 
-    public static function showUser($id): void
+    /**
+     * Controller to show the user.
+     *
+     * @param int $id Insert the userid to search for as int.
+     * @return void TODO change to return ok status or something.
+     * @throws Exception if datetime is not correctly set in the database.
+     */
+    public static function showUser(int $id): void
     {
         $user = UserRepository::read($id);
         if (is_string($user)) {
-            echo $user;
+            echo $user; // TODO call some common error msg display
             return;
         }
         echo "User Type: " . $user->getUserType();
