@@ -1,13 +1,5 @@
 <?php
-namespace Managers;
-include_once '../../Infrastructure/Repositories/UserRepository.php';
-include_once '../../Infrastructure/Database/DBConnector.php';
+namespace Core\Managers;
 
 use Repositories\UserRepository;
 use Database\DBConnector;
-
-
-// TODO THIS IS ONLY TO CHECK THE DATABASE, AND IS NOT GOING TO BE LIKE THIS
-
-
-
