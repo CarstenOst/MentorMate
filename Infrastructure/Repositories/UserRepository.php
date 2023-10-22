@@ -6,6 +6,7 @@ use Infrastructure\Database\DBConnector;
 use Core\Interfaces\IUserRepository;
 use Core\Entities\User;
 use PDOStatement;
+use Exception;
 use DateTime;
 use PDO;
 
@@ -47,10 +48,10 @@ class UserRepository implements IUserRepository
      */
     public static function read($id): User|String {
 
-        $query = "SELECT * FROM User WHERE userId = ? LIMIT 0,1";
+        $query = "SELECT * FROM User WHERE userId = :id LIMIT 0,1";
         $connection = DBConnector::getConnection();
         $sql = $connection->prepare($query);
-        $sql->bindParam(1, $id, PDO::PARAM_INT); // To avoid SQL injection
+        $sql->bindParam(':id', $id, PDO::PARAM_INT); // To avoid SQL injection
         $sql->execute();
 
         $row = $sql->fetch(PDO::FETCH_ASSOC);
@@ -94,12 +95,12 @@ class UserRepository implements IUserRepository
 
     public static function delete($id): bool
     {
-        $query = "DELETE FROM User WHERE userId = ?";
+        $query = "DELETE FROM User WHERE userId = :id";
         $connection = DBConnector::getConnection();
         $sql = $connection->prepare($query);
 
         // Bind the ID parameter
-        $sql->bindParam(1, $id, PDO::PARAM_INT);
+        $sql->bindParam(':id', $id, PDO::PARAM_INT);
 
         // Execute the statement and return true if successful, false otherwise
         return $sql->execute();
