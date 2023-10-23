@@ -2,8 +2,8 @@
 
 namespace  Application\Views\User;
 
-use Application\Views\Shared\Functions\HtmlRenderer;
 use Application\Views\Shared\Layout;
+use Application\Views\Shared\HtmlRenderer;
 
 const FIRST_NAME_COOKIE = 'FirstName';
 const LAST_NAME_COOKIE = 'LastName';

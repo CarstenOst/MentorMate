@@ -1,6 +1,6 @@
 <?php
 
-namespace Application\Views\Shared\Functions;
+namespace Application\Views\Shared;
 class HtmlRenderer
 {
 

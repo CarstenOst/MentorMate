@@ -1,4 +1,6 @@
 <?php
+namespace Application\Validators;
+use Exception;
 
 class Validator
 {
@@ -22,7 +24,8 @@ class Validator
     }
 
     /**
-     * Checks if the password is valid
+     * Checks if the password is valid.
+     *
      * @param string $password The password to check
      * @return bool true if the password is valid, false if the password is invalid
      */
@@ -30,7 +33,7 @@ class Validator
         return strlen($password) >= 9 &&                    // Longer than, or 9 characters
             preg_match('/[0-9]/', $password) &&     // Has one or more numbers
             preg_match('/[A-Z]/', $password) &&     // Has one or more upper case letters
-            preg_match('/[a-z]/', $password) &&     // has one or more lower case letters
+            preg_match('/[a-z]/', $password) &&     // Has one or more lower case letters
             preg_match('/[^a-zA-Z0-9]/', $password); // Has one or more special characters
     }
 
