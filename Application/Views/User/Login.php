@@ -3,13 +3,14 @@
 namespace  Application\Views\User;
 
 use Application\Views\Shared\Functions\HtmlRenderer;
+use Application\Views\Shared\Layout;
 
-const FIRST_NAME_COOKIE = 'First name';
-const LAST_NAME_COOKIE = 'Last name';
+const FIRST_NAME_COOKIE = 'FirstName';
+const LAST_NAME_COOKIE = 'LastName';
 const EMAIL_COOKIE = 'Email';
-const USER_TYPE_COOKIE = 'User type';
+const USER_TYPE_COOKIE = 'UserType';
+const ABOUT_USER_COOKIE = 'AboutUser';
 
-const ABOUT_USER_COOKIE = 'About user';
 const INPUT_FIELDS = [
     FIRST_NAME_COOKIE => 'Enter your first name*',
     LAST_NAME_COOKIE => 'Enter your last name*',
@@ -18,4 +19,6 @@ const INPUT_FIELDS = [
     ABOUT_USER_COOKIE => 'Enter something about yourself',
 ];
 
+Layout::displayTop();
 HtmlRenderer::renderFormArrayBased(array_keys(INPUT_FIELDS), INPUT_FIELDS);
+Layout::displayBottom();
