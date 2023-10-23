@@ -21,17 +21,13 @@ class UserRepository implements IUserRepository
                   email, 
                   password, 
                   userType, 
-                  about, 
-                  createdAt, 
-                  updatedAt) 
+                  about) 
                 VALUES (:firstName, 
                         :lastName, 
                         :email, 
                         :password, 
                         :userType, 
-                        :about, 
-                        :createdAt, 
-                        :updatedAt)
+                        :about)
                         ";
         $sql = self::getSql($query, $user);
 
@@ -39,39 +35,47 @@ class UserRepository implements IUserRepository
         return $sql->execute();
     }
 
-
-
     /**
-     * @param $id
-     * @return User|String
+     * @param int $id
+     * @return User|string
      * @throws Exception
      */
-    public static function read($id): User|String {
-
+    public static function read($id): User|string
+    {
         $query = "SELECT * FROM User WHERE userId = :id LIMIT 0,1";
         $connection = DBConnector::getConnection();
         $sql = $connection->prepare($query);
-        $sql->bindParam(':id', $id, PDO::PARAM_INT); // To avoid SQL injection
+        $sql->bindParam(':id', $id, PDO::PARAM_INT);
         $sql->execute();
 
         $row = $sql->fetch(PDO::FETCH_ASSOC);
-
-        $user = new User();
         if ($row) {
-            // map results to object properties
-            $user->setUserId($id); // Faster lookup, as we already have the id
-            $user->setAbout($row['about']);
-            $user->setEmail($row['email']);
-            $user->setUserType($row['userType']);
-            $user->setPassword($row['password']);
-            $user->setLastName($row['lastName']);
-            $user->setFirstName($row['firstName']);
-            $user->setCreatedAt(new DateTime($row['createdAt']) ?? null); // Could cause exception
-            $user->setUpdatedAt(new DateTime($row['updatedAt']) ?? null);
-            return $user;
+            return self::createUserFromRow($row);
         }
+
         return 'User was not found';
     }
+
+    /**
+     * @param string $email
+     * @return User|string
+     * @throws Exception
+     */
+    public static function getUserByEmail(string $email): User|string
+    {
+        $query = "SELECT * FROM User WHERE email=:email";
+        $connection = DBConnector::getConnection();
+        $sql = $connection->prepare($query);
+        $sql->execute(['email' => $email]);
+
+        $row = $sql->fetch(PDO::FETCH_ASSOC);
+        if ($row) {
+            return self::createUserFromRow($row);
+        }
+
+        return 'Not valid';
+    }
+
 
     public static function update($user): bool
     {
@@ -81,9 +85,7 @@ class UserRepository implements IUserRepository
                 email=:email, 
                 password=:password, 
                 userType=:userType, 
-                about=:about, 
-                createdAt=:createdAt, 
-                updatedAt=:updatedAt 
+                about=:about
             WHERE userId=:userId";
         $sql = self::getSql($query, $user);
         $sql->bindValue(':userId', $user->getUserId(), PDO::PARAM_INT);
@@ -124,9 +126,30 @@ class UserRepository implements IUserRepository
         $sql->bindValue(':password', $user->getPassword());
         $sql->bindValue(':userType', $user->getUserType());
         $sql->bindValue(':about', $user->getAbout());
-        $sql->bindValue(':createdAt', $user->getCreatedAt()->format('Y-m-d H:i:s'));
-        $sql->bindValue(':updatedAt', $user->getUpdatedAt()->format('Y-m-d H:i:s'));
-
         return $sql;
+    }
+
+
+    /**
+     * Populate a User object from a database row.
+     *
+     * @param array $row The database row.
+     * @return User The populated User object.
+     * @throws Exception
+     */
+    private static function createUserFromRow(array $row): User
+    {
+        $user = new User();
+        $user->setAbout($row['about']);
+        $user->setEmail($row['email']);
+        $user->setUserId($row['userId']);
+        $user->setUserType($row['userType']);
+        $user->setPassword($row['password']);
+        $user->setLastName($row['lastName']);
+        $user->setFirstName($row['firstName']);
+        $user->setCreatedAt(new DateTime($row['createdAt']) ?? null);
+        $user->setUpdatedAt(new DateTime($row['updatedAt']) ?? null);
+
+        return $user;
     }
 }
