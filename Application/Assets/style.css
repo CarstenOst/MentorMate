@@ -8,3 +8,11 @@
     background-color: #008CBA;
     color: white;
 }
+
+
+.user-profile {
+    margin: 5px;
+    padding: 10px;
+    border: solid 2px black;
+    border-radius: 10px;
+}
