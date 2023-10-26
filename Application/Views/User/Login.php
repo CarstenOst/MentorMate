@@ -10,16 +10,41 @@ use Application\Validators\Validator;
 class Login
 {
 
+    /**
+     * Validates the form values for the login form
+     * @param formData the form fields and values as an associated matrix
+     *
+     * @return boolean indicating if the fields are valid
+     */
     public static function validateFields($formData): bool {
-        // TODO replace this with data validation against database password
-        $validUsername = Validator::isValid('text', $formData['Username']);
-        $validPassword = Validator::isValid('password', $formData['Password']);
-        return $validUsername && $validPassword;
+        $validEmail = Validator::isValid('email', $formData['email']);
+        $validPassword = Validator::isValid('password', $formData['password']);
+        return $validEmail && $validPassword;
     }
+
+    /**
+     * Validates the login credentials against the database values for authentication
+     * @param formData the form fields and values as an associated matrix
+     *
+     * @return boolean indicating the status of the query
+     */
+    public static function loginUser($formData): bool {
+        // TODO replace this with data validation against database password
+        $validEmail = Validator::isValid('email', $formData['email']);
+        $validPassword = Validator::isValid('password', $formData['password']);
+        return $validEmail && $validPassword;
+    }
+
+    /**
+     * Html component showing the login form
+     * @param formData the form fields and values as an associated matrix
+     *
+     * @return void echos the form
+     */
  public static function viewLogin($formData = []) {
      $formFields = [
-         "Username" => "Username",
-         "Password" => "Password",
+         "email" => "Email",
+         "password" => "Password",
      ];
 
      Layout::displayTop();
