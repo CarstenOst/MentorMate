@@ -15,9 +15,8 @@ require("../../../autoloader.php");
                 $isValid = Login::validateFields($formData);
                 
                 if ($isValid) {
-                    echo "Success!";
-                    echo "Username: " . $formData['Username'];
-                    echo "Password: " . $formData['Password'];
+                    header("Location: Profile.php"); // Change 'success.php' to the desired URL
+                    exit();
                 } else {
                     // Submitted form was invalid
                     echo "Error!";
