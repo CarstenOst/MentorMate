@@ -11,6 +11,7 @@ class Login
 {
 
     public static function validateFields($formData): bool {
+        // TODO replace this with data validation against database password
         $validUsername = Validator::isValid('text', $formData['Username']);
         $validPassword = Validator::isValid('password', $formData['Password']);
         return $validUsername && $validPassword;
