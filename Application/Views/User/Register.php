@@ -5,6 +5,7 @@ namespace Application\Views\User;
 use Application\Validators\Validator;
 use Application\Views\Shared\HtmlRenderer;
 use Application\Views\Shared\Layout;
+use Core\Entities\User;
 use Infrastructure\Repositories\UserRepository;
 
 class Register
@@ -33,14 +34,15 @@ class Register
      */
     public static function registerUser($formData): bool {
         // Creates the user, and sends this to the database
-        $user = [
-            "firstName" => $formData['firstName'],
-            "lastName" => $formData['lastName'],
-            "email" => $formData['email'],
-            "password" => $formData['password'],
-            "userType" => "TestType", // TODO This needs to change with introduction of additional form field
-            "about" => "",
-        ];
+        $user = new User();
+        $user->setFirstName(self::formatName($formData['firstName']));
+        $user->setLastName(self::formatName($formData['lastName']));
+        $user->setEmail($formData['email']);
+        $user->setPassword($formData['password']);
+        $user->setUserType('TestType'); // TODO This needs to change with introduction of additional form field
+        $user->setAbout("");
+        $user->setCreatedAt(new \DateTime());
+        $user->setUpdatedAt(new \DateTime());
 
         // Returns the status of the sql updating the user
         return UserRepository::create($user);
@@ -64,5 +66,19 @@ class Register
         echo "<h2>Register</h2>";
         HtmlRenderer::renderFormArrayBased(array_keys($formFields), $formFields, $formData);
 
+    }
+
+    /**
+     * Function for formatting a name so each word's first letter is capitalized
+     * @param name a string name to format so each word's first letter capitalized
+     *
+     * @return string of the name formatted with each word's first letter capitalized
+     */
+    public static function formatName($name): string{
+        $formattedName = mb_convert_case(
+            mb_strtolower(strip_tags($name)), MB_CASE_TITLE, "UTF-8"
+        );
+
+        return $formattedName;
     }
 }
