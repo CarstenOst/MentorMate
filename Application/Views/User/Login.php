@@ -5,25 +5,27 @@ namespace  Application\Views\User;
 require ("../../../autoloader.php");
 use Application\Views\Shared\Layout;
 use Application\Views\Shared\HtmlRenderer;
-
+use Application\Validators\Validator;
 
 class Login
 {
 
-    public static function validateFields() {
-
+    public static function validateFields($formData): bool {
+        $validUsername = Validator::isValid('text', $formData['Username']);
+        $validPassword = Validator::isValid('password', $formData['Password']);
+        return $validUsername && $validPassword;
     }
- public static function viewLogin() {
+ public static function viewLogin($formData = []) {
      $formFields = [
          "Username" => "Username",
          "Password" => "Password",
      ];
 
      Layout::displayTop();
-     HtmlRenderer::renderFormArrayBased(array_keys($formFields), $formFields, $_POST);
+     echo "<h2>Login</h2>";
+     HtmlRenderer::renderFormArrayBased(array_keys($formFields), $formFields, $formData);
 
  }
-
 
 }
 

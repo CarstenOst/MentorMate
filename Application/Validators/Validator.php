@@ -1,5 +1,6 @@
 <?php
 
+namespace Application\Validators;
 class Validator
 {
     /**
