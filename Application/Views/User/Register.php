@@ -2,6 +2,7 @@
 
 namespace Application\Views\User;
 
+require ("../../../autoloader.php");
 use Application\Validators\Validator;
 use Application\Views\Shared\HtmlRenderer;
 use Application\Views\Shared\Layout;
@@ -65,7 +66,8 @@ class Register
         Layout::displayTop();
         echo "<h2>Register</h2>";
         HtmlRenderer::renderFormArrayBased(array_keys($formFields), $formFields, $formData);
-
+        echo "<p>Already a user?</p>
+        <a href='./Login.php'>Login</a>";
     }
 
     /**
@@ -82,3 +84,32 @@ class Register
         return $formattedName;
     }
 }
+
+?>
+
+
+<html>
+    <?php
+        $formData = $_POST;
+        // Checks if form was submitted
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $isValid = Register::validateFields($formData);
+
+            if ($isValid) {
+                //Registers the user
+                $registrationSuccess = Register::registerUser($formData);
+                if ($registrationSuccess) {
+                    header("Location: Profile.php");
+                    exit();
+                }
+            } else {
+                // Submitted form was invalid
+                echo "Error!";
+                Register::viewRegister($formData);
+            }
+        } else {
+            // Displays the register form
+            Register::viewRegister($formData);
+        }
+    ?>
+</html>

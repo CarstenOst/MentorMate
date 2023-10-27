@@ -50,7 +50,36 @@ class Login
      Layout::displayTop();
      echo "<h2>Login</h2>";
      HtmlRenderer::renderFormArrayBased(array_keys($formFields), $formFields, $formData);
-
+     echo "<p><small>Don't already have a user?</small></p>
+        <a href='./Register.php'>Register</a>";
  }
 
 }
+
+?>
+
+<html>
+    <?php
+        $formData = $_POST;
+        // Checks if form was submitted
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $isValid = Login::validateFields($formData);
+
+            if ($isValid) {
+                // Logs inn the user
+                $loginSuccess = true;
+                if ($loginSuccess) {
+                    header("Location: Profile.php");
+                    exit();
+                }
+            } else {
+                // Submitted form was invalid
+                echo "Error!";
+                Login::viewLogin($formData);
+            }
+        } else {
+            // Displays the login form
+            Login::viewLogin($formData);
+        }
+    ?>
+</html>
