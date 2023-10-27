@@ -66,7 +66,7 @@ class Register
         Layout::displayTop();
         echo "<h2>Register</h2>";
         HtmlRenderer::renderFormArrayBased(array_keys($formFields), $formFields, $formData);
-        echo "<p>Already a user?</p>
+        echo "<p><small>Already a user?</small></p>
         <a href='./Login.php'>Login</a>";
     }
 
