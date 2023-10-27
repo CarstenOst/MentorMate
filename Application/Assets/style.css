@@ -16,3 +16,12 @@
     border: solid 2px black;
     border-radius: 10px;
 }
+
+
+.time-slots-column {
+    display: flex;
+}
+
+.time-slot-margin {
+    margin-top: 10px;
+}
