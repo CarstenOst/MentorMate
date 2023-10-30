@@ -5,6 +5,7 @@ namespace Infrastructure\Repositories;
 use Infrastructure\Database\DBConnector;
 use Core\Interfaces\IUserRepository;
 use Core\Entities\User;
+use PDOException;
 use PDOStatement;
 use Exception;
 use DateTime;
@@ -13,7 +14,12 @@ use PDO;
 class UserRepository implements IUserRepository
 {
 
-    public static function create($user): bool
+    /**
+     * @param User $user
+     * @return int
+     * @throws Exception
+     */
+    public static function create(User $user): int
     {
         $query = "INSERT INTO User (
                   firstName, 
@@ -21,22 +27,38 @@ class UserRepository implements IUserRepository
                   email, 
                   password, 
                   userType, 
-                  about, 
-                  createdAt, 
-                  updatedAt) 
+                  about) 
                 VALUES (:firstName, 
                         :lastName, 
                         :email, 
                         :password, 
                         :userType, 
-                        :about, 
-                        :createdAt, 
-                        :updatedAt)
+                        :about);
+
+            SELECT LAST_INSERT_ID() as id;
                         ";
+
         $sql = self::getSql($query, $user);
 
-        // Execute the statement and return true if successful, false otherwise
-        return $sql->execute();
+        try {
+            // Execute the statement
+            $sql->execute();
+            return $sql->fetch(PDO::FETCH_ASSOC) ?? -1 ;
+
+        } catch (PDOException $e) {
+            // Check if the error is due to a duplicate key on 'email'
+            if ($e->getCode() == 23000 &&
+                str_contains($e->getMessage(), 'Duplicate entry') &&
+                str_contains($e->getMessage(), 'for key \'email\''))
+            {
+                // Handle duplicate email error
+                echo "Error: The provided email already exists in the database!";
+                return ErrorCode::DUPLICATE_EMAIL;
+            } else {
+                // Handle other errors or rethrow the exception
+                throw $e;
+            }
+        }
     }
 
 
@@ -87,6 +109,8 @@ class UserRepository implements IUserRepository
             WHERE userId=:userId";
         $sql = self::getSql($query, $user);
         $sql->bindValue(':userId', $user->getUserId(), PDO::PARAM_INT);
+        $sql->bindValue(':createdAt', $user->getCreatedAt()->format('Y-m-d H:i:s'));
+        $sql->bindValue(':updatedAt', $user->getUpdatedAt()->format('Y-m-d H:i:s'));
 
         // Execute the statement and return true if successful, false otherwise
         return $sql->execute();
@@ -124,8 +148,6 @@ class UserRepository implements IUserRepository
         $sql->bindValue(':password', $user->getPassword());
         $sql->bindValue(':userType', $user->getUserType());
         $sql->bindValue(':about', $user->getAbout());
-        $sql->bindValue(':createdAt', $user->getCreatedAt()->format('Y-m-d H:i:s'));
-        $sql->bindValue(':updatedAt', $user->getUpdatedAt()->format('Y-m-d H:i:s'));
 
         return $sql;
     }
