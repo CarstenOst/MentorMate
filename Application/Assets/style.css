@@ -1,0 +1,27 @@
+.submit-button {
+    margin: 20px;
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-radius: 5px;
+    border: none;
+    background-color: #008CBA;
+    color: white;
+}
+
+
+.user-profile {
+    margin: 5px;
+    padding: 10px;
+    border: solid 2px black;
+    border-radius: 10px;
+}
+
+
+.time-slots-column {
+    display: flex;
+}
+
+.time-slot-margin {
+    margin-top: 10px;
+}
