@@ -7,31 +7,26 @@ use Application\Views\Shared\Layout;
 
 require("../../autoloader.php");
 
+
+// TODO add welcome page, with login page and link to register below
+Layout::displayTop();
 ?>
-
-<html>
-    <?php
-
-    // TODO add welcome page, with login page and link to register below
-        Layout::displayTop();
-    ?>
-    <body>
+<body>
+    <div>
+        <h2>MentorMate</h2>
         <div>
-            <h2>MentorMate</h2>
-            <div>
-                <a style='text-decoration:none' href='./User/Login.php'>
-                    <div class='submit-button'>
-                        Login
-                    </div>
-                </a>
-                <a style='text-decoration:none' href='./User/Register.php'>
-                    <div class='submit-button'>
-                        Register
-                    </div>
-                </a>
-            </div>
-
+            <a style='text-decoration:none' href='./User/Login.php'>
+                <div class='submit-button'>
+                    Login
+                </div>
+            </a>
+            <a style='text-decoration:none' href='./User/Register.php'>
+                <div class='submit-button'>
+                    Register
+                </div>
+            </a>
         </div>
 
-    </body>
-</html>
+    </div>
+
+</body>
