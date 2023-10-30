@@ -17,11 +17,100 @@
     border-radius: 10px;
 }
 
-
-.time-slots-column {
+/*
+.calendar {
+    border: solid;
+}
+.time-slots-columns {
     display: flex;
 }
 
+.TA-column {
+    border: solid 1px;
+}
+
 .time-slot-margin {
-    margin-top: 10px;
+    margin-top: 28px;
+}
+
+.available-timeSlot {
+    padding: 2px 5px 2px 5px;
+    border: solid 1px;
+    border-radius: 4px;
+    margin-bottom: 2px;
+    margin-left: 2px;
+    margin-right: 2px;
+    background-color: #36c036;
+}
+*/
+
+/* Define a container for the entire booking page */
+/* style.css */
+
+/* Global styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Side menu */
+.side-menu {
+    background-color: #333;
+    color: #fff;
+    width: 20%;
+    height: 100vh;
+    position: fixed;
+}
+
+/* Main view */
+.main-view {
+    margin-left: 20%; /* Adjust this margin to match the width of your side menu */
+    padding: 20px;
+}
+
+/* Booking view */
+.booking-view {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 20px;
+}
+
+/* Calendar */
+.calendar {
+    display: flex;
+}
+
+/* Calendar column */
+.calendar-column {
+    flex: 1;
+    border: 1px solid #ddd;
+    margin: 10px;
+    padding: 10px;
+}
+
+/* Time slots column */
+.time-slots-columns {
+    display: flex;
+}
+
+/* TA column */
+.TA-column {
+    border: 1px solid #ddd;
+    margin: 1px;
+    padding: 10px;
+}
+
+/* Available time slot */
+.available-timeSlot {
+    background-color: #5cb85c; /* Green background color */
+    color: #fff;
+    border: 1px solid #4cae4c;
+    padding: 5px;
+    margin-bottom: 10px; /* Add margin bottom to separate time slots */
+}
+
+/* Checkbox style */
+.available-timeSlot input[type="checkbox"] {
+    margin-right: 5px;
 }

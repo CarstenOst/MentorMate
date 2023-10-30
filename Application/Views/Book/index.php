@@ -10,22 +10,22 @@
 
         <div class="main-view">
 
-            <div class="calendar-view">
+            <div class="booking-view">
                 <div>Current Date</div>
                 <div class="calendar">
 
                     <!-- column 1 with TA 1 bookings iterated -->
                     <div class="calendar-column">
-                        <div class="time-slots-column">
+                        <div class="time-slots-columns">
                             <?php
                                 $TAs = array(
-                                        "Henry" => array(9, 9.5, 10),
-                                        "John"  => array(8, 9.5, 12),
-                                        "Alice"  => array(16, 16.5, 17),
-                                        "Beatrice" => array(9, 9.5, 10),
+                                        "Henry" => array("09:00", "09:15", "09:30"),
+                                        "John"  => array("08:00", "09:30", "12:30"),
+                                        "Alice"  => array("16:00", "17:15", "17:30"),
+                                        "Beatrice" => array("10:00", "12:00", "12:15"),
                                 );
                                 foreach (array_keys($TAs) as $TA) {
-                                    $scheduleTA = "<div><div>$TA</div>";
+                                    $scheduleTA = "<div class='TA-column'><div>$TA</div>";
                                     foreach ($TAs[$TA] as $timeSlot) {
                                         $paddingPreviousTimeSlot = true ? 'time-slot-margin' : '';
                                         $scheduleTA .= "
