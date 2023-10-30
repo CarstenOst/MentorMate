@@ -5,12 +5,12 @@ use Exception;
 class Validator
 {
     /**
-     * This method is made for Module 6 task 5.
-     * validate either an email, password or a phone number
+     * This function is made for Module 6, task 5 to validate
+     * either an email, password or a phone number in the same function.
      *
-     * @param string $type must be string of one of these: email | password | phone
-     * @param string $value The string to check if is valid
-     * @return bool True if valid, false if not
+     * @param string $type must be string of one of these: email | password | phone.
+     * @param string $value The string to check if is valid.
+     * @return bool True if valid, false if not.
      * @throws Exception Will throw an exception if type entered is wrong.
      */
     public static function isValid(string $type, string $value): bool
@@ -26,15 +26,16 @@ class Validator
     /**
      * Checks if the password is valid.
      *
-     * @param string $password The password to check
-     * @return bool true if the password is valid, false if the password is invalid
+     * @param string $password The password to check.
+     * @return bool true if the password is valid, false if the password is invalid.
+     * TODO make this return an array to give a message of what failed to the user
      */
     private static function validatePassword(string $password): bool {
-        return strlen($password) >= 9 &&                    // Longer than, or 9 characters
-            preg_match('/[0-9]/', $password) &&     // Has one or more numbers
-            preg_match('/[A-Z]/', $password) &&     // Has one or more upper case letters
-            preg_match('/[a-z]/', $password) &&     // Has one or more lower case letters
-            preg_match('/[^a-zA-Z0-9]/', $password); // Has one or more special characters
+        return strlen($password) >= 9 &&                    // Longer than, or 9 characters.
+            preg_match('/[0-9]/', $password) &&     // Has one or more numbers.
+            preg_match('/[A-Z]/', $password) &&     // Has one or more upper case letters.
+            preg_match('/[a-z]/', $password) &&     // Has one or more lower case letters.
+            preg_match('/[^a-zA-Z0-9]/', $password);// Has one or more special characters.
     }
 
 }

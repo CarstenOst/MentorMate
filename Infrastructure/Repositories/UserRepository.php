@@ -5,6 +5,7 @@ namespace Infrastructure\Repositories;
 use Infrastructure\Database\DBConnector;
 use Core\Interfaces\IUserRepository;
 use Core\Entities\User;
+use PDOException;
 use PDOStatement;
 use Exception;
 use DateTime;
@@ -44,17 +45,27 @@ class UserRepository implements IUserRepository
     {
         $query = "SELECT * FROM User WHERE userId = :id LIMIT 0,1";
         $connection = DBConnector::getConnection();
-        $sql = $connection->prepare($query);
-        $sql->bindParam(':id', $id, PDO::PARAM_INT);
-        $sql->execute();
 
-        $row = $sql->fetch(PDO::FETCH_ASSOC);
-        if ($row) {
-            return self::createUserFromRow($row);
+        try {
+            $sql = $connection->prepare($query);
+            $sql->bindParam(':id', $id, PDO::PARAM_INT);
+            $sql->execute();
+
+            $row = $sql->fetch(PDO::FETCH_ASSOC);
+
+            if ($row) {
+                return self::createUserFromRow($row);
+            } else {
+                return 'User was not found';
+            }
+        } catch (PDOException $e) {
+            // You can log the error or handle it appropriately
+            return 'Database error: ' . $e->getMessage(); // TODO just don't echo this later on
+        } finally {
+            $connection = null;  // Close the connection
         }
-
-        return 'User was not found';
     }
+
 
     /**
      * @param string $email
@@ -76,23 +87,65 @@ class UserRepository implements IUserRepository
         return 'Not valid';
     }
 
+    public static function getUserPassword(int $userId): string {
+        $query = "SELECT password FROM User WHERE userId=:userId";
+        $connection = DBConnector::getConnection();
+        $sql = $connection->prepare($query);
+        $sql->bindParam(':userId', $userId, PDO::PARAM_INT);
+        $sql->execute();
 
+        $row = $sql->fetch(PDO::FETCH_ASSOC);
+        if ($row) {
+            return $row['password'];
+        }
+
+        return 'User does not exist';
+    }
+
+
+    /**
+     * TODO test this
+     * @param $user
+     * @return bool
+     */
     public static function update($user): bool
     {
-        $query = "UPDATE User SET 
-                firstName=:firstName, 
-                lastName=:lastName, 
-                email=:email, 
-                password=:password, 
-                userType=:userType, 
-                about=:about
-            WHERE userId=:userId";
-        $sql = self::getSql($query, $user);
+        $fields = [
+            'firstName' => $user->getFirstName(),
+            'lastName' => $user->getLastName(),
+            'email' => $user->getEmail(),
+            'password' => $user->getPassword(),
+            'userType' => $user->getUserType(),
+            'about' => $user->getAbout()
+        ];
+
+        $setClauses = [];
+        foreach ($fields as $key => $value) {
+            if (null !== $value) {
+                $setClauses[] = "$key = :$key";
+            }
+        }
+
+        // If no fields to update, exit early
+        if (empty($setClauses)) {
+            return false;
+        }
+
+        $query = "UPDATE User SET " . implode(', ', $setClauses) . " WHERE userId = :userId";
+        $connection = DBConnector::getConnection();
+        $sql = $connection->prepare($query);
+
+        // Bind values
+        foreach ($fields as $key => $value) {
+            if (null !== $value) {
+                $sql->bindValue(":$key", $value);
+            }
+        }
         $sql->bindValue(':userId', $user->getUserId(), PDO::PARAM_INT);
 
-        // Execute the statement and return true if successful, false otherwise
         return $sql->execute();
     }
+
 
 
     public static function delete($id): bool

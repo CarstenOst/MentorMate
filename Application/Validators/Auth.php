@@ -1,13 +1,15 @@
 <?php
 
 namespace Application\Validators;
+use Infrastructure\Repositories\UserRepository;
+
 class Auth
 {
     /**
      * Start the session if it is not started
      * @return void
      */
-    public static function startSession(): void
+    private static function startSession(): void
     {
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
@@ -25,15 +27,24 @@ class Auth
         return isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] === true;
     }
 
-    public static function authenticate(string $inputPassword, string $storedPassword): bool
+    /**
+     * Function to check if a user is authentic.
+     * This makes $_SESSION['userId'] to be userId if true.
+     *
+     * @param string $inputPassword must be hashed same way as in the database.
+     * @param int $userId the userId for the user from the database.
+     * @return bool True if user is authentic, false if not.
+     */
+    public static function authenticate(string $inputPassword, int $userId): bool
     {
         self::startSession();
 
-        if ($inputPassword && password_verify($inputPassword, $storedPassword)) {
-            session_regenerate_id(); // To prevent fixation attacks, see source;
-            // https://stackoverflow.com/questions/22965067/when-and-why-i-should-use-session-regenerate-id
+        $storedPassword = UserRepository::getUserPassword($userId);
 
-            $_SESSION['loggedIn'] = true;
+        if ($inputPassword && password_verify($inputPassword, $storedPassword)) {
+            session_regenerate_id(); // To prevent fixation attacks
+
+            $_SESSION['userId'] = $userId;
 
             return true;
         } else {
@@ -41,6 +52,10 @@ class Auth
         }
     }
 
+    /**
+     * Function to log out (destroys session).
+     * @return void
+     */
     public static function logOut()
     {
 
@@ -61,4 +76,3 @@ class Auth
         session_destroy();
     }
 }
-
