@@ -32,12 +32,12 @@
                 for ($time = 0; $time < 1440; $time += 15) {
                     $hour = floor(($time / 60));
                     $minute = $time % 60;
-                    $datotid = strval($hour) . ":" . strval($minute);
+                    $dateTime = strval($hour) . ":" . strval($minute);
                     echo "<tr>";
-                    echo "<td></td>"; // Adds empty first column value for DATETIME
+                    echo "<td>$dateTime</td>"; // Adds empty first column value for DATETIME
                     foreach ($TAs as $TA) {
                         $paddingPreviousTimeSlot = $time % 60 == 0 ? 'available-timeSlot' : '';
-                        echo "<td class='$paddingPreviousTimeSlot'><input type='checkbox' name='$TA-$datotid'>$datotid</td>";
+                        echo "<td class='$paddingPreviousTimeSlot'><input type='checkbox' name='$TA-$dateTime'>$dateTime</td>";
                     }
                     echo "</tr>";
                 }
