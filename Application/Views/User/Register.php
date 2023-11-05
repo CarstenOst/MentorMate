@@ -14,11 +14,11 @@ class Register
 
     /**
      * Validates the form values for the register form
-     * @param formData the form fields and values as an associated matrix
+     * @param array $formData the form fields and values as an associated matrix
      *
      * @return boolean indicating if the fields are valid
      */
-    public static function validateFields($formData): bool {
+    public static function validateFields(array $formData): bool {
         $validFirstName = Validator::isValid('text', $formData['firstName']);
         $validLastName = Validator::isValid('text', $formData['lastName']);
         $validEmail = Validator::isValid('email', $formData['email']);
@@ -29,11 +29,11 @@ class Register
 
     /**
      * Registers a user using the form field values
-     * @param formData the form fields and values as an associated matrix
+     * @param array $formData the form fields and values as an associated matrix
      *
      * @return boolean indicating the status of the database query
      */
-    public static function registerUser($formData): bool {
+    public static function registerUser(array $formData): bool {
         // Creates the user, and sends this to the database
         $user = new User();
         $user->setFirstName(self::formatName($formData['firstName']));
@@ -51,17 +51,17 @@ class Register
 
     /**
      * Html component showing the register user form
-     * @param formData the form fields and values as an associated matrix
+     * @param array $formData the form fields and values as an associated matrix
      *
      * @return void echos the form
      */
-    public static function viewRegister($formData = []) {
+    public static function viewRegister(array $formData = []): void { // TODO fix
         $formFields = [
             "firstName" => "First Name",
             "lastName" => "Second Name",
             "email" => "Email",
             "password" => "Password",
-        ];
+        ]; // TODO remove this
 
         Layout::displayTop();
         echo "<h2>Register</h2>";
@@ -72,11 +72,11 @@ class Register
 
     /**
      * Function for formatting a name so each word's first letter is capitalized
-     * @param name a string name to format so each word's first letter capitalized
+     * @param string $name a string name to format so each word's first letter capitalized
      *
      * @return string of the name formatted with each word's first letter capitalized
      */
-    public static function formatName($name): string{
+    public static function formatName(string $name): string{
         $formattedName = mb_convert_case(
             mb_strtolower(strip_tags($name)), MB_CASE_TITLE, "UTF-8"
         );
@@ -85,31 +85,25 @@ class Register
     }
 }
 
-?>
 
+$formData = $_POST;
+// Checks if form was submitted
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $isValid = Register::validateFields($formData);
 
-<html>
-    <?php
-        $formData = $_POST;
-        // Checks if form was submitted
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $isValid = Register::validateFields($formData);
-
-            if ($isValid) {
-                //Registers the user
-                $registrationSuccess = Register::registerUser($formData);
-                if ($registrationSuccess) {
-                    header("Location: Profile.php");
-                    exit();
-                }
-            } else {
-                // Submitted form was invalid
-                echo "Error!";
-                Register::viewRegister($formData);
-            }
-        } else {
-            // Displays the register form
-            Register::viewRegister($formData);
+    if ($isValid) {
+        //Registers the user
+        $registrationSuccess = Register::registerUser($formData);
+        if ($registrationSuccess) {
+            header("Location: Profile.php");
+            exit();
         }
-    ?>
-</html>
+    } else {
+        // Submitted form was invalid
+        echo "Error!";
+        Register::viewRegister($formData);
+    }
+} else {
+    // Displays the register form
+    Register::viewRegister($formData);
+}

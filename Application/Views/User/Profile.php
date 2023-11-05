@@ -31,12 +31,9 @@ class Profile
     }
 }
 
-?>
 
 
-<html>
-    <?php
-        Layout::displayTop();
-        Profile::viewUserProfile(1);
-    ?>
-</html>
+Layout::displayTop();
+Profile::viewUserProfile(1);
+
+
