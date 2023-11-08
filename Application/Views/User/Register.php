@@ -7,6 +7,7 @@ use Application\Validators\Validator;
 use Application\Views\Shared\HtmlRenderer;
 use Application\Views\Shared\Layout;
 use Core\Entities\User;
+use Exception;
 use Infrastructure\Repositories\UserRepository;
 
 class Register
@@ -17,6 +18,7 @@ class Register
      * @param array $formData the form fields and values as an associated matrix
      *
      * @return boolean indicating if the fields are valid
+     * @throws Exception
      */
     public static function validateFields(array $formData): bool {
         $validFirstName = Validator::isValid('text', $formData['firstName']);
