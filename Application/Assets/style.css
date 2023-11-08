@@ -72,20 +72,31 @@ body {
 /* Booking view */
 .booking-view {
     background-color: #fff;
-    border: 1px solid #ddd;
+    border: 1px solid #cbcbcb;
     padding: 20px;
-    max-height: 500px;
+    max-height: 550px;
     overflow: auto;
 }
 
 .booking-date {
     padding: 5px;
     margin: auto;
-    border: 1px solid #ddd;
+    border-bottom: 1px solid #cbcbcb;
 }
 
 /* Calendar */
 .calendar {
+    width: 100%;
+}
+
+.calendar th {
+    position: sticky;
+    background-color: black;
+    color: white;
+    top: 0;
+    z-index: 2;
+    text-align: left;
+    padding: 5px;
 }
 
 /* Calendar column */
@@ -108,10 +119,37 @@ body {
     padding: 10px;
 }
 
+/* The leftmost column with timestamps in calendar */
+.booking-time {
+    white-space: nowrap;
+    display: inline-block;
+}
+
+/* Class for styling of checkbox for the timeslots */
+.book-checkbox {
+    margin: 5px;
+}
+
+/* Class for styling of TAs unbooked timeslots that they can book */
+.unbooked-timeslot {
+    background-color: #ffffff; /* Green background color */
+    color: #000000;
+    padding: 5px;
+    padding-left: 20px;
+    padding-right: 20px;
+    margin-bottom: 10px; /* Add margin bottom to separate time slots */
+}
+
 /* Available time slot */
 .available-timeSlot {
     background-color: #5cb85c; /* Green background color */
     color: #fff;
+    padding: 5px;
+    margin-bottom: 10px; /* Add margin bottom to separate time slots */
+}
+.unavailable-timeslot {
+    background-color: #f8f8f8; /* Grey background color */
+    color: #000000;
     padding: 5px;
     margin-bottom: 10px; /* Add margin bottom to separate time slots */
 }
@@ -120,7 +158,4 @@ body {
 tr {
     border-bottom: 1px solid #ddd;
 }
-/* Checkbox style */
-.available-timeSlot input[type="checkbox"] {
-    margin-right: 5px;
-}
+
