@@ -47,9 +47,8 @@ class Auth
             $_SESSION['userId'] = $userId;
 
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     /**

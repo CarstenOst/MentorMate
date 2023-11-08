@@ -141,14 +141,10 @@ class UserRepository implements IUserRepository
                 email=:email, 
                 password=:password, 
                 userType=:userType, 
-                about=:about, 
-                createdAt=:createdAt, 
-                updatedAt=:updatedAt 
+                about=:about  
             WHERE userId=:userId";
         $sql = self::getSql($query, $user);
         $sql->bindValue(':userId', $user->getUserId(), PDO::PARAM_INT);
-        $sql->bindValue(':createdAt', $user->getCreatedAt()->format('Y-m-d H:i:s'));
-        $sql->bindValue(':updatedAt', $user->getUpdatedAt()->format('Y-m-d H:i:s'));
 
         return $sql->execute();
     }
@@ -182,10 +178,10 @@ class UserRepository implements IUserRepository
         // Bind parameters using named parameters and bindValue
         $sql->bindValue(':firstName', $user->getFirstName());
         $sql->bindValue(':lastName', $user->getLastName());
-        $sql->bindValue(':email', $user->getEmail());
         $sql->bindValue(':password', $user->getPassword());
         $sql->bindValue(':userType', $user->getUserType());
         $sql->bindValue(':about', $user->getAbout());
+        $sql->bindValue(':email', $user->getEmail());
 
         return $sql;
     }
