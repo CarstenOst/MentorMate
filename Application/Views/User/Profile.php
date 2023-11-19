@@ -3,23 +3,28 @@
 namespace Application\Views\User;
 
 require ("../../../autoloader.php");
+
+use Application\Validators\Auth;
 use Application\Views\Shared\Layout;
-use Core\Entities\User;
-use Infrastructure\Repositories\UserRepository;
+use Application\Constants\SessionConst;
+
+Auth::checkAuth(); // Starts session, and checks if user is logged in. If not, redirects to login page
 
 class Profile
 {
-    public static function viewUserProfile(int $userId) {
-        $user = UserRepository::read($userId);
-        if (is_string($user)) {
-            echo $user; // TODO call some common error msg display
-            return;
-        }
-        $firstName = $user->getFirstName();
-        $lastName = $user->getLastName();
-        $userType = $user->getUserType();
-        $email = $user->getEmail();
-        $about = $user->getAbout();
+    /**
+     * View the user profile if the user is logged-in
+     * Session must be set!
+     *
+     * @return void echos the user profile
+     */
+    public static function viewUserProfile(): void
+    {
+        $firstName = $_SESSION[SessionConst::FIRST_NAME];
+        $lastName = $_SESSION[SessionConst::LAST_NAME];
+        $userType = $_SESSION[SessionConst::USER_TYPE];
+        $email = $_SESSION[SessionConst::EMAIL];
+        $about = $_SESSION[SessionConst::ABOUT];
         echo "
             <div class='user-profile'>
                 <h5>$firstName $lastName</h5>
@@ -32,8 +37,11 @@ class Profile
 }
 
 
+// TODO remove this
+SessionConst::sessionDebugger();
+
 
 Layout::displayTop();
-Profile::viewUserProfile(1);
+Profile::viewUserProfile();
 
 
