@@ -8,7 +8,10 @@ use Application\Validators\Auth;
 use Application\Views\Shared\Layout;
 use Application\Constants\SessionConst;
 
-Auth::checkAuth(); // Starts session, and checks if user is logged in. If not, redirects to login page
+if (!Auth::checkAuth()) {// Starts session, and checks if user is logged in. If not, redirects to login page
+    header('Location: ./Login.php');
+    exit();
+}
 
 class Profile
 {
