@@ -30,7 +30,8 @@ class Validator
      * @return bool true if the password is valid, false if the password is invalid.
      * TODO make this return an array to give a message of what failed to the user
      */
-    private static function validatePassword(string $password): bool {
+    private static function validatePassword(string $password): bool
+    {
         return strlen($password) >= 9 &&                    // Longer than, or 9 characters.
             preg_match('/[0-9]/', $password) &&     // Has one or more numbers.
             preg_match('/[A-Z]/', $password) &&     // Has one or more upper case letters.
