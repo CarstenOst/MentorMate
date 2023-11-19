@@ -2,6 +2,7 @@
 
 namespace Application\Validators;
 use Application\Constants\SessionConst;
+use Exception;
 use Infrastructure\Repositories\UserRepository;
 
 class Auth
@@ -33,25 +34,34 @@ class Auth
      * This makes $_SESSION['userId'] to be userId if true.
      *
      * @param string $inputPassword must be hashed same way as in the database.
-     * @param int $userId the userId for the user from the database.
+     * @param string $email
      * @return bool True if user is authentic, false if not.
+     * @throws Exception
      */
-    public static function authenticate(string $inputPassword, int $userId): bool
+    public static function authenticate(string $inputPassword, string $email): bool
     {
         self::startSession();
 
-        $storedPassword = UserRepository::getUserPassword($userId);
-
-        echo $userId; // TODO REMOVE
-        echo '<br> Input Password: '; // TODO REMOVE
-        echo $inputPassword; // TODO REMOVE
-        echo '<br> Stored password: '; // TODO REMOVE
-        echo $storedPassword; // STORED MUST BE HASHED // TODO REMOVE
+        $user = UserRepository::getUserByEmail($email);
+        if (is_string($user)) {
+            echo $user;
+            return false;
+        }
+        $storedPassword = $user->getPassword();
 
         if ($inputPassword && password_verify($inputPassword, $storedPassword)) {
             session_regenerate_id(); // To prevent fixation attacks
 
-            $_SESSION[SessionConst::USER_ID] = $userId;
+
+            $_SESSION[SessionConst::EMAIL] = $user->getEmail();
+            $_SESSION[SessionConst::ABOUT] = $user->getAbout();
+            $_SESSION[SessionConst::USER_ID] = $user->getUserId();
+            $_SESSION[SessionConst::USER_TYPE] = $user->getUserType();
+            $_SESSION[SessionConst::FIRST_NAME] = $user->getFirstName();
+            $_SESSION[SessionConst::LAST_NAME] = $user->getLastName();
+            $_SESSION[SessionConst::CREATED_AT] = $user->getCreatedAt();
+            $_SESSION[SessionConst::UPDATED_AT] = $user->getUpdatedAt();
+
             $_SESSION[SessionConst::LOGGED_IN] = true;
 
             return true;
@@ -65,7 +75,6 @@ class Auth
      */
     public static function logOut(): void
     {
-
         self::startSession();
 
         // Unset all session variables
