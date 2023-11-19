@@ -68,6 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             exit();
         } else {
             echo "Wrong password, or email!";
+            Auth::logOut(); // Logout the user TODO remove this
             Login::viewLogin($formData);
         }
     } else {
