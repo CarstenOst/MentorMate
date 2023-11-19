@@ -1,9 +1,10 @@
 <?php
 
-namespace  Application\Views\User;
+namespace Application\Views\User;
 
 require("../../../autoloader.php");
 
+use Application\Validators\Auth;
 use Application\Views\Shared\Layout;
 use Application\Views\Shared\HtmlRenderer;
 use Application\Validators\Validator;
@@ -11,6 +12,12 @@ use Exception;
 
 class Login
 {
+    const EMAIL = 'email';
+    const PASSWORD = 'password';
+    const LOGIN_FIELD = [
+        self::EMAIL => 'Insert email',
+        self::PASSWORD => 'Insert your password',
+    ];
 
     /**
      * Validates the form values for the login form
@@ -19,11 +26,9 @@ class Login
      * @return boolean indicating if the fields are valid
      * @throws Exception
      */
-    public static function validateFields(array $formData): bool
+    public static function validateEmail(string|null $email): bool
     {
-        $validEmail = Validator::isValid('email', $formData['email']);
-        $validPassword = Validator::isValid('password', $formData['password']);
-        return $validEmail && $validPassword;
+        return Validator::isValid('email', $email);
     }
 
     /**
@@ -49,34 +54,31 @@ class Login
      */
     public static function viewLogin(array $formData = []): void
     {
-        $formFields = [
-            "email" => "Email",
-            "password" => "Password",
-        ];
-
         Layout::displayTop();
+
         echo "<h2>Login</h2>";
-        HtmlRenderer::renderFormArrayBased(array_keys($formFields), $formFields, $formData);
+        HtmlRenderer::renderFormArrayBased(
+            array_keys(self::LOGIN_FIELD),
+            self::LOGIN_FIELD,
+            $formData);
+
         echo "<p><small>Don't already have a user?</small></p>
         <a href='./Register.php'>Register</a>";
     }
 
 }
 
-?>
-
-<html>
-<?php
 $formData = $_POST;
 // Checks if form was submitted
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $isValid = Login::validateFields($formData);
+    $email = $_POST[Login::EMAIL];
 
-    if ($isValid) {
+    if (Login::validateEmail($email)) {
         // Logs inn the user
-        $loginSuccess = true;
+        $loginSuccess = Auth::authenticate($_POST[Login::PASSWORD], 8); // todo change user id
         if ($loginSuccess) {
             header("Location: Profile.php");
+            echo implode($_POST);
             exit();
         }
     } else {
@@ -88,5 +90,4 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Displays the login form
     Login::viewLogin($formData);
 }
-?>
-</html>
+

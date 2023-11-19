@@ -1,6 +1,7 @@
 <?php
 
 namespace Application\Validators;
+use Application\Constants\SessionConst;
 use Infrastructure\Repositories\UserRepository;
 
 class Auth
@@ -24,7 +25,7 @@ class Auth
     {
         self::startSession();
         // If session 'loggedIn' is set and is true, return true. Else false
-        return isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] === true;
+        return isset($_SESSION[SessionConst::LOGGED_IN]) && $_SESSION[SessionConst::LOGGED_IN] === true;
     }
 
     /**
@@ -41,10 +42,17 @@ class Auth
 
         $storedPassword = UserRepository::getUserPassword($userId);
 
+        echo $userId; // TODO REMOVE
+        echo '<br> Input Password: '; // TODO REMOVE
+        echo $inputPassword; // TODO REMOVE
+        echo '<br> Stored password: '; // TODO REMOVE
+        echo $storedPassword; // STORED MUST BE HASHED // TODO REMOVE
+
         if ($inputPassword && password_verify($inputPassword, $storedPassword)) {
             session_regenerate_id(); // To prevent fixation attacks
 
-            $_SESSION['userId'] = $userId;
+            $_SESSION[SessionConst::USER_ID] = $userId;
+            $_SESSION[SessionConst::LOGGED_IN] = true;
 
             return true;
         }
@@ -55,7 +63,7 @@ class Auth
      * Function to log out (destroys session).
      * @return void
      */
-    public static function logOut()
+    public static function logOut(): void
     {
 
         self::startSession();

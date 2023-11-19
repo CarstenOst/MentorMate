@@ -11,7 +11,6 @@ class Validator
      * @param string $type must be string of one of these: text | email | password | phone.
      * @param string $value The string to check if is valid.
      * @return bool True if valid, false if not.
-     * @throws Exception Will throw an exception if type entered is wrong.
      */
     public static function isValid(string $type, string $value): bool
     {
@@ -20,7 +19,7 @@ class Validator
             'email' => filter_var($value, FILTER_VALIDATE_EMAIL) !== false,
             'password' => self::validatePassword($value),
             'phone' => preg_match("/^[0-9]{8}$/", $value),
-            default => throw new Exception('Invalid validation type specified'),
+            default => false,
         };
     }
 
