@@ -20,18 +20,6 @@ class Login
     ];
 
     /**
-     * Validates the form values for the login form
-     * @param array $formData the form fields and values as an associated matrix
-     *
-     * @return boolean indicating if the fields are valid
-     * @throws Exception
-     */
-    public static function validateEmail(string|null $email): bool
-    {
-        return Validator::isValid('email', $email);
-    }
-
-    /**
      * Validates the login credentials against the database values for authentication
      * @param array $formData the form fields and values as an associated matrix
      *
@@ -72,22 +60,22 @@ $formData = $_POST;
 // Checks if form was submitted
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = $_POST[Login::EMAIL];
-
-    if (Login::validateEmail($email)) {
+    if (Validator::isValid('email', $email)) {
         // Logs inn the user
-        $loginSuccess = Auth::authenticate($_POST[Login::PASSWORD], 8); // todo change user id
+        $loginSuccess = Auth::authenticate($_POST[Login::PASSWORD], $email);
         if ($loginSuccess) {
             header("Location: Profile.php");
-            echo implode($_POST);
             exit();
+        } else {
+            echo "Wrong password, or email!";
+            Login::viewLogin($formData);
         }
     } else {
         // Submitted form was invalid
-        echo "Error!";
+        echo "Your email is invalid!";
         Login::viewLogin($formData);
     }
 } else {
     // Displays the login form
     Login::viewLogin($formData);
 }
-
