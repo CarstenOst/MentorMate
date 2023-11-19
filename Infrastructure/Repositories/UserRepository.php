@@ -115,6 +115,7 @@ class UserRepository implements IUserRepository
     public static function getUserPassword(int $userId): string {
         $query = "SELECT password FROM User WHERE userId=:userId";
         $connection = DBConnector::getConnection();
+
         $sql = $connection->prepare($query);
         $sql->bindParam(':userId', $userId, PDO::PARAM_INT);
         $sql->execute();
@@ -138,9 +139,9 @@ class UserRepository implements IUserRepository
         $query = "UPDATE User SET 
                 firstName=:firstName, 
                 lastName=:lastName, 
-                email=:email, 
                 password=:password, 
                 userType=:userType, 
+                email=:email, 
                 about=:about  
             WHERE userId=:userId";
         $sql = self::getSql($query, $user);
