@@ -8,6 +8,7 @@ use Infrastructure\Repositories\UserRepository;
 class UserController
 {
 
+
     /**
      * Controller to show the user.
      *
@@ -22,6 +23,7 @@ class UserController
             echo $user; // TODO call some common error msg display
             return;
         }
+        include_once '../Views/User/Login.php';
         echo "User Type: " . $user->getUserType();
         echo "<br>User Name: " . $user->getFirstName();
         echo "<br>User Last Name: " . $user->getLastName();
