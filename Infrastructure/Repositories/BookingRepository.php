@@ -3,7 +3,7 @@ namespace Infrastructure\Repositories;
 
 use Core\Entities\Booking;
 use Infrastructure\Database\DBConnector;
-use Interfaces\IBookingRepository;
+use Core\Interfaces\IBookingRepository;
 use PDOException;
 use PDOStatement;
 use Exception;
