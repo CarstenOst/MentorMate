@@ -4,23 +4,33 @@ namespace Core\Entities;
 class Booking
 {
     private int $bookingId;
-    private int $studentId;
+    private ?int $studentId;
     private int $tutorId;
-    private int $bookingTime;
-    private int $status;
-    private int $createdAt;
-    private int $updatedAt;
-
-    // Getter methods
+    private DateTime $bookingTime;
+    private string $status;
+    private DateTime $createdAt;
+    private DateTime $updatedAt;
 
     public function getBookingId(): int
     {
         return $this->bookingId;
     }
 
-    public function getStudentId(): int
+    public function setBookingId(int $bookingId): self
+    {
+        $this->bookingId = $bookingId;
+        return $this;
+    }
+
+    public function getStudentId(): ?int
     {
         return $this->studentId;
+    }
+
+    public function setStudentId(?int $studentId): self
+    {
+        $this->studentId = $studentId;
+        return $this;
     }
 
     public function getTutorId(): int
@@ -28,9 +38,21 @@ class Booking
         return $this->tutorId;
     }
 
-    public function getBookingTime(): int
+    public function setTutorId(int $tutorId): self
+    {
+        $this->tutorId = $tutorId;
+        return $this;
+    }
+
+    public function getBookingTime(): DateTime
     {
         return $this->bookingTime;
+    }
+
+    public function setBookingTime(DateTime $bookingTime): self
+    {
+        $this->bookingTime = $bookingTime;
+        return $this;
     }
 
     public function getStatus(): string
@@ -38,50 +60,34 @@ class Booking
         return $this->status;
     }
 
-    public function getCreatedAt(): string
+    public function setStatus(string $status): self
+    {
+        $this->status = $status;
+        return $this;
+    }
+
+    public function getCreatedAt(): DateTime
     {
         return $this->createdAt;
     }
 
-    public function getUpdatedAt(): string
+    public function setCreatedAt(DateTime $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+        return $this;
+    }
+
+    public function getUpdatedAt(): DateTime
     {
         return $this->updatedAt;
     }
 
-    // Setter methods
-
-    public function setBookingId(int $bookingId): void
-    {
-        $this->bookingId = $bookingId;
-    }
-
-    public function setStudentId(int $studentId): void
-    {
-        $this->studentId = $studentId;
-    }
-
-    public function setTutorId(int $tutorId): void
-    {
-        $this->tutorId = $tutorId;
-    }
-
-    public function setBookingTime(int $bookingTime): void
-    {
-        $this->bookingTime = $bookingTime;
-    }
-
-    public function setStatus(string $status): void
-    {
-        $this->status = $status;
-    }
-
-    public function setCreatedAt(string $createdAt): void
-    {
-        $this->createdAt = $createdAt;
-    }
-
-    public function setUpdatedAt(string $updatedAt): void
+    public function setUpdatedAt(DateTime $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
+        return $this;
     }
+
+
+
 }
