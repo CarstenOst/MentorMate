@@ -1,6 +1,6 @@
 <?php
 
-namespace Interfaces;
+namespace Core\Interfaces;
 
 use Core\Entities\Booking;
 
