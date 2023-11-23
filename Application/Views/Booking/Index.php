@@ -23,14 +23,13 @@ use Infrastructure\Repositories\BookingRepository;
         }
         $formData = $_POST;
 
-        $formData['selectedCheckboxes'] = $checkedCheckboxes;
         $formData['studentId'] = 0;
         $formData['tutorId'] = 6; // TODO Should be swapped to the logged inn tutorID, currently a fixed user
         $test = implode($formData);
         echo "$test";
         // Iterates over the submitted bookings, and submits them one by one
-        for ($i = 0; $i < count($formData['selectedCheckboxes']); $i++) {
-            $checkboxName = $formData['selectedCheckboxes'][$i];
+        for ($i = 0; $i < count($checkedCheckboxes); $i++) {
+            $checkboxName = $formData[$i];
             $test = implode($formData[$checkboxName]);
             echo "$test";
             echo "success!";
