@@ -1,6 +1,10 @@
 <?php
 
+
 namespace Core\Entities;
+
+use DateTime;
+
 class Booking
 {
     private int $bookingId;
