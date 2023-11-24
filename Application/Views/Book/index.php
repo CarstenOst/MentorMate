@@ -47,11 +47,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 <?php
 
-
-
-                echo "<br><br>Date for fetching times: {$date->format('Y-m-d')}
-                <br>If none are shown, there aren't any for that date between 08:00:00 and 23:59:59.<br><br>";
-
                 // Queries database for bookings for hour interval 08-23
                 $bookings = BookingRepository::getBookingForDate($date);
 
