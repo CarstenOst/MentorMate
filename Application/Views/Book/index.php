@@ -50,6 +50,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 // Queries database for bookings for hour interval 08-23
                 $bookings = BookingRepository::getBookingForDate($date);
 
+                if (sizeof($bookings) == 0) {
+                    echo "<br>Seems like there are no available TAs for {$date->format('d-m-Y')}...";
+                }
+
 
                 // Iterates over results to get header TutorId's
                 $TAsHeader = [];
@@ -78,7 +82,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             echo "<td class='unavailable-timeslot'>$timeSlot</td>";
                         } else {
                             // Is available
-                            echo "<td class='available-timeSlot'><input  class='book-checkbox'  type='checkbox'>$timeSlot</td>";
+                            echo "<td class='available-timeSlot'><input class='book-checkbox' type='checkbox'>$timeSlot</td>";
+                            // TODO add name on checkbox consisting of "TAid-timeSlot", then book these
+                            // TODO selected upon submission (update booking studentId to the "current logged inn" studentId
                         }
 
                     }
