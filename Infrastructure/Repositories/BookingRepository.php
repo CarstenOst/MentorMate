@@ -75,6 +75,13 @@ class BookingRepository implements IBookingRepository
         return 'Booking was not found';
     }
 
+    /**
+     * Updates a booking in the database.
+     *
+     * @param Booking $booking The Booking object to update.
+     * @return bool Returns true if the update is successful, false otherwise.
+     * @throws PDOException Throws a PDOException if there is an error with the SQL query.
+     */
     public static function update($booking): bool
     {
         $query = "UPDATE Booking SET 
@@ -96,6 +103,13 @@ class BookingRepository implements IBookingRepository
     }
 
 
+    /**
+     * Deletes a booking from the database based on the booking ID.
+     *
+     * @param int $id The booking ID to be deleted.
+     * @return bool Returns true if the deletion is successful, false otherwise.
+     * @throws PDOException Throws a PDOException if there is an error with the SQL query.
+     */
     public static function delete($id): bool
     {
         $query = "DELETE FROM Booking WHERE bookingId = :id";
@@ -133,6 +147,12 @@ class BookingRepository implements IBookingRepository
     }
 
 
+    /**
+     * Creates a Booking object from a database row.
+     *
+     * @param array $row The associative array representing a database row.
+     * @return Booking Returns a Booking object created from the provided database row.
+     */
     public static function makeBookingFromRow($row): Booking
         {
             $booking = new Booking();
@@ -147,6 +167,12 @@ class BookingRepository implements IBookingRepository
             return $booking;
         }
 
+    /**
+     * Retrieves bookings for a specific date.
+     *
+     * @param DateTime $date The date for which to retrieve bookings.
+     * @return array Returns an array of Booking objects for the specified date.
+     */
     public static function getBookingForDate(DateTime $date): array {
         $connection = DBConnector::getConnection();
         // Sets start and end -Date to be the hour interval from 08:00:00 to 23:59:59
