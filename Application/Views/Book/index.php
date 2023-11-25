@@ -3,7 +3,6 @@ require("../../../autoloader.php");
 
 use Application\Constants\SessionConst;
 use Application\Validators\Auth;
-use Infrastructure\Database\DBConnector;
 use Infrastructure\Repositories\BookingRepository;
 use Infrastructure\Repositories\UserRepository;
 use Core\Entities\Booking;
