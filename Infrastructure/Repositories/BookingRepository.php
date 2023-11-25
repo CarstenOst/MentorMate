@@ -92,9 +92,13 @@ class BookingRepository implements IBookingRepository
                 status=:status,
                 createdAt=:createdAt, 
                 updatedAt=:updatedAt 
-            WHERE userId=:userId";
+            WHERE bookingId=:bookingId";
         $sql = self::getSql($query, $booking);
-        $sql->bindValue(':bookingId', $booking->getBookingId(), PDO::PARAM_INT);
+        $sql->bindValue(':bookingId', $booking->getBookingId());
+        $sql->bindValue(':studentId', $booking->getStudentId());
+        $sql->bindValue(':tutorId', $booking->getTutorId());
+        $sql->bindValue(':bookingTime', $booking->getBookingTime()->format('Y-m-d H:i:s'));
+        $sql->bindValue(':status', $booking->getStatus());
         $sql->bindValue(':createdAt', $booking->getCreatedAt()->format('Y-m-d H:i:s'));
         $sql->bindValue(':updatedAt', $booking->getUpdatedAt()->format('Y-m-d H:i:s'));
 
@@ -138,10 +142,10 @@ class BookingRepository implements IBookingRepository
         $sql->bindValue(':bookingId', $booking->getBookingId());
         $sql->bindValue(':studentId', $booking->getStudentId());
         $sql->bindValue(':tutorId', $booking->getTutorId());
-        $sql->bindValue(':bookingTime', $booking->getBookingTime());
+        $sql->bindValue(':bookingTime', $booking->getBookingTime()->format('Y-m-d H:i:s'));
         $sql->bindValue(':status', $booking->getStatus());
-        $sql->bindValue(':createdAt', $booking->getCreatedAt());
-        $sql->bindValue(':updatedAt', $booking->getUpdatedAt());
+        $sql->bindValue(':createdAt', $booking->getCreatedAt()->format('Y-m-d H:i:s'));
+        $sql->bindValue(':updatedAt', $booking->getUpdatedAt()->format('Y-m-d H:i:s'));
 
         return $sql;
     }
