@@ -1,12 +1,19 @@
 <?php
 require("../../../autoloader.php");
 
+use Application\Constants\SessionConst;
+use Application\Validators\Auth;
 use Infrastructure\Database\DBConnector;
 use Infrastructure\Repositories\BookingRepository;
 use Infrastructure\Repositories\UserRepository;
 use Core\Entities\Booking;
 
 
+// Starts session, and checks if user is logged in. If not, redirects to login page
+if (!Auth::checkAuth()) {
+    header('Location: ./Login.php');
+    exit();
+}
 
 // Checks if timeslots were booked
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book'])) {
@@ -18,7 +25,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book'])) {
             foreach ($timeSlots as $timeSlot => $bookingDataJson) {
                 $bookingArrayDecoded = json_decode($bookingDataJson, true);
                 $bookingTime = DateTime::createFromFormat('Y-m-d H:i:s', $timeSlot);
-                echo "TAid: {$tutorId}, StudentId: {$bookingArrayDecoded['studentId']}, Time Slot: {$timeSlot}}<br>";
 
                 $newBooking = new Booking();
                 $newBooking->setBookingId($bookingArrayDecoded['bookingId']);
@@ -34,6 +40,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book'])) {
     }
 }
 ?>
+
+
 
 <html>
 <head>
@@ -56,8 +64,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book'])) {
                 </div>
             </a>
         </li>
-        <li><a href="#">Book</a></li>
-        <li><a href="#">Bookings</a></li>
+        <li><a href="index.php">Book</a></li>
+        <li><a href="../Bookings/index.php">Bookings</a></li>
         <li><a href="#">Messages</a></li>
         <li><a href="#">Log Out</a></li>
     </ul>
@@ -131,13 +139,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book'])) {
                             } else {
                                 // Is available
                                 // Combine date (set in date selection form) and timeSlot into singular string
-                                // TODO selected upon submission (update booking studentId to the "current logged inn" studentId
-                                $studentId = 1;
+                                $firstName = $_SESSION[SessionConst::FIRST_NAME];
                                 $bookingTimeString = $date->format('Y-m-d') . ' ' . $booking->getBookingTime()->format('H:i:s');
                                 $updatedDateTime = new DateTime();
                                 $bookingArrayEncoded = json_encode([
                                     'bookingId' => $booking->getBookingId(),
-                                    'studentId' => $studentId,
+                                    'studentId' => $_SESSION[SessionConst::USER_ID],
                                     'tutorId' => $booking->getTutorId(),
                                     // Don't need to have bookingTime
                                     'status' => $booking->getStatus(),
