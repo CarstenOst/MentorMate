@@ -10,7 +10,19 @@ use Core\Entities\Booking;
 
 // Starts session, and checks if user is logged in. If not, redirects to login page
 if (!Auth::checkAuth()) {
-    header('Location: ./Login.php');
+    header('Location: ../User/Login.php');
+    exit();
+}
+
+
+
+// Check if the logout action is requested
+if (isset($_GET['logout']) && $_GET['logout'] == 1) {
+    // Call the logOut function from your class
+    Auth::logOut();
+
+    // Redirect to login page after logout
+    header('Location: ../User/Login.php');
     exit();
 }
 
@@ -66,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book'])) {
         <li><a href="index.php">Book</a></li>
         <li><a href="../Bookings/index.php">Bookings</a></li>
         <li><a href="#">Messages</a></li>
-        <li><a href="#">Log Out</a></li>
+        <li><a href="index.php?logout=1">Log Out</a></li>
     </ul>
 </div>
 
