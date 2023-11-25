@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book'])) {
             </a>
         </li>
         <li>
-            <a href="#" class="side-menu-profile-link">
+            <a href="../../Views/User/Profile.php" class="side-menu-profile-link">
                 <div class="profile">
                     <i class="profile-icon fa-solid fa-user"></i>
                     <p>Profile</p>
