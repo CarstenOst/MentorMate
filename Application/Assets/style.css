@@ -36,7 +36,7 @@ body {
 
 /* Main view */
 .main-view {
-    margin-left: 20%; /* Adjust this margin to match the width of your side menu */
+    margin-left: 20%;
     padding: 20px;
 }
 
@@ -144,7 +144,7 @@ body {
     padding: 5px;
     padding-left: 20px;
     padding-right: 20px;
-    margin-bottom: 10px; /* Add margin bottom to separate time slots */
+    margin-bottom: 10px;
 }
 
 /* Available time slot */
@@ -152,13 +152,13 @@ body {
     background-color: #5cb85c; /* Green background color */
     color: #fff;
     padding: 5px;
-    margin-bottom: 10px; /* Add margin bottom to separate time slots */
+    margin-bottom: 10px;
 }
 .unavailable-timeslot {
     background-color: #f8f8f8; /* Grey background color */
     color: #000000;
     padding: 5px;
-    margin-bottom: 10px; /* Add margin bottom to separate time slots */
+    margin-bottom: 10px;
 }
 
 /* For adding row styling */
