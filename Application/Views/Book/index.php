@@ -38,11 +38,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book'])) {
 <html>
 <head>
     <link rel="stylesheet" href="/Assets/style.css">
+    <script src="https://kit.fontawesome.com/5928831ae4.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
 <div class="side-menu">
-
+    <ul>
+        <li><a class="logo-title" href="#">
+                MentorMate
+            </a>
+        </li>
+        <li>
+            <a href="#" class="side-menu-profile-link">
+                <div class="profile">
+                    <i class="profile-icon fa-solid fa-user"></i>
+                    <p>Profile</p>
+                </div>
+            </a>
+        </li>
+        <li><a href="#">Book</a></li>
+        <li><a href="#">Bookings</a></li>
+        <li><a href="#">Messages</a></li>
+        <li><a href="#">Log Out</a></li>
+    </ul>
 </div>
 
 <div class="main-view">
