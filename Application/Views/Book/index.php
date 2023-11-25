@@ -85,6 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             echo "<td class='available-timeSlot'><input class='book-checkbox' type='checkbox'>$timeSlot</td>";
                             // TODO add name on checkbox consisting of "TAid-timeSlot", then book these
                             // TODO selected upon submission (update booking studentId to the "current logged inn" studentId
+                            // TODO add third table data option, where studentId is not null, but it's equal to the logged inn userId
                         }
 
                     }
