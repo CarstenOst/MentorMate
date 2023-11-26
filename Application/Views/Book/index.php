@@ -85,6 +85,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book'])) {
 <div class="main-view">
 
         <div class="booking-view">
+            <!-- TODO update/style this title to better describe the page -->
+            <h2>Book a timeslot from a Tutor</h2>
             <div class="booking-date">
                 <?php
                 // Gets today's date
@@ -98,6 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book'])) {
                 echo "
                         <form method='GET' action=''>
                             <div class='booking-date-form'>
+                                <!-- TODO update this so the min valid date is 'date', so users cannot book retroactively -->
                                 <input class='input-calendar' type='date' name='date' value='$dateValue'>
                                 <input class='calendar-submit' type='submit' value='Check Date'>
                             </div>
