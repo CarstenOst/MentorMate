@@ -211,4 +211,38 @@ class BookingRepository implements IBookingRepository
         return $resultList;
     }
 
+
+    public static function getStudentBookings(DateTime $currentDate, int $studentId): array {
+        $connection = DBConnector::getConnection();
+        // Sets start and end -Date to be the hour interval from 08:00:00 to 23:59:59
+        $startDate = new DateTime($currentDate->format('Y-m-d') . ' 08:00:00');
+        $sql = "SELECT * FROM Booking WHERE 
+            studentId = :studentId AND
+            bookingTime >= :startDate;
+        ";
+
+        // Prepares the SQL
+        $query = $connection->prepare($sql);
+        $query->bindValue(':studentId', $studentId);
+        $query->bindValue(':startDate', $startDate->format('Y-m-d H:i:s'));
+
+        // Executes the query
+        $resultList = [];
+        try {
+            $query->execute();
+            $results = $query->fetchAll(PDO::FETCH_ASSOC);
+            // Appends Booking objects if query results
+            if ($results) {
+                foreach ($results as $row) {
+                    $resultList[] = self::makeBookingFromRow($row);
+                }
+            }
+
+        } catch (PDOException $exception) {
+            echo "SQL Query fail: " . $exception->getMessage();
+        }
+
+        return $resultList;
+    }
+
 }
