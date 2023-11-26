@@ -150,6 +150,37 @@ class UserRepository implements IUserRepository
         return $sql->execute();
     }
 
+    /**
+     * Get all users based on their role
+     *
+     * @param string $role Either Student or Tutor
+     * @return array of User
+     * @throws Exception If it fails
+     */
+    public static function getAllUsersByRole(string $role): array
+    {
+        $query = "SELECT * FROM User WHERE userType = :role";
+        $connection = DBConnector::getConnection();
+        $sql = $connection->prepare($query);
+
+        $sql->execute(['role' => $role]);
+
+        $users = [];
+        while ($row = $sql->fetch(PDO::FETCH_ASSOC)) {
+            $user = new User();
+            $user->setAbout($row['about'] ?? '');
+            $user->setEmail($row['email']);
+            $user->setUserId($row['userId']);
+            $user->setUserType($row['userType']);
+            $user->setLastName($row['lastName']);
+            $user->setFirstName($row['firstName']);
+            $user->setCreatedAt(new DateTime($row['createdAt']) ?? null);
+            $user->setUpdatedAt(new DateTime($row['updatedAt']) ?? null);
+
+            $users[] = $user;
+        }
+        return $users;
+    }
 
 
     public static function delete($id): bool
