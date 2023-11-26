@@ -29,11 +29,14 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
 
 // TODO modify this section into a check for row 'buttons' that were clicked to; cancel, message or ?view TA profile? and ?add to calendar?
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'cancelBooking') {
-    BookingRepository::update();
-
-    // Provide a response (optional)
-    echo 'Action performed successfully!';
+    // Cancels the booking by updating the studentId to be null
+    $booking = new Booking();
+    //$booking->setBookingId($_POST['bookingId']);
+    $bookingId = $_POST['bookingId'];
+    echo "$bookingId";
+    //BookingRepository::update();
 }
+
 
 // Checks if timeslots were booked
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book'])) {
@@ -67,28 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book'])) {
 <head>
     <link rel="stylesheet" href="/Assets/style.css">
     <script src="https://kit.fontawesome.com/5928831ae4.js" crossorigin="anonymous"></script>
-    <script>
-        function confirmAction() {
-            // Display a confirm dialog
-            var result = confirm("Are you sure you want to perform this action?");
 
-            // If the user clicks 'OK', proceed with the action
-            if (result) {
-                // Use AJAX to call a PHP script
-                $.ajax({
-                    type: "POST",
-                    url: "index.php",
-                    data: { action: "cancelBooking" },
-                    success: function(response) {
-                        alert(response); // Show a response message
-                    }
-                });
-            } else {
-                // If the user clicks 'Cancel', do nothing or provide feedback
-                alert("Action canceled.");
-            }
-        }
-    </script>
 </head>
 
 <body>
@@ -132,9 +114,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book'])) {
                     echo "<br>Seems like you have no future bookings...";
                 } else {
                     // Creates headers for table
-
-
-                    $boookingHeaders = ["Booking date", "Location", "Tutor", "Cancel", "Message", "Add to calendar"];
+                    $boookingHeaders = ["Booking date", "Location", "Tutor", "Cancel Timeslot", "Message", "Add to calendar"];
                     echo "<tr>";
                     foreach ($boookingHeaders as $header) {
                         echo "<th>$header</th>";
@@ -143,20 +123,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book'])) {
 
                     // Populates table with booking rows
                     foreach ($bookings as $booking) {
-                        $tutorName = UserRepository::read($booking->getTutorId())->getFirstName();
+                        $tutorId = $booking->getTutorId();
+                        $tutorName = UserRepository::read($tutorId)->getFirstName();
+                        $bookingId = $booking->getBookingId();
                         echo "
                             <tr>
-                                <td>{$booking->getBookingTime()->format('Y-m-d H:i:s')}</td>
-                                <td>{$booking->getStatus()}</td>
-                                <td><input type='button' class='table-button'><i class='fa-solid fa-user'></i> {$tutorName}</input></td>
                                 <td>
-                                    <input type='button' class='table-button'><i class='cancel-icon fa-solid fa-ban'></i></input>
+                                    <i class='calendar-icon fa-regular fa-calendar'></i> {$booking->getBookingTime()->format('d-m-Y')}
+                                    <br>
+                                    <i class='clock-icon fa-regular fa-clock'></i> {$booking->getBookingTime()->format('H:i')}
                                 </td>
                                 <td>
-                                    <input type='button' class='table-button'><i class='message-icon fa-solid fa-message'></i></input>
+                                    <i class='location-icon fa-regular fa-location-dot'></i> {$booking->getStatus()}
                                 </td>
                                 <td>
-                                    <input type='button' class='table-button'><i class='add-to-calendar-icon fa-regular fa-calendar'></i> Add boooking</input>
+                                    <i class='fa-solid fa-user'></i> {$tutorName}
+                                </td>
+                                <td>
+                                    <button class='table-button' onclick='confirmCancelation($bookingId)'><i class='cancel-icon fa-solid fa-ban'></i> Cancel</button>
+                                </td>
+                                <td>
+                                    <button class='table-button' onclick='messageTutor($tutorId)'><i class='message-icon fa-solid fa-message'></i></button>
+                                </td>
+                                <td>
+                                    <button class='table-button'><i class='calendar-icon fa-regular fa-calendar'></i> Add boooking</button>
                                 </td>
                             </tr>
                         ";
@@ -172,3 +162,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book'])) {
 
 
 </div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+
+    function confirmCancelation(bookingId) {
+        // Display a confirm dialog
+        var result = confirm("Are you sure you want cancel this booking?");
+
+        if (result) {
+            // Use AJAX to call a PHP script
+            $.ajax({
+                type: "POST",
+                url: "./BookingsController.php",
+                data: { action: "cancelBooking", bookingId: bookingId }
+            });
+        }
+    }
+
+    function messageTutor(tutorId) {
+        // Use AJAX to send to Messages
+        $.ajax({
+            type: "POST",
+            url: "./BookingsController.php",
+            data: { action: "messageTutor", tutorId: tutorId }
+        });
+    }
+</script>
+</body>
