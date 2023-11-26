@@ -84,6 +84,7 @@ body {
     padding: 20px;
     max-height: 550px;
     overflow: auto;
+    border-radius: 12px;
 }
 
 .booking-date {
@@ -131,15 +132,32 @@ body {
 .calendar {
     width: 100%;
     min-height: 100px;
+    border-collapse: collapse;
 }
 
 .calendar th {
     position: sticky;
-    background-color: black;
+    background-color: blue;
     color: white;
     top: 0;
     z-index: 2;
     text-align: left;
+    padding: 5px;
+    margin: 0;
+}
+
+/*
+Needs some work to avoid "book" table only having one corner rounded
+.calendar th:first-child {
+    border-radius: 8px 0 0 0;
+}
+.calendar th:last-child {
+    border-radius: 0 8px 0 0;
+}
+*/
+
+
+.calendar td {
     padding: 5px;
 }
 
@@ -203,3 +221,26 @@ tr {
     border-bottom: 1px solid #ddd;
 }
 
+
+
+
+
+/* Bookings icons */
+.table-button {
+    display: none;
+}
+.tutor-icon {
+
+}
+
+.cancel-icon {
+    color: red;
+}
+
+.message-icon {
+
+}
+
+.add-to-calendar-icon {
+
+}
