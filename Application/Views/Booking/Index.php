@@ -1,101 +1,123 @@
 <?php
+require("../../../autoloader.php");
 
-require ("../../../autoloader.php");
-use Core\Entities\Booking;
 use Application\Constants\SessionConst;
 use Application\Validators\Auth;
 use Infrastructure\Repositories\BookingRepository;
 use Infrastructure\Repositories\UserRepository;
+use Core\Entities\Booking;
+
 
 // Starts session, and checks if user is logged in. If not, redirects to login page
 if (!Auth::checkAuth()) {
-    header('Location: ./Login.php');
+    header('Location: ../User/Login.php');
     exit();
 }
 
 
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        // Create an array to store the names of checked checkboxes
-        $checkedCheckboxes = [];
 
-        foreach ($_POST as $key => $value) {
-            // Loop through the POST data
+// Check if the logout action is requested
+if (isset($_GET['logout']) && $_GET['logout'] == 1) {
+    // Call the logOut function from your class
+    Auth::logOut();
 
-            if (strpos($key, '-') !== false && $value === 'on') {
-                // Check if the key contains a hyphen (e.g., '30-10-2023-9:00') and the value is 'on'
+    // Redirect to login page after logout
+    header('Location: ../User/Login.php');
+    exit();
+}
 
-                // Extract the name of the checkbox (e.g., '30-10-2023-9:00')
-                $checkboxName = $key;
+// Checks if timeslots were booked
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book'])) {
+    // Check if 'timeslots' is set in $_POST
+    if (isset($_POST['timeslots']) && is_array($_POST['timeslots'])) {
+        // Loops through the tutorId's posted
+        foreach ($_POST['timeslots'] as $tutorId => $timeSlots) {
+            // Loops through 'checked off' timeslots that are json encoded associative arrays
+            foreach ($timeSlots as $timeSlot => $bookingDataJson) {
+                $bookingArrayDecoded = json_decode($bookingDataJson, true);
+                $bookingTime = DateTime::createFromFormat('Y-m-d H:i:s', $timeSlot);
 
-                // Add the checkbox name to the array
-                $checkedCheckboxes[] = $checkboxName;
+                $newBooking = new Booking();
+                $newBooking->setBookingId($bookingArrayDecoded['bookingId']);
+                $newBooking->setStudentId($bookingArrayDecoded['studentId']);
+                $newBooking->setTutorId($bookingArrayDecoded['tutorId']);
+                $newBooking->setBookingTime($bookingTime);
+                $newBooking->setStatus($bookingArrayDecoded['status']);
+                $newBooking->setCreatedAt(DateTime::createFromFormat('Y-m-d H:i', $bookingArrayDecoded['createdAt']));
+                $newBooking->setUpdatedAt(DateTime::createFromFormat('Y-m-d H:i', $bookingArrayDecoded['updatedAt']));
+                BookingRepository::update($newBooking);
             }
         }
-        $formData = $_POST;
-
-        $formData['studentId'] = 0;
-        $formData['tutorId'] = 6; // TODO Should be swapped to the logged inn tutorID, currently a fixed user
-        $test = implode($formData);
-        echo "$test";
-        // Iterates over the submitted bookings, and submits them one by one
-        for ($i = 0; $i < count($checkedCheckboxes); $i++) {
-            $checkboxName = $formData[$i];
-            $test = implode($formData[$checkboxName]);
-            echo "$test";
-            echo "success!";
-            /*
-            $booking = new Booking();
-            $booking->setStudentId($formData['studentId']);
-            $booking->setTutorId($formData['tutorId']);
-            $booking->setBookingTime($formData['bookingTime']);
-            $booking->setStatus($formData['status']);
-
-            BookingRepository::create($booking);
-            */
-        }
     }
-
+}
 ?>
+
+
 
 <html>
 <head>
     <link rel="stylesheet" href="/Assets/style.css">
+    <script src="https://kit.fontawesome.com/5928831ae4.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
 <div class="side-menu">
-
+    <ul>
+        <li><a class="logo-title" href="#">
+                MentorMate
+            </a>
+        </li>
+        <li>
+            <a href="../../Views/User/Profile.php" class="side-menu-profile-link">
+                <div class="profile">
+                    <i class="profile-icon fa-solid fa-user"></i>
+                    <p>Profile</p>
+                </div>
+            </a>
+        </li>
+        <li><a href="index.php">Book</a></li>
+        <li><a href="../Bookings/index.php">Bookings</a></li>
+        <li><a href="#">Messages</a></li>
+        <li><a href="index.php?logout=1">Log Out</a></li>
+    </ul>
 </div>
-
 
 <div class="main-view">
 
-    <form>
-        <div class="booking-view">
-            <div class="booking-date">
-                <?php
-                // Gets today's date
-                $date = new DateTime();
-                $dateValue = isset($_GET['date']) ? $_GET['date'] : $date->format('d-m-Y');
-                // Check if a new date is set in the URL
-                if (isset($_GET['date'])) {
-                    $date = new DateTime($_GET['date']);
-                }
+    <div class="booking-view">
+        <div class="booking-date">
+            <?php
+            // Gets today's date
+            $date = new DateTime();
+            $dateValue = isset($_GET['date']) ? $_GET['date'] : $date->format('d-m-Y');
+            // Check if a new date is set in the URL
+            if (isset($_GET['date'])) {
+                $date = new DateTime($_GET['date']);
+            }
 
-                echo "
+            echo "
                         <form method='GET' action=''>
-                            <input class='input-calendar' type='date' name='date' value='$dateValue'>
-                            <input class='calendar-submit' type='submit' value='Check Date'>
+                            <div class='booking-date-form'>
+                                <!-- TODO update this so the min valid date is 'date', so users cannot book retroactively -->
+                                <input class='input-calendar' type='date' name='date' value='$dateValue'>
+                                <input class='calendar-submit' type='submit' value='Check Date'>
+                            </div>
+                            
                         </form>
                     ";
-                ?>
-            </div>
-            <table class='calendar'>
+            ?>
+        </div>
 
+
+        <form method='POST' action=''>
+            <table class='calendar'>
                 <?php
 
                 // Queries database for bookings for hour interval 08-23
                 $bookings = BookingRepository::getBookingForDate($date);
+                if (sizeof($bookings) == 0) {
+                    echo "<br>Seems like there are no Timeslots for {$date->format('d-m-Y')}...";
+                }
 
 
                 // Iterates over results to get header TutorId's
@@ -103,33 +125,49 @@ if (!Auth::checkAuth()) {
                 foreach ($bookings as $booking) {
                     $TAsHeader[$booking->getTutorId()] = $booking->getTutorId();
                 }
+                echo "<tr>";
                 foreach (array_keys($TAsHeader) as $key) {
                     $TAname = UserRepository::read($TAsHeader[$key])->getFirstName();
                     echo "<th>$TAname</th>";
                 }
+                echo "</tr>";
+
 
 
                 // Iterates over bookings and puts arrays containing timeslots at array index using TutorId
                 $timeSlots = [];
                 foreach ($bookings as $booking) {
-                    $timeSlots[$booking->getBookingTime()->format('H:i')][$booking->getTutorId()] = $booking->getStudentId();
+                    $timeSlots[$booking->getBookingTime()->format('H:i')][$booking->getTutorId()] = $booking;
                 }
 
                 // Creates table with timeslots
                 foreach (array_keys($timeSlots) as $timeSlot) {
                     echo "<tr>";
-                    foreach ($timeSlots[$timeSlot] as $bookedStatus) {
+                    foreach ($timeSlots[$timeSlot] as $booking) {
                         // Checks if the timeSlot has a studentId (meaning it's booked)
-                        if ($bookedStatus) {
+                        if ($booking->getStudentId()) {
                             // Is booked
                             echo "<td class='unavailable-timeslot'>$timeSlot</td>";
                         } else {
                             // Is available
-                            echo "<td class='available-timeSlot'><input class='book-checkbox' type='checkbox'>$timeSlot</td>";
-                            // TODO Modify calendar view to show 7 columns (instead of TAs), with 7 days from today
-                            // TODO selected upon submission iterate over and create booking using:
-                            // TODO TAid, bookingTime and other fields required
+                            // Combine date (set in date selection form) and timeSlot into singular string
+                            $firstName = $_SESSION[SessionConst::FIRST_NAME];
+                            $bookingTimeString = $date->format('Y-m-d') . ' ' . $booking->getBookingTime()->format('H:i:s');
+                            $updatedDateTime = new DateTime();
+                            $bookingArrayEncoded = json_encode([
+                                'bookingId' => $booking->getBookingId(),
+                                'studentId' => $_SESSION[SessionConst::USER_ID],
+                                'tutorId' => $booking->getTutorId(),
+                                // Don't need to have bookingTime
+                                'status' => $booking->getStatus(),
+                                'createdAt' => $booking->getCreatedAt()->format('Y-m-d H:i'),
+                                'updatedAt' => $updatedDateTime->format('Y-m-d H:i'),
+                            ]);
+                            echo "<td class='available-timeSlot'><input class='book-checkbox' type='checkbox' name='timeslots[{$booking->getTutorId()}][$bookingTimeString]' value='{$bookingArrayEncoded}'>$timeSlot</td>";
                         }
+
+                        // TODO add third table data option, where studentId is not null, but it's equal to the logged inn userId
+
 
                     }
                     echo "</tr>";
@@ -139,10 +177,12 @@ if (!Auth::checkAuth()) {
                 ?>
 
             </table>
+            <input class="submit-button" type="submit" name="book" value="Book Timeslots">
+        </form>
+    </div>
 
 
-
-        </div>
-        <input class="submit-button" type="submit" name="book" value="Book Timeslots">
-    </form>
 </div>
+
+
+</body>
