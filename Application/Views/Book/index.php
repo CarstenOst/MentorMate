@@ -3,6 +3,7 @@ require("../../../autoloader.php");
 
 use Application\Constants\SessionConst;
 use Application\Validators\Auth;
+use Application\Views\Shared\Layout;
 use Infrastructure\Repositories\BookingRepository;
 use Infrastructure\Repositories\UserRepository;
 use Core\Entities\Booking;
@@ -61,26 +62,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book'])) {
 </head>
 
 <body>
-<div class="side-menu">
-    <ul>
-        <li><a class="logo-title" href="#">
-                MentorMate
-            </a>
-        </li>
-        <li>
-            <a href="../../Views/User/Profile.php" class="side-menu-profile-link">
-                <div class="profile">
-                    <i class="profile-icon fa-solid fa-user"></i>
-                    <p>Profile</p>
-                </div>
-            </a>
-        </li>
-        <li><a href="index.php">Book</a></li>
-        <li><a href="../Bookings/index.php">Bookings</a></li>
-        <li><a href="#">Messages</a></li>
-        <li><a href="index.php?logout=1">Log Out</a></li>
-    </ul>
-</div>
+<?php
+    Layout::displaySideMenu();
+?>
 
 <div class="main-view">
 
