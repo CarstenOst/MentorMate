@@ -82,13 +82,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book'])) {
                 }
 
                 echo "
-                        <form method='GET' action=''>
-                            <div class='booking-date-form'>
+                        <form class='booking-date-form' method='GET' action=''>
                                 <!-- TODO update this so the min valid date is 'date', so users cannot book retroactively -->
                                 <input class='input-calendar' type='date' name='date' value='$dateValue'>
                                 <input class='calendar-submit' type='submit' value='Check Date'>
-                            </div>
-                            
                         </form>
                     ";
                 ?>
@@ -102,7 +99,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book'])) {
                     // Queries database for bookings for hour interval 08-23
                     $bookings = BookingRepository::getBookingForDate($date);
                     if (sizeof($bookings) == 0) {
-                        echo "<br>Seems like there are no Timeslots for {$date->format('d-m-Y')}...";
+                        echo "
+                            <tr>
+                                <th>Seems like there are no available Timeslots for {$date->format('d-m-Y')}...</th>
+                            </tr>
+                        ";
                     }
 
 

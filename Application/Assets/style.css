@@ -1,3 +1,17 @@
+/* Landing page */
+.custom-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.custom-img-link {
+    float: left;
+}
+
+
+
 .submit-button {
     margin: 20px;
     padding: 10px;
@@ -87,46 +101,42 @@ body {
     border-radius: 12px;
 }
 
+/* Calendar date input and submit */
 .booking-date {
-    padding: 5px;
-    margin: auto;
-    border-bottom: 1px solid #cbcbcb;
+    margin-bottom: 0;
     display: flex;
     align-items: center;
 }
 
 /* Calendar date input and submit */
 .booking-date-form {
-    margin: auto;
+    margin-bottom: 0;
     display: flex;
     align-items: center;
 }
 
-.input-calendar,
-.calendar-submit {
+.input-calendar {
     padding: 8px;
     font-size: 16px;
     border: 3px solid #008CBA;
+    border-radius: 12px 0 0 0;
 }
 
-.input-calendar:focus,
-.calendar-submit:focus {
+.calendar-submit {
+    padding: 11px;
+    font-size: 14px;
+    border: 3px solid #008CBA;
+    border-radius: 0 12px 0 0;
+    background-color: #008CBA;
+    color: white;
+}
+
+.input-calendar:focus {
     outline: none;
     border-color: #007bff;
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
 }
 
-.calendar-submit {
-    padding: 10px;
-    border-radius: 0 12px 12px 0;
-    background-color: #008CBA;
-    color: white;
-}
-
-.input-calendar {
-    border-color: #008CBA;
-    border-radius: 12px 0 0 12px;
-}
 
 /* Calendar */
 .calendar {
@@ -146,15 +156,9 @@ body {
     margin: 0;
 }
 
-/*
-TODO Needs some work to avoid "book" table only having one corner rounded
-.calendar th:first-child {
-    border-radius: 8px 0 0 0;
-}
 .calendar th:last-child {
     border-radius: 0 8px 0 0;
 }
-*/
 
 
 .calendar td {
