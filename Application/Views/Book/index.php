@@ -107,35 +107,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book'])) {
 
 
                     // Iterates over results to get header TutorId's
-                    $TAsHeader = [];
+                    $tutors = [];
                     foreach ($bookings as $booking) {
-                        $TAsHeader[$booking->getTutorId()] = $booking->getTutorId();
+                        $tutors[$booking->getTutorId()] =  UserRepository::read($booking->getTutorId())->getFirstName();
                     }
                     echo "<tr>";
-                    foreach (array_keys($TAsHeader) as $key) {
-                        $TAname = UserRepository::read($TAsHeader[$key])->getFirstName();
-                        echo "<th>$TAname</th>";
+                    foreach ($tutors as $tutorId => $tutorFirstName) {
+                        echo "<th>$tutorFirstName</th>";
                     }
                     echo "</tr>";
 
 
 
-                    // Iterates over bookings and puts arrays containing timeslots at array index using TutorId
+
+                    // Iterates over bookings and puts arrays containing timeslots at array index using:
+                    //    bookingTime and TutorId
                     $timeSlots = [];
                     foreach ($bookings as $booking) {
+                        foreach ($tutors as $tutorId => $tutorFirstName) {
+                            // appends "row" for each tutor, if no booking there, it will remain 'null'
+                            $timeSlots[$booking->getBookingTime()->format('H:i')][$tutorId] = null;
+                        }
+                        // Replaces 'null' with 'booking' for indexes where the tutor has a booking
                         $timeSlots[$booking->getBookingTime()->format('H:i')][$booking->getTutorId()] = $booking;
                     }
 
+
                     // Creates table with timeslots
-                    foreach (array_keys($timeSlots) as $timeSlot) {
-                        echo "<tr>";
-                        foreach ($timeSlots[$timeSlot] as $booking) {
+                    foreach ($timeSlots as $timeSlot => $tutorIds) {
+                        foreach ($tutorIds as $tutorId => $booking) {
+                            // The tutor has no booking for this 'timeSlot'
+                            if ($booking == null) {
+                                echo "<td class='unavailable-timeslot'></td>";
+                            }
+
                             // Checks if the timeSlot has a studentId (meaning it's booked)
-                            if ($booking->getStudentId()) {
+                            elseif ($booking->getStudentId()) {
                                 // Is booked
                                 echo "<td class='unavailable-timeslot'>$timeSlot</td>";
-                            } else {
-                                // Is available
+                            }
+
+                            // Otherwise the booking should be available
+                            else {
                                 // Combine date (set in date selection form) and timeSlot into singular string
                                 $firstName = $_SESSION[SessionConst::FIRST_NAME];
                                 $bookingTimeString = $date->format('Y-m-d') . ' ' . $booking->getBookingTime()->format('H:i:s');
