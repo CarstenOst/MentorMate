@@ -27,15 +27,6 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
 }
 
 
-// TODO modify this section into a check for row 'buttons' that were clicked to; cancel, message or ?view TA profile? and ?add to calendar?
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'cancelBooking') {
-    // Cancels the booking by updating the studentId to be null
-    $booking = new Booking();
-    //$booking->setBookingId($_POST['bookingId']);
-    $bookingId = $_POST['bookingId'];
-    echo "$bookingId";
-    //BookingRepository::update();
-}
 
 
 // Checks if timeslots were booked
@@ -70,6 +61,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book'])) {
 <head>
     <link rel="stylesheet" href="/Assets/style.css">
     <script src="https://kit.fontawesome.com/5928831ae4.js" crossorigin="anonymous"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+            function confirmCancelation(bookingId) {
+                // Confirmation dialog before cancelling
+                var result = confirm("Are you sure you want cancel this booking?");
+
+                if (result) {
+                    // Use AJAX to call a PHP script
+                    $.ajax({
+                        type: "POST",
+                        url: "./BookingsController.php",
+                        data: { action: "cancelBooking", bookingId: bookingId },
+                    });
+                }
+            }
+
+
+            function messageTutor(tutorId) {
+                // Use AJAX to send to Messages
+                $.ajax({
+                    type: "POST",
+                    url: "./BookingsController.php",
+                    data: { action: "messageTutor", tutorId: tutorId }
+                });
+            }
+
+    </script>
 
 </head>
 
@@ -163,30 +182,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book'])) {
 
 </div>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script>
-
-    function confirmCancelation(bookingId) {
-        // Display a confirm dialog
-        var result = confirm("Are you sure you want cancel this booking?");
-
-        if (result) {
-            // Use AJAX to call a PHP script
-            $.ajax({
-                type: "POST",
-                url: "./BookingsController.php",
-                data: { action: "cancelBooking", bookingId: bookingId }
-            });
-        }
-    }
-
-    function messageTutor(tutorId) {
-        // Use AJAX to send to Messages
-        $.ajax({
-            type: "POST",
-            url: "./BookingsController.php",
-            data: { action: "messageTutor", tutorId: tutorId }
-        });
-    }
-</script>
 </body>

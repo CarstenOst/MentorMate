@@ -66,7 +66,7 @@ class BookingRepository implements IBookingRepository
             $booking->setBookingId($id); // Faster lookup, as we already have the id
             $booking->setStudentId($row['studentId']);
             $booking->setTutorId($row['tutorId']);
-            $booking->setBookingTime($row['bookingTime']);
+            $booking->setBookingTime(new DateTime($row['bookingTime']) ?? null);
             $booking->setStatus($row['status']);
             $booking->setCreatedAt(new DateTime($row['createdAt']) ?? null); // Could cause exception
             $booking->setUpdatedAt(new DateTime($row['updatedAt']) ?? null);

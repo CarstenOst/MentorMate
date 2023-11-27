@@ -5,6 +5,7 @@ namespace Views\Bookings\BookingController;
 
 require("../../../autoloader.php");
 
+use Core\Entities\Booking;
 use Infrastructure\Repositories\BookingRepository;
 
 
@@ -13,7 +14,7 @@ use Infrastructure\Repositories\BookingRepository;
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'cancelBooking') {
     $booking = BookingRepository::read($_POST['bookingId']);
     $booking->setStudentId(null);
-   BookingRepository::update($booking);
+    BookingRepository::update($booking);
 }
 
 
