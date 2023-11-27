@@ -1,9 +1,17 @@
 <?php
+
 namespace Application\Validators;
+
 use Exception;
 
 class Validator
 {
+    public const TEXT = 'text';
+    public const EMAIL = 'email';
+    public const PASSWORD = 'password';
+    public const USER_TYPE = 'userType';
+    public const PHONE_NUMBER = 'phoneNumber';
+
     /**
      * This function is made for Module 6, task 5 to validate
      * either an email, password or a phone number in the same function.
@@ -15,11 +23,20 @@ class Validator
     public static function isValid(string $type, string $value): bool
     {
         return match ($type) {
-            'text' => $value != "" && !ctype_space($value) && preg_match("/[a-zA-Z]/", $value),
-            'email' => filter_var($value, FILTER_VALIDATE_EMAIL) !== false,
-            'password' => self::validatePassword($value),
-            'phone' => preg_match("/^[0-9]{8}$/", $value),
+            self::TEXT => $value != "" && !ctype_space($value) && preg_match("/[a-zA-Z]/", $value),
+            self::EMAIL => filter_var($value, FILTER_VALIDATE_EMAIL) !== false,
+            self::PASSWORD => self::validatePassword($value),
+            self::USER_TYPE => self::validateUserType($value),
+            self::PHONE_NUMBER => preg_match("/^[0-9]{8}$/", $value),
             default => false,
+        };
+    }
+
+    private static function validateUserType($userType): bool
+    {
+        return match ($userType) {
+            'student', 'tutor' => true,
+            default => false
         };
     }
 
