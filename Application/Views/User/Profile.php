@@ -55,3 +55,4 @@ class Profile
     Profile::viewUserProfile();
 ?>
 </div>
+</body>
