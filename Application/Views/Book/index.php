@@ -35,6 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book'])) {
         foreach ($_POST['timeslots'] as $tutorId => $timeSlots) {
             // Loops through 'checked off' timeslots that are json encoded associative arrays
             foreach ($timeSlots as $timeSlot => $bookingDataJson) {
+                $date = $_GET['date'];
                 $bookingArrayDecoded = json_decode($bookingDataJson, true);
                 $bookingTime = DateTime::createFromFormat('Y-m-d H:i:s', $timeSlot);
 
@@ -47,6 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book'])) {
                 $newBooking->setCreatedAt(DateTime::createFromFormat('Y-m-d H:i', $bookingArrayDecoded['createdAt']));
                 $newBooking->setUpdatedAt(DateTime::createFromFormat('Y-m-d H:i', $bookingArrayDecoded['updatedAt']));
                 BookingRepository::update($newBooking);
+                $_POST['date'] = $date;
             }
         }
     }
@@ -59,6 +61,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book'])) {
 <head>
     <link rel="stylesheet" href="/Assets/style.css">
     <script src="https://kit.fontawesome.com/5928831ae4.js" crossorigin="anonymous"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        function confirmCancelation(bookingId) {
+            // Confirmation dialog before cancelling
+            var result = confirm("Are you sure you want cancel this booking?");
+
+            // Use AJAX to call a PHP controller action
+            if (result) {
+                $.ajax({
+                    type: "POST",
+                    url: "./BookController.php",
+                    data: {
+                        action: "cancelBooking",
+                        bookingId: bookingId,
+                    },
+                });
+            }
+        }
+
+
+        function bookTimeslot(bookingId, studentId) {
+            // Use AJAX to call a PHP controller action
+            $.ajax({
+                type: "POST",
+                url: "./BookController.php",
+                data: {
+                    action: "bookBooking",
+                    bookingId: bookingId,
+                    studentId: studentId,
+                },
+            });
+        }
+
+
+    </script>
 </head>
 
 <body>
@@ -71,19 +109,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book'])) {
         <div class="booking-view">
             <!-- TODO update/style this title to better describe the page -->
             <h2>Book a timeslot from a Tutor</h2>
+
             <div class="booking-date">
                 <?php
-                // Gets today's date
-                $date = new DateTime();
-                $dateValue = isset($_GET['date']) ? $_GET['date'] : $date->format('d-m-Y');
-                // Check if a new date is set in the URL
-                if (isset($_GET['date'])) {
-                    $date = new DateTime($_GET['date']);
-                }
+                // Gets today's date (which cannot be earlier than today)
+                $minDateValue = new DateTime();
+                $date = (isset($_GET['date']) && (new DateTime($_GET['date']) >= new DateTime($minDateValue->format('d-m-Y'))) ) ? new DateTime($_GET['date']) : new DateTime();
+                $dateValue = (isset($_GET['date']) && (new DateTime($_GET['date']) >= new DateTime($minDateValue->format('d-m-Y'))) ) ? $_GET['date'] : $date->format('d-m-Y');
 
                 echo "
                         <form class='booking-date-form' method='GET' action=''>
-                                <!-- TODO update this so the min valid date is 'date', so users cannot book retroactively -->
                                 <input class='input-calendar' type='date' name='date' value='$dateValue'>
                                 <input class='calendar-submit' type='submit' value='Check Date'>
                         </form>
@@ -91,11 +126,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book'])) {
                 ?>
             </div>
 
-
             <form method='POST' action=''>
                 <table class='calendar'>
                     <?php
-
                     // Queries database for bookings for hour interval 08-23
                     $bookings = BookingRepository::getBookingForDate($date);
                     if (sizeof($bookings) == 0) {
@@ -120,7 +153,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book'])) {
 
 
 
-
                     // Iterates over bookings and puts arrays containing timeslots at array index using:
                     //    bookingTime and TutorId
                     $timeSlots = [];
@@ -139,19 +171,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book'])) {
                         foreach ($tutorIds as $tutorId => $booking) {
                             // The tutor has no booking for this 'timeSlot'
                             if ($booking == null) {
-                                echo "<td class='unavailable-timeslot'></td>";
+                                echo "<td class='no-booking-cell'></td>";
                             }
 
-                            // Checks if the timeSlot has a studentId (meaning it's booked)
+                            // Is booked by logged inn user
+                            elseif ($booking->getStudentId() == $_SESSION[SessionConst::USER_ID]) {
+                                echo "
+                                    <td class='user-booked-timeslot'>
+                                        $timeSlot
+                                        <button class='table-button' onclick='confirmCancelation({$booking->getBookingId()}, {$date->format('d-m-Y')})'><i class='cancel-icon fa-solid fa-ban'></i> Cancel</button>
+                                    </td>";
+                            }
+
+                            // Is booked by other user
                             elseif ($booking->getStudentId()) {
-                                // Is booked
                                 echo "<td class='unavailable-timeslot'>$timeSlot</td>";
                             }
 
                             // Otherwise the booking should be available
                             else {
+                                // TODO remove lines below if ajax on booking button works
                                 // Combine date (set in date selection form) and timeSlot into singular string
-                                $firstName = $_SESSION[SessionConst::FIRST_NAME];
                                 $bookingTimeString = $date->format('Y-m-d') . ' ' . $booking->getBookingTime()->format('H:i:s');
                                 $updatedDateTime = new DateTime();
                                 $bookingArrayEncoded = json_encode([
@@ -163,11 +203,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book'])) {
                                     'createdAt' => $booking->getCreatedAt()->format('Y-m-d H:i'),
                                     'updatedAt' => $updatedDateTime->format('Y-m-d H:i'),
                                 ]);
-                                echo "<td class='available-timeSlot'><input class='book-checkbox' type='checkbox' name='timeslots[{$booking->getTutorId()}][$bookingTimeString]' value='{$bookingArrayEncoded}'>$timeSlot</td>";
+                                echo "<td class='available-timeSlot'>$timeSlot <button class='table-button' onclick='bookTimeslot({$booking->getBookingId()}, {$_SESSION[SessionConst::USER_ID]})''><i class='book-icon fa-solid fa-circle-plus'></i> Book</button></td>";
                             }
-
-                            // TODO add third table data option, where studentId is not null, but it's equal to the logged inn userId
-
 
                         }
                         echo "</tr>";
@@ -175,10 +212,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book'])) {
 
 
                     ?>
-
                 </table>
-                <input class="submit-button" type="submit" name="book" value="Book Timeslots">
             </form>
+
         </div>
 
 

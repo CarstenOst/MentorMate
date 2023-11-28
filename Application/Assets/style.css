@@ -96,6 +96,7 @@ body {
     background-color: #fff;
     border: 1px solid #cbcbcb;
     padding: 20px;
+    min-height: 400px;
     max-height: 550px;
     overflow: auto;
     border-radius: 12px;
@@ -143,17 +144,16 @@ body {
     width: 100%;
     min-height: 100px;
     border-collapse: collapse;
+    table-layout: fixed;
 }
+
 
 .calendar th {
     position: sticky;
     background-color: #008CBA;
     color: white;
-    top: 0;
-    z-index: 2;
     text-align: left;
     padding: 5px;
-    margin: 0;
 }
 
 .calendar th:last-child {
@@ -165,13 +165,6 @@ body {
     padding: 5px;
 }
 
-/* Calendar column */
-.calendar-column {
-    flex: 1;
-    border: 1px solid #ddd;
-    margin: 10px;
-    padding: 10px;
-}
 
 /* Time slots column */
 .time-slots-columns {
@@ -193,28 +186,41 @@ body {
 
 /* Class for styling of checkbox for the timeslots */
 .book-checkbox {
-    margin: 5px;
 }
 
 /* Class for styling of TAs unbooked timeslots that they can book */
 .unbooked-timeslot {
-    background-color: #ffffff; /* Green background color */
+    font-size: 16px;
+    justify-content: center;
+    background-color: #ffffff;
     color: #000000;
     padding: 5px;
-    padding-left: 20px;
-    padding-right: 20px;
     margin-bottom: 10px;
 }
 
 /* Available time slot */
+.no-booking-cell {
+    font-size: 16px;
+}
 .available-timeSlot {
-    background-color: #5cb85c; /* Green background color */
-    color: #fff;
+    font-size: 16px;
+    background-color: #a1e5a1;
+    color: #000000;
     padding: 5px;
     margin-bottom: 10px;
 }
+
 .unavailable-timeslot {
-    background-color: #f8f8f8; /* Grey background color */
+    font-size: 16px;
+    background-color: #d0d0d0;
+    color: #000000;
+    padding: 5px;
+    margin-bottom: 10px;
+}
+
+.user-booked-timeslot {
+    font-size: 16px;
+    background-color: #acf3ff;
     color: #000000;
     padding: 5px;
     margin-bottom: 10px;
@@ -231,9 +237,10 @@ tr {
 
 /* Bookings icons */
 .table-button {
-    border: none;
     background-color: transparent;
     font-size: 16px;
+    border: solid 1px;
+    border-radius: 12px;
 }
 
 .calendar-icon {
@@ -258,4 +265,8 @@ tr {
 
 .message-icon {
 
+}
+
+.book-icon {
+    color: darkgreen;
 }
