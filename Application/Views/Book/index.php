@@ -128,8 +128,9 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
 
 
 
-                    // Iterates over bookings and puts arrays containing timeslots at array index using:
-                    //    bookingTime and TutorId
+                    // TODO fix bug where timeslot only shows one 'booking' for two or multiple tutors
+                    // TODO (think i have to store bookings (and or tutorId and bookings) differently and check for key 'array_key_exists')
+                    // Iterates over bookings and puts arrays containing timeslots at array index using bookingTime and TutorId
                     $timeSlots = [];
                     foreach ($bookings as $booking) {
                         foreach ($tutors as $tutorId => $tutorFirstName) {
@@ -153,22 +154,31 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                             elseif ($booking->getStudentId() == $_SESSION[SessionConst::USER_ID]) {
                                 echo "
                                     <td class='user-booked-timeslot'>
-                                        $timeSlot
-                                        <button class='table-button' onclick='confirmCancelation({$booking->getBookingId()})'><i class='cancel-icon fa-solid fa-ban'></i> Cancel</button>
+                                        <i class='clock-icon fa-regular fa-clock'></i> {$booking->getBookingTime()->format('H:i')}
+                                        <br>
+                                        <i class='location-icon fa-regular fa-location-dot'></i> <i> {$booking->getStatus()}</i>
+                                        <button class='table-button right-button' onclick='confirmCancelation({$booking->getBookingId()})'>
+                                            <i class='cancel-icon fa-solid fa-ban'></i> Cancel
+                                        </button>
                                     </td>";
                             }
 
                             // Is booked by other user
                             elseif ($booking->getStudentId()) {
-                                echo "<td class='unavailable-timeslot'>$timeSlot</td>";
+                                echo "
+                                    <td class='unavailable-timeslot'>
+                                        <i class='clock-icon fa-regular fa-clock'></i> $timeSlot
+                                    </td>";
                             }
 
                             // Otherwise the booking should be available
                             else {
                                 echo "
                                     <td class='available-timeSlot'>
-                                        $timeSlot 
-                                        <button class='table-button' onclick='bookTimeslot({$booking->getBookingId()}, {$_SESSION[SessionConst::USER_ID]})''>
+                                        <i class='clock-icon fa-regular fa-clock'></i> {$booking->getBookingTime()->format('H:i')}
+                                        <br>
+                                        <i class='location-icon fa-regular fa-location-dot'></i> <i>{$booking->getStatus()}</i>
+                                        <button class='table-button right-button' onclick='bookTimeslot({$booking->getBookingId()}, {$_SESSION[SessionConst::USER_ID]})''>
                                             <i class='book-icon fa-solid fa-circle-plus'></i> Book
                                         </button>
                                     </td>";
