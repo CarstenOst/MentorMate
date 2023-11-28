@@ -201,7 +201,8 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                                             <i class='remove-icon fa-solid fa-circle-xmark'></i> Remove
                                         </button>
                                     
-                                </td>";
+                                </td>
+                        ";
                     }
 
                     echo "</tr>";
