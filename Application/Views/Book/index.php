@@ -1,119 +1,207 @@
 <?php
 require("../../../autoloader.php");
 
-use Infrastructure\Database\DBConnector;
+use Application\Constants\SessionConst;
+use Application\Validators\Auth;
+use Application\Views\Shared\Layout;
 use Infrastructure\Repositories\BookingRepository;
+use Infrastructure\Repositories\UserRepository;
+use Core\Entities\Booking;
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        $formData = $_POST;
-        echo "success!";
-    }
+
+// Starts session, and checks if user is logged in. If not, redirects to login page
+if (!Auth::checkAuth()) {
+    header('Location: ../User/Login.php');
+    exit();
+}
+
+if ($_SESSION[SessionConst::USER_TYPE] !== 'Student') {
+    header('Location: ../User/Profile.php');
+}
+
+
+
+// Check if the logout action is requested
+if (isset($_GET['logout']) && $_GET['logout'] == 1) {
+    // Call the logOut function from your class
+    Auth::logOut();
+
+    // Redirect to login page after logout
+    header('Location: ../User/Login.php');
+    exit();
+}
+
 ?>
+
+
 
 <html>
 <head>
     <link rel="stylesheet" href="/Assets/style.css">
+    <script src="https://kit.fontawesome.com/5928831ae4.js" crossorigin="anonymous"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        function confirmCancelation(bookingId) {
+            // Confirmation dialog before cancelling
+            var result = confirm("Are you sure you want cancel this booking?");
+
+            // Use AJAX to call a PHP controller action
+            if (result) {
+                $.ajax({
+                    type: "POST",
+                    url: "./BookController.php",
+                    data: {
+                        action: "cancelBooking",
+                        bookingId: bookingId,
+                    },
+                });
+            }
+        }
+
+
+        function bookTimeslot(bookingId, studentId) {
+            // Use AJAX to call a PHP controller action
+            $.ajax({
+                type: "POST",
+                url: "./BookController.php",
+                data: {
+                    action: "bookBooking",
+                    bookingId: bookingId,
+                    studentId: studentId,
+                },
+            });
+        }
+
+
+    </script>
 </head>
 
 <body>
-<div class="side-menu">
-
-</div>
+<?php
+    $isTutor = $_SESSION[SessionConst::USER_TYPE] == 'Tutor';
+    Layout::displaySideMenu($isTutor);
+?>
 
 <div class="main-view">
 
-    <form>
         <div class="booking-view">
-            <div class="booking-date">30/10/2023</div>
+            <!-- TODO update/style this title to better describe the page -->
+            <h2>Book a timeslot from a Tutor</h2>
 
-            <table class="calendar">
+            <div class="booking-date">
                 <?php
-                // Makes the column names
-                echo "<tr>";
-                echo "<th>DATETIME</th>"; // Adds empty first column value for DATETIME
-                $TAs = array("Henry", "John", "Alice", "Beatrice",);
-                foreach ($TAs as $TA) {
-                    echo "<th>$TA</th>";
-                }
-                echo "</tr>";
+                // Gets today's date (which cannot be earlier than today)
+                $minDateValue = new DateTime();
+                $date = (isset($_GET['date']) && (new DateTime($_GET['date']) >= new DateTime($minDateValue->format('d-m-Y'))) ) ? new DateTime($_GET['date']) : new DateTime();
+                $dateValue = (isset($_GET['date']) && (new DateTime($_GET['date']) >= new DateTime($minDateValue->format('d-m-Y'))) ) ? $_GET['date'] : $date->format('d-m-Y');
 
-                for ($time = 480; $time < 1440; $time += 15) {
-                    $hour = floor(($time / 60));
-                    $minute = $time % 60;
-                    $dateTime = strval($hour) . ":" . strval($minute);
+                echo "
+                        <form class='booking-date-form' method='GET' action=''>
+                                <input class='input-calendar' type='date' name='date' value='$dateValue'>
+                                <input class='calendar-submit' type='submit' value='Check Date'>
+                        </form>
+                    ";
+                ?>
+            </div>
+
+            <form method='POST' action=''>
+                <table class='calendar'>
+                    <?php
+                    // Queries database for bookings for hour interval 08-23
+                    $bookings = BookingRepository::getBookingForDate($date);
+                    if (sizeof($bookings) == 0) {
+                        echo "
+                            <tr>
+                                <th>Seems like there are no available Timeslots for {$date->format('d-m-Y')}...</th>
+                            </tr>
+                        ";
+                    }
+
+
+                    // Iterates over results to get header TutorId's
+                    $tutors = [];
+                    foreach ($bookings as $booking) {
+                        $tutors[$booking->getTutorId()] =  UserRepository::read($booking->getTutorId())->getFirstName();
+                    }
                     echo "<tr>";
-                    echo "<td class='booking-time'>$dateTime</td>"; // Adds empty first column value for DATETIME
-                    foreach ($TAs as $TA) {
-                        if ($time % 60 != 0) {
-                            echo "<td class='unavailable-timeslot'></td>";
-                        }
-                        else {
-                            $paddingPreviousTimeSlot = $time % 60 == 0 ? 'available-timeSlot' : '';
-                            echo "<td class='$paddingPreviousTimeSlot'><input  class='book-checkbox'  type='checkbox' name='$TA-$dateTime'>$dateTime</td>";
+                    foreach ($tutors as $tutorId => $tutorFirstName) {
+                        echo "<th>$tutorFirstName</th>";
+                    }
+                    echo "</tr>";
+
+
+                    // Iterates over bookings and puts arrays containing timeslots at array index using bookingTime and TutorId
+                    $timeSlots = [];
+                    foreach ($bookings as $booking) {
+                        foreach ($tutors as $tutorId => $tutorFirstName) {
+                            // appends "row" for each tutor, if no booking there, it will remain 'null'
+                            $timeSlots[$booking->getBookingTime()->format('H:i')][$tutorId] = null;
                         }
 
                     }
-                    echo "</tr>";
-                }
-                ?>
-            </table>
 
-            <table class='tabell'>
-                <tr>
-                    <th>bookingId</th>
-                    <th>studentId</th>
-                    <th>tutorId</th>
-                    <th>bookingTime</th>
-                    <th>status</th>
-                    <th>createdAt</th>
-                    <th>updatedAt</th>
-                </tr>
-                <?php
+                    // Inserts bookings into the datastructure where they are
+                    foreach ($bookings as $booking) {
+                        // Replaces 'null' with 'booking' for indexes where the tutor has a booking
+                        $timeSlots[$booking->getBookingTime()->format('H:i')][$booking->getTutorId()] = $booking;
+                    }
 
-                // Gets today's date
-                $dato = new DateTime();
-                // TODO add button for "date" choice (with today as standard, and future dates as options)
+                    // Creates table with timeslots
+                    foreach ($timeSlots as $timeSlot => $tutorIds) {
+                        echo "<tr>";
+                        foreach ($tutorIds as $tutorId => $booking) {
+                            // The tutor has no booking for this 'timeSlot'
+                            if ($booking == null) {
+                                echo "<td class='no-booking-cell'></td>";
+                            }
 
-                echo "<br><br>Date for fetching times: {$dato->format('Y-m-d')}
-                <br>If none are shown, there aren't any for that date between 08:00:00 and 23:59:59.<br><br>";
+                            // Is booked by logged inn user
+                            elseif ($booking->getStudentId() == $_SESSION[SessionConst::USER_ID]) {
+                                echo "
+                                    <td class='user-booked-timeslot'>
+                                        <i class='clock-icon fa-regular fa-clock'></i> {$booking->getBookingTime()->format('H:i')}
+                                        <br>
+                                        <i class='location-icon fa-regular fa-location-dot'></i> <i> {$booking->getStatus()}</i>
+                                        <button class='table-button right-button' onclick='confirmCancelation({$booking->getBookingId()})'>
+                                            <i class='cancel-icon fa-solid fa-ban'></i> Cancel
+                                        </button>
+                                    </td>";
+                            }
 
-                // Queries database for bookings for hour interval 08-23
-                $bookinger = BookingRepository::getBookingForDate($dato);
+                            // Is booked by other user
+                            elseif ($booking->getStudentId()) {
+                                echo "
+                                    <td class='unavailable-timeslot'>
+                                        <i class='clock-icon fa-regular fa-clock'></i> $timeSlot
+                                    </td>";
+                            }
 
-                // Iterates over results and presents them in a simple table for development TODO replace this
-                foreach ($bookinger as $booking) {
-                    echo "
-                    <tr>
-                        <td>{$booking->getBookingId()}</td>
-                        <td>{$booking->getStudentId()}</td>
-                        <td>{$booking->getTutorId()}</td>
-                        <td>{$booking->getBookingTime()->format('Y-m-d H:i:s')}</td>
-                        <td>{$booking->getStatus()}</td>
-                        <td>{$booking->getCreatedAt()->format('Y-m-d H:i:s')}</td>
-                        <td>{$booking->getUpdatedAt()->format('Y-m-d H:i:s')}</td>
-                    </tr>
-                ";
-                }
+                            // Otherwise the booking should be available
+                            else {
+                                echo "
+                                    <td class='available-timeSlot'>
+                                        <i class='clock-icon fa-regular fa-clock'></i> {$booking->getBookingTime()->format('H:i')}
+                                        <br>
+                                        <i class='location-icon fa-regular fa-location-dot'></i> <i>{$booking->getStatus()}</i>
+                                        <button class='table-button right-button' onclick='bookTimeslot({$booking->getBookingId()}, {$_SESSION[SessionConst::USER_ID]})''>
+                                            <i class='book-icon fa-solid fa-circle-plus'></i> Book
+                                        </button>
+                                    </td>";
+                            }
+
+                        }
+                        echo "</tr>";
+                    }
 
 
-                ?>
-            </table>
+                    ?>
+                </table>
+            </form>
 
-            <!--
-                for TA in TAs
-                    for timeSlot in TACurrentDateAvailableTimeSlots
-                        if timeSlot in TAAvailableSlots
-                            green checkbox input field with time start and time end
-                            (if the previous timeSlot exists, and ended when the current starts: don't add margin bottom)
-                            (if the previous timeSlot exists, and didn't end when the current starts: add margin bottom equal to one green checkbox input field)
-
-            -->
-
-            <!-- TA bookings iterated, maybe as a form where the available hours are checkboxes.
-                Each checkbox is linked to the TA where; each TA is looped,
-                then each of their available/non-available time slots are looped. Resulting in a grid of
-            -->
         </div>
-        <input class="submit-button" type="submit" name="book" value="Book Timeslots">
-    </form>
+
+
 </div>
+
+</body>

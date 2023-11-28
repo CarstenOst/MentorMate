@@ -30,7 +30,11 @@ class BookingRepository implements IBookingRepository
             SELECT LAST_INSERT_ID() as id;
         ";
 
-        $sql = self::getSql($query, $booking);
+        $connection = DBConnector::getConnection();
+        $sql = $connection->prepare($query);
+        $sql->bindValue(':tutorId', $booking->getTutorId());
+        $sql->bindValue(':bookingTime', $booking->getBookingTime()->format('Y-m-d H:i:s'));
+        $sql->bindValue(':status', $booking->getStatus());
 
         try {
             // Execute the statement
@@ -66,7 +70,7 @@ class BookingRepository implements IBookingRepository
             $booking->setBookingId($id); // Faster lookup, as we already have the id
             $booking->setStudentId($row['studentId']);
             $booking->setTutorId($row['tutorId']);
-            $booking->setBookingTime($row['bookingTime']);
+            $booking->setBookingTime(new DateTime($row['bookingTime']) ?? null);
             $booking->setStatus($row['status']);
             $booking->setCreatedAt(new DateTime($row['createdAt']) ?? null); // Could cause exception
             $booking->setUpdatedAt(new DateTime($row['updatedAt']) ?? null);
@@ -75,6 +79,13 @@ class BookingRepository implements IBookingRepository
         return 'Booking was not found';
     }
 
+    /**
+     * Updates a booking in the database.
+     *
+     * @param Booking $booking The Booking object to update.
+     * @return bool Returns true if the update is successful, false otherwise.
+     * @throws PDOException Throws a PDOException if there is an error with the SQL query.
+     */
     public static function update($booking): bool
     {
         $query = "UPDATE Booking SET 
@@ -85,9 +96,13 @@ class BookingRepository implements IBookingRepository
                 status=:status,
                 createdAt=:createdAt, 
                 updatedAt=:updatedAt 
-            WHERE userId=:userId";
+            WHERE bookingId=:bookingId";
         $sql = self::getSql($query, $booking);
-        $sql->bindValue(':bookingId', $booking->getBookingId(), PDO::PARAM_INT);
+        $sql->bindValue(':bookingId', $booking->getBookingId());
+        $sql->bindValue(':studentId', $booking->getStudentId());
+        $sql->bindValue(':tutorId', $booking->getTutorId());
+        $sql->bindValue(':bookingTime', $booking->getBookingTime()->format('Y-m-d H:i:s'));
+        $sql->bindValue(':status', $booking->getStatus());
         $sql->bindValue(':createdAt', $booking->getCreatedAt()->format('Y-m-d H:i:s'));
         $sql->bindValue(':updatedAt', $booking->getUpdatedAt()->format('Y-m-d H:i:s'));
 
@@ -96,6 +111,13 @@ class BookingRepository implements IBookingRepository
     }
 
 
+    /**
+     * Deletes a booking from the database based on the booking ID.
+     *
+     * @param int $id The booking ID to be deleted.
+     * @return bool Returns true if the deletion is successful, false otherwise.
+     * @throws PDOException Throws a PDOException if there is an error with the SQL query.
+     */
     public static function delete($id): bool
     {
         $query = "DELETE FROM Booking WHERE bookingId = :id";
@@ -124,15 +146,21 @@ class BookingRepository implements IBookingRepository
         $sql->bindValue(':bookingId', $booking->getBookingId());
         $sql->bindValue(':studentId', $booking->getStudentId());
         $sql->bindValue(':tutorId', $booking->getTutorId());
-        $sql->bindValue(':bookingTime', $booking->getBookingTime());
+        $sql->bindValue(':bookingTime', $booking->getBookingTime()->format('Y-m-d H:i:s'));
         $sql->bindValue(':status', $booking->getStatus());
-        $sql->bindValue(':createdAt', $booking->getCreatedAt());
-        $sql->bindValue(':updatedAt', $booking->getUpdatedAt());
+        $sql->bindValue(':createdAt', $booking->getCreatedAt()->format('Y-m-d H:i:s'));
+        $sql->bindValue(':updatedAt', $booking->getUpdatedAt()->format('Y-m-d H:i:s'));
 
         return $sql;
     }
 
 
+    /**
+     * Creates a Booking object from a database row.
+     *
+     * @param array $row The associative array representing a database row.
+     * @return Booking Returns a Booking object created from the provided database row.
+     */
     public static function makeBookingFromRow($row): Booking
         {
             $booking = new Booking();
@@ -147,6 +175,12 @@ class BookingRepository implements IBookingRepository
             return $booking;
         }
 
+    /**
+     * Retrieves bookings for a specific date.
+     *
+     * @param DateTime $date The date for which to retrieve bookings.
+     * @return array Returns an array of Booking objects for the specified date.
+     */
     public static function getBookingForDate(DateTime $date): array {
         $connection = DBConnector::getConnection();
         // Sets start and end -Date to be the hour interval from 08:00:00 to 23:59:59
@@ -159,6 +193,77 @@ class BookingRepository implements IBookingRepository
 
         // Prepares the SQL
         $query = $connection->prepare($sql);
+        $query->bindValue(':startDate', $startDate->format('Y-m-d H:i:s'));
+        $query->bindValue(':endDate', $endDate->format('Y-m-d H:i:s'));
+
+        // Executes the query
+        $resultList = [];
+        try {
+            $query->execute();
+            $results = $query->fetchAll(PDO::FETCH_ASSOC);
+            // Appends Booking objects if query results
+            if ($results) {
+                foreach ($results as $row) {
+                    $resultList[] = self::makeBookingFromRow($row);
+                }
+            }
+
+        } catch (PDOException $exception) {
+            echo "SQL Query fail: " . $exception->getMessage();
+        }
+
+        return $resultList;
+    }
+
+
+    public static function getStudentBookings(DateTime $currentDate, int $studentId): array {
+        $connection = DBConnector::getConnection();
+        // Sets start and end -Date to be the hour interval from 08:00:00 to 23:59:59
+        $startDate = new DateTime($currentDate->format('Y-m-d') . ' 08:00:00');
+        $sql = "SELECT * FROM Booking WHERE 
+            studentId = :studentId AND
+            bookingTime >= :startDate;
+        ";
+
+        // Prepares the SQL
+        $query = $connection->prepare($sql);
+        $query->bindValue(':studentId', $studentId);
+        $query->bindValue(':startDate', $startDate->format('Y-m-d H:i:s'));
+
+        // Executes the query
+        $resultList = [];
+        try {
+            $query->execute();
+            $results = $query->fetchAll(PDO::FETCH_ASSOC);
+            // Appends Booking objects if query results
+            if ($results) {
+                foreach ($results as $row) {
+                    $resultList[] = self::makeBookingFromRow($row);
+                }
+            }
+
+        } catch (PDOException $exception) {
+            echo "SQL Query fail: " . $exception->getMessage();
+        }
+
+        return $resultList;
+    }
+
+
+    public static function getTutorBookingsForDate(DateTime $startDate, int $tutorId): array {
+        $connection = DBConnector::getConnection();
+        // Sets start and end -Date to be the hour interval from 'Y-m-d 08:00:00' to 'Y-m-d 23:59:59'
+        $startDate = new DateTime($startDate->format('Y-m-d') . ' 08:00:00');
+        $endDate = new DateTime($startDate->format('Y-m-d') . ' 23:59:59');
+        $sql = "SELECT * FROM Booking WHERE 
+            tutorId = :tutorId AND
+            bookingTime >= :startDate AND
+            bookingTime < :endDate;
+        ";
+
+        // Prepares the SQL
+        $query = $connection->prepare($sql);
+        $query->bindValue(':tutorId', $tutorId);
         $query->bindValue(':startDate', $startDate->format('Y-m-d H:i:s'));
         $query->bindValue(':endDate', $endDate->format('Y-m-d H:i:s'));
 

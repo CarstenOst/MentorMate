@@ -7,7 +7,7 @@ use DateTime;
 
 class Booking
 {
-    private int $bookingId;
+    private ?int $bookingId;
     private ?int $studentId;
     private int $tutorId;
     private DateTime $bookingTime;

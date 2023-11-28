@@ -12,7 +12,7 @@ if (!Auth::checkAuth()) {// Starts session, and checks if user is logged in. If 
     header('Location: ./Login.php');
     exit();
 }
-
+// TODO Need to figure out how the profile page should look like
 class Profile
 {
     /**
@@ -38,13 +38,22 @@ class Profile
         ";
     }
 }
+?>
 
+<head>
+    <link rel="stylesheet" href="/Assets/style.css">
+    <script src="https://kit.fontawesome.com/5928831ae4.js" crossorigin="anonymous"></script>
+</head>
 
-// TODO remove this
-SessionConst::sessionDebugger();
+<body>
+<?php
+    $isTutor = $_SESSION[SessionConst::USER_TYPE] == 'Tutor';
+    Layout::displaySideMenu($isTutor);
+?>
 
-
-Layout::displayTop();
-Profile::viewUserProfile();
-
-
+<div class="main-view">
+<?php
+    Profile::viewUserProfile();
+?>
+</div>
+</body>
