@@ -91,7 +91,7 @@ body {
     padding: 20px;
 }
 
-/* Booking view */
+/* CreateBooking view */
 .booking-view {
     background-color: #fff;
     border: 1px solid #cbcbcb;
@@ -106,7 +106,7 @@ body {
 .booking-date {
     margin-bottom: 0;
     display: flex;
-    align-items: center;
+    justify-content: space-between;
 }
 
 /* Calendar date input and submit */
@@ -132,11 +132,32 @@ body {
     color: white;
 }
 
-.input-calendar:focus {
-    outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+
+/* Tutor calendar & location input and submit */
+.booking-location-form {
+    margin-bottom: 0;
+    display: flex;
+    align-items: center;
 }
+
+.input-location {
+    padding: 11px;
+    font-size: 14px;
+    border: 3px solid #008CBA;
+    border-radius: 12px 0 0 0;
+    color: black;
+}
+
+.location-submit {
+    padding: 11px;
+    font-size: 14px;
+    border: 3px solid #008CBA;
+    border-radius: 0 12px 0 0;
+    background-color: #008CBA;
+    color: white;
+}
+
+
 
 
 /* Calendar */
@@ -145,6 +166,7 @@ body {
     min-height: 100px;
     border-collapse: collapse;
     table-layout: fixed;
+    justify-content: center;
 }
 
 
@@ -156,9 +178,6 @@ body {
     padding: 5px;
 }
 
-.calendar th:last-child {
-    border-radius: 0 8px 0 0;
-}
 
 
 .calendar td {
@@ -226,6 +245,10 @@ body {
     margin-bottom: 10px;
 }
 
+.right-button {
+    float: right;
+}
+
 /* For adding row styling */
 tr {
     border-bottom: 1px solid #ddd;
@@ -269,4 +292,8 @@ tr {
 
 .book-icon {
     color: darkgreen;
+}
+
+.remove-icon {
+    color: red;
 }
