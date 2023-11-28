@@ -49,6 +49,10 @@ h2 {
     padding: 0;
 }
 
+#messageBox {
+    transition: opacity 1s ease-in-out;
+}
+
 /* The menu logo "MentorMate" */
 .logo-title {
     font-size: 32px;
