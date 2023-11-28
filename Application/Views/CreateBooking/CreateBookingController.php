@@ -10,9 +10,14 @@ use Infrastructure\Repositories\BookingRepository;
 use Core\Entities\Booking;
 use DateTime;
 
-if (!Auth::checkAuth() || $_SESSION[SessionConst::USER_TYPE] !== 'Tutor') {
+// Starts session, and checks if user is logged in. If not, redirects to login page
+if (!Auth::checkAuth()) {
     header('Location: ../User/Login.php');
     exit();
+}
+
+if ($_SESSION[SessionConst::USER_TYPE] !== 'Tutor') {
+    header('Location: ../User/Profile.php');
 }
 
 // Removes the booking

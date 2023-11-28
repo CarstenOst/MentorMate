@@ -1,11 +1,18 @@
 <?php
 
 
-namespace Views\Bookings\BookingController;
+namespace Views\Bookings\BookingsController;
 
 require("../../../autoloader.php");
 
+use Application\Validators\Auth;
 use Infrastructure\Repositories\BookingRepository;
+
+// Starts session, and checks if user is logged in. If not, redirects to login page
+if (!Auth::checkAuth()) {
+    header('Location: ../User/Login.php');
+    exit();
+}
 
 
 // Cancels the booking by updating the studentId to be null

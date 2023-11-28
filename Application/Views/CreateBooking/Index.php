@@ -14,6 +14,10 @@ if (!Auth::checkAuth()) {
     exit();
 }
 
+if ($_SESSION[SessionConst::USER_TYPE] !== 'Tutor') {
+    header('Location: ../User/Profile.php');
+}
+
 
 // Check if the logout action is requested
 if (isset($_GET['logout']) && $_GET['logout'] == 1) {
