@@ -131,9 +131,6 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                     echo "</tr>";
 
 
-
-                    // TODO fix bug where timeslot only shows one 'booking' for two or multiple tutors
-                    // TODO (think i have to store bookings (and or tutorId and bookings) differently and check for key 'array_key_exists')
                     // Iterates over bookings and puts arrays containing timeslots at array index using bookingTime and TutorId
                     $timeSlots = [];
                     foreach ($bookings as $booking) {
@@ -141,13 +138,18 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                             // appends "row" for each tutor, if no booking there, it will remain 'null'
                             $timeSlots[$booking->getBookingTime()->format('H:i')][$tutorId] = null;
                         }
+
+                    }
+
+                    // Inserts bookings into the datastructure where they are
+                    foreach ($bookings as $booking) {
                         // Replaces 'null' with 'booking' for indexes where the tutor has a booking
                         $timeSlots[$booking->getBookingTime()->format('H:i')][$booking->getTutorId()] = $booking;
                     }
 
-
                     // Creates table with timeslots
                     foreach ($timeSlots as $timeSlot => $tutorIds) {
+                        echo "<tr>";
                         foreach ($tutorIds as $tutorId => $booking) {
                             // The tutor has no booking for this 'timeSlot'
                             if ($booking == null) {
