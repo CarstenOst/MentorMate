@@ -154,7 +154,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                                 echo "
                                     <td class='user-booked-timeslot'>
                                         $timeSlot
-                                        <button class='table-button' onclick='confirmCancelation({$booking->getBookingId()}, {$date->format('d-m-Y')})'><i class='cancel-icon fa-solid fa-ban'></i> Cancel</button>
+                                        <button class='table-button' onclick='confirmCancelation({$booking->getBookingId()})'><i class='cancel-icon fa-solid fa-ban'></i> Cancel</button>
                                     </td>";
                             }
 
