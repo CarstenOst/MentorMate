@@ -5,6 +5,8 @@ class HtmlRenderer
 {
 
     /**
+     * This function does way too much and should be split up, as I sometimes forget the optional 2d array
+     *
      * Renders form based on array input
      * This means that you can render as many input fields you want as long as you have enough memory
      * @param array $cookieNames Fill in as many cookie names that you want
@@ -50,5 +52,46 @@ class HtmlRenderer
         EOT;
 
         echo $form; // Finally we can just echo it, as returning would allocate more memory, and it will be used right away.
+    }
+
+
+    /**
+     * Generate a response with a message and either green or red background.
+     *
+     * @param mixed $message The message to display. Can be string or array.
+     * @param bool $status True for green, false for red color
+     * @param int $timeAliveInMilliSeconds The time in milliseconds before the response disappears (will be doubled)
+     *
+     * @return void echos the response
+     */
+    public static function generateResponse(mixed $message, bool $status, int $timeAliveInMilliSeconds = 1200): void
+    {
+        $alertStatus = $status ? 'alert-success' : 'alert-danger';
+        if (is_array($message)) {
+            $message = implode('<br>', $message); // Implode the array with <br> as "glue".
+        }
+        // Simple html with javascript to display the message for a short time. Script deletes itself after it has run.
+        // Ajax would be better used on the frontend here. And the code could just stay uploaded for the user at all
+        // times instead of doing this. This would also save some bandwidth.
+        echo <<<HTML
+            <div id="messageBox" class="position-fixed start-50 translate-middle-x" style="z-index: 9999; width: 90%; left: 5%; top: 509.5px;">
+                <div class="alert $alertStatus text-center p-3" role="alert"">
+                    $message
+                </div>
+            </div>  
+            <script id="messageScript">
+                setTimeout(function() {
+                    let element = document.getElementById('messageBox');
+                    element.style.transition = "opacity 1s ease-in-out";
+                    element.style.opacity = 0;
+                
+                    setTimeout(function() {
+                        element.parentNode.removeChild(element);
+                        let scriptElement = document.getElementById('messageScript');
+                        scriptElement.parentNode.removeChild(scriptElement);
+                    }, $timeAliveInMilliSeconds)
+                }, $timeAliveInMilliSeconds)
+            </script>
+        HTML;
     }
 }
