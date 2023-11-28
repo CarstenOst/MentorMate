@@ -164,20 +164,13 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
 
                             // Otherwise the booking should be available
                             else {
-                                // TODO remove lines below if ajax on booking button works
-                                // Combine date (set in date selection form) and timeSlot into singular string
-                                $bookingTimeString = $date->format('Y-m-d') . ' ' . $booking->getBookingTime()->format('H:i:s');
-                                $updatedDateTime = new DateTime();
-                                $bookingArrayEncoded = json_encode([
-                                    'bookingId' => $booking->getBookingId(),
-                                    'studentId' => $_SESSION[SessionConst::USER_ID],
-                                    'tutorId' => $booking->getTutorId(),
-                                    // Don't need to have bookingTime
-                                    'status' => $booking->getStatus(),
-                                    'createdAt' => $booking->getCreatedAt()->format('Y-m-d H:i'),
-                                    'updatedAt' => $updatedDateTime->format('Y-m-d H:i'),
-                                ]);
-                                echo "<td class='available-timeSlot'>$timeSlot <button class='table-button' onclick='bookTimeslot({$booking->getBookingId()}, {$_SESSION[SessionConst::USER_ID]})''><i class='book-icon fa-solid fa-circle-plus'></i> Book</button></td>";
+                                echo "
+                                    <td class='available-timeSlot'>
+                                        $timeSlot 
+                                        <button class='table-button' onclick='bookTimeslot({$booking->getBookingId()}, {$_SESSION[SessionConst::USER_ID]})''>
+                                            <i class='book-icon fa-solid fa-circle-plus'></i> Book
+                                        </button>
+                                    </td>";
                             }
 
                         }
