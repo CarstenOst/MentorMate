@@ -27,32 +27,6 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
     exit();
 }
 
-// Checks if timeslots were booked
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book'])) {
-    // Check if 'timeslots' is set in $_POST
-    if (isset($_POST['timeslots']) && is_array($_POST['timeslots'])) {
-        // Loops through the tutorId's posted
-        foreach ($_POST['timeslots'] as $tutorId => $timeSlots) {
-            // Loops through 'checked off' timeslots that are json encoded associative arrays
-            foreach ($timeSlots as $timeSlot => $bookingDataJson) {
-                $date = $_GET['date'];
-                $bookingArrayDecoded = json_decode($bookingDataJson, true);
-                $bookingTime = DateTime::createFromFormat('Y-m-d H:i:s', $timeSlot);
-
-                $newBooking = new Booking();
-                $newBooking->setBookingId($bookingArrayDecoded['bookingId']);
-                $newBooking->setStudentId($bookingArrayDecoded['studentId']);
-                $newBooking->setTutorId($bookingArrayDecoded['tutorId']);
-                $newBooking->setBookingTime($bookingTime);
-                $newBooking->setStatus($bookingArrayDecoded['status']);
-                $newBooking->setCreatedAt(DateTime::createFromFormat('Y-m-d H:i', $bookingArrayDecoded['createdAt']));
-                $newBooking->setUpdatedAt(DateTime::createFromFormat('Y-m-d H:i', $bookingArrayDecoded['updatedAt']));
-                BookingRepository::update($newBooking);
-                $_POST['date'] = $date;
-            }
-        }
-    }
-}
 ?>
 
 
