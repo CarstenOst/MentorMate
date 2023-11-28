@@ -69,23 +69,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book'])) {
                 // Confirmation dialog before cancelling
                 var result = confirm("Are you sure you want cancel this booking?");
 
+                // Use AJAX to call a PHP controller action
                 if (result) {
-                    // Use AJAX to call a PHP script
                     $.ajax({
                         type: "POST",
                         url: "./BookingsController.php",
-                        data: { action: "cancelBooking", bookingId: bookingId },
+                        data: {
+                            action: "cancelBooking",
+                            bookingId: bookingId },
                     });
                 }
             }
 
 
             function messageTutor(tutorId) {
-                // Use AJAX to send to Messages
+                // Use AJAX to call a PHP controller action
                 $.ajax({
                     type: "POST",
                     url: "./BookingsController.php",
-                    data: { action: "messageTutor", tutorId: tutorId }
+                    data: {
+                        action: "messageTutor",
+                        tutorId: tutorId }
                 });
             }
 
