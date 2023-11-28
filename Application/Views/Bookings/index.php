@@ -92,6 +92,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
             <table class='calendar'>
                 <?php
 
+                // TODO move this section into own method for student (view their bookings with tutors) and tutors (view their booked timeslots with students)
                 // Queries database for bookings for hour interval 08-23
                 $date = new DateTime();
                 $bookings = BookingRepository::getStudentBookings($date, $_SESSION[SessionConst::USER_ID]);
