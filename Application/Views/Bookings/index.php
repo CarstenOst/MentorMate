@@ -76,7 +76,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book'])) {
                         url: "./BookingsController.php",
                         data: {
                             action: "cancelBooking",
-                            bookingId: bookingId },
+                            bookingId: bookingId
+                        },
                     });
                 }
             }
@@ -89,7 +90,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book'])) {
                     url: "./BookingsController.php",
                     data: {
                         action: "messageTutor",
-                        tutorId: tutorId }
+                        tutorId: tutorId
+                    }
                 });
             }
 
