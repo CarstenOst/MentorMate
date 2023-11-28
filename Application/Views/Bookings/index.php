@@ -75,7 +75,8 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
 <body>
 
 <?php
-    Layout::displaySideMenu();
+    $isTutor = $_SESSION[SessionConst::USER_TYPE] == 'Tutor';
+    Layout::displaySideMenu($isTutor);
 ?>
 
 

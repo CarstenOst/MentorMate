@@ -47,7 +47,8 @@ class Profile
 
 <body>
 <?php
-    Layout::displaySideMenu();
+    $isTutor = $_SESSION[SessionConst::USER_TYPE] == 'Tutor';
+    Layout::displaySideMenu($isTutor);
 ?>
 
 <div class="main-view">
