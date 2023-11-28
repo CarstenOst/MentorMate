@@ -30,7 +30,11 @@ class BookingRepository implements IBookingRepository
             SELECT LAST_INSERT_ID() as id;
         ";
 
-        $sql = self::getSql($query, $booking);
+        $connection = DBConnector::getConnection();
+        $sql = $connection->prepare($query);
+        $sql->bindValue(':tutorId', $booking->getTutorId());
+        $sql->bindValue(':bookingTime', $booking->getBookingTime()->format('Y-m-d H:i:s'));
+        $sql->bindValue(':status', $booking->getStatus());
 
         try {
             // Execute the statement
@@ -225,6 +229,43 @@ class BookingRepository implements IBookingRepository
         $query = $connection->prepare($sql);
         $query->bindValue(':studentId', $studentId);
         $query->bindValue(':startDate', $startDate->format('Y-m-d H:i:s'));
+
+        // Executes the query
+        $resultList = [];
+        try {
+            $query->execute();
+            $results = $query->fetchAll(PDO::FETCH_ASSOC);
+            // Appends Booking objects if query results
+            if ($results) {
+                foreach ($results as $row) {
+                    $resultList[] = self::makeBookingFromRow($row);
+                }
+            }
+
+        } catch (PDOException $exception) {
+            echo "SQL Query fail: " . $exception->getMessage();
+        }
+
+        return $resultList;
+    }
+
+
+    public static function getTutorBookingsForDate(DateTime $startDate, int $tutorId): array {
+        $connection = DBConnector::getConnection();
+        // Sets start and end -Date to be the hour interval from 'Y-m-d 08:00:00' to 'Y-m-d 23:59:59'
+        $startDate = new DateTime($startDate->format('Y-m-d') . ' 08:00:00');
+        $endDate = new DateTime($startDate->format('Y-m-d') . ' 23:59:59');
+        $sql = "SELECT * FROM Booking WHERE 
+            tutorId = :tutorId AND
+            bookingTime >= :startDate AND
+            bookingTime < :endDate;
+        ";
+
+        // Prepares the SQL
+        $query = $connection->prepare($sql);
+        $query->bindValue(':tutorId', $tutorId);
+        $query->bindValue(':startDate', $startDate->format('Y-m-d H:i:s'));
+        $query->bindValue(':endDate', $endDate->format('Y-m-d H:i:s'));
 
         // Executes the query
         $resultList = [];

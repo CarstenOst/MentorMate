@@ -3,7 +3,7 @@ namespace Application\Views\Shared;
 class Layout
 {
     public static function displaySideMenu(bool $isTutor): void {
-        $bookUrl = $isTutor ? '../../Views/Booking/index.php' : '../../Views/Book/index.php';
+        $bookUrl = $isTutor ? '../../Views/CreateBooking/index.php' : '../../Views/Book/index.php';
         $bookText = $isTutor ? 'Create Booking' : 'Book';
 
         echo "
