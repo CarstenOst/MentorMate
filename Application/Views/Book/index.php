@@ -84,6 +84,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
 
 <div class="main-view">
 
+    <div class="booking-view">
             <!-- TODO update/style this title to better describe the page -->
             <h2>Book a timeslot from a Tutor</h2>
 
@@ -161,11 +162,12 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                                 echo "
                                     <td class='user-booked-timeslot'>
                                         <i class='clock-icon fa-regular fa-clock'></i> {$booking->getBookingTime()->format('H:i')}
-                                        <br>
-                                        <i class='location-icon fa-regular fa-location-dot'></i> <i> {$booking->getLocation()}</i>
                                         <button class='table-button right-button' onclick='confirmCancelation({$booking->getBookingId()})'>
                                             <i class='cancel-icon fa-solid fa-ban'></i> Cancel
                                         </button>
+                                        <br>
+                                        <i class='location-icon fa-regular fa-location-dot'></i> <i> {$booking->getLocation()}</i>
+                                        
                                     </td>";
                             }
 
@@ -182,11 +184,12 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                                 echo "
                                     <td class='available-timeSlot'>
                                         <i class='clock-icon fa-regular fa-clock'></i> {$booking->getBookingTime()->format('H:i')}
-                                        <br>
-                                        <i class='location-icon fa-regular fa-location-dot'></i> <i>{$booking->getLocation()}</i>
                                         <button class='table-button right-button' onclick='bookTimeslot({$booking->getBookingId()})''>
                                             <i class='book-icon fa-solid fa-circle-plus'></i> Book
                                         </button>
+                                        <br>
+                                        <i class='location-icon fa-regular fa-location-dot'></i> <i>{$booking->getLocation()}</i>
+                                        
                                     </td>";
                             }
 
@@ -201,6 +204,6 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
 
         </div>
 
-
+    </div>
 
 </body>

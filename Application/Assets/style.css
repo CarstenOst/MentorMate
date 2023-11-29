@@ -41,6 +41,7 @@ body {
 
 /* Side menu */
 .side-menu {
+    z-index: 2;
     background-color: #333;
     color: #fff;
     width: 20%;
@@ -91,6 +92,16 @@ body {
     padding: 20px;
 }
 
+/* Card view around table view */
+.booking-view {
+    background-color: #fff;
+    border: 1px solid #cbcbcb;
+    padding: 20px;
+    min-height: 400px;
+    max-height: 85%;
+    overflow: auto;
+    border-radius: 12px;
+}
 
 /* Calendar date input and submit */
 .booking-date {
@@ -155,8 +166,8 @@ body {
     width: 100%;
     min-height: 100px;
     border-collapse: collapse;
-    table-layout: fixed;
     justify-content: center;
+    overflow-x: auto;
 }
 
 
@@ -164,6 +175,7 @@ body {
     position: sticky;
     top: 0;
     z-index: 1;
+    min-width: 155px;
     background-color: #008CBA;
     color: white;
     text-align: left;
