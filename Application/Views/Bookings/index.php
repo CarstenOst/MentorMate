@@ -56,14 +56,14 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
             }
 
 
-            function messageTutor(tutorId) {
+            function messageUser(userId) {
                 // Use AJAX to call a PHP controller action
                 $.ajax({
                     type: "POST",
                     url: "./BookingsController.php",
                     data: {
-                        action: "messageTutor",
-                        tutorId: tutorId
+                        action: "messageUser",
+                        userId: userId
                     }
                 });
             }
@@ -91,27 +91,43 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
         <form method='POST' action=''>
             <table class='calendar'>
                 <?php
-
-                // TODO move this section into own method for student (view their bookings with tutors) and tutors (view their booked timeslots with students)
-                // Queries database for bookings for hour interval 08-23
+                // Sets variable to view the user their content
+                $isTutor = $_SESSION[SessionConst::USER_TYPE] === 'Tutor';
+                // Gets tutor's or student's upcoming bookings and creates headers for table
                 $date = new DateTime();
-                $bookings = BookingRepository::getStudentBookings($date, $_SESSION[SessionConst::USER_ID]);
-                if (sizeof($bookings) == 0) {
-                    echo "<br>Seems like you have no future bookings...";
+
+                if ($isTutor) {
+                    $bookings = BookingRepository::getTutorBookings($date, $_SESSION[SessionConst::USER_ID]);
+                    $bookingHeaders = ["Booking date", "Location", "Student", "Cancel Timeslot", "Message", "Add to calendar"];
                 } else {
-                    // Creates headers for table
-                    $boookingHeaders = ["Booking date", "Location", "Tutor", "Cancel Timeslot", "Message", "Add to calendar"];
+                    $bookings = BookingRepository::getStudentBookings($date, $_SESSION[SessionConst::USER_ID]);
+                    $bookingHeaders = ["Booking date", "Location", "Tutor", "Cancel Timeslot", "Message", "Add to calendar"];
+                }
+
+
+
+                // Displays standard view if no upcoming bookings found, otherwise populates table with upcoming bookings
+                if (sizeof($bookings) == 0) {
+                    echo "
+                        <tr>
+                            <th>Seems like you have no future bookings...</th>
+                        </tr>
+                    ";
+                } else {
+                    // Table headers
                     echo "<tr>";
-                    foreach ($boookingHeaders as $header) {
+                    foreach ($bookingHeaders as $header) {
                         echo "<th>$header</th>";
                     }
                     echo "</tr>";
 
                     // Populates table with booking rows
                     foreach ($bookings as $booking) {
-                        $tutorId = $booking->getTutorId();
-                        $tutorName = UserRepository::read($tutorId)->getFirstName();
+                        // Gets info about associated user (if there is one associated with the booking)
+                        $userId = $isTutor ? $booking->getStudentId() : $booking->getTutorId();
+                        $userName = $userId != null ? UserRepository::read($userId)->getFirstName() : '';
                         $bookingId = $booking->getBookingId();
+
                         echo "
                             <tr>
                                 <td>
@@ -123,13 +139,13 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                                     <i class='location-icon fa-regular fa-location-dot'></i> {$booking->getStatus()}
                                 </td>
                                 <td>
-                                    <i class='fa-solid fa-user'></i> {$tutorName}
+                                    <i class='fa-solid fa-user'></i> {$userName}
                                 </td>
                                 <td>
                                     <button class='table-button' onclick='confirmCancelation($bookingId)'><i class='cancel-icon fa-solid fa-ban'></i> Cancel</button>
                                 </td>
                                 <td>
-                                    <button class='table-button' onclick='messageTutor($tutorId)'><i class='message-icon fa-solid fa-message'></i> Message</button>
+                                    <button class='table-button' onclick='messageUser($userId)'><i class='message-icon fa-solid fa-message'></i> Message</button>
                                 </td>
                                 <td>
                                     <button class='table-button'><i class='calendar-icon fa-regular fa-calendar-plus'></i> Add boooking</button>

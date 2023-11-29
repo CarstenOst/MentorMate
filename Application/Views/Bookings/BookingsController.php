@@ -24,10 +24,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 
 
 // Opens message conversation with the Tutor using studentId and tutorId
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'messageTutor') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'messageUser') {
     // Relocates to "message" page with tutor
-    $tutorId = $_POST['tutorId'];
-    echo "$tutorId";
+    $userId = $_POST['userId'];
+    echo "$userId";
 }
 
 // TODO feature: add to calendar using icalendar subscription (possibly redundant due to reminder email being sent
