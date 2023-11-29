@@ -137,7 +137,6 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                             // appends "row" for each tutor, if no booking there, it will remain 'null'
                             $timeSlots[$booking->getBookingTime()->format('H:i')][$tutorId] = null;
                         }
-
                     }
 
                     // Inserts bookings into the datastructure where they are
@@ -145,6 +144,9 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                         // Replaces 'null' with 'booking' for indexes where the tutor has a booking
                         $timeSlots[$booking->getBookingTime()->format('H:i')][$booking->getTutorId()] = $booking;
                     }
+                    // Sorts timeSlots ascending
+                    ksort($timeSlots);
+
 
                     // Creates table with timeslots
                     foreach ($timeSlots as $timeSlot => $tutorIds) {
