@@ -82,7 +82,6 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
 
 <div class="main-view">
 
-    <div class="booking-view">
         <div>
             <h2>Your bookings</h2>
         </div>
@@ -163,6 +162,5 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
     </div>
 
 
-</div>
 
 </body>

@@ -91,16 +91,6 @@ body {
     padding: 20px;
 }
 
-/* CreateBooking view */
-.booking-view {
-    background-color: #fff;
-    border: 1px solid #cbcbcb;
-    padding: 20px;
-    min-height: 400px;
-    max-height: 550px;
-    overflow: auto;
-    border-radius: 12px;
-}
 
 /* Calendar date input and submit */
 .booking-date {
