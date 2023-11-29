@@ -60,9 +60,8 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
 
         function createTimeslotBooking(encodedBookingArray) {
             // Extract values from the array
-            var tutorId = encodedBookingArray[0];
-            var bookingTime = encodedBookingArray[1];
-            var bookingLocation = encodedBookingArray[2];
+            var bookingTime = encodedBookingArray[0];
+            var bookingLocation = encodedBookingArray[1];
 
             // Use AJAX to call a PHP controller action
             $.ajax({
@@ -70,7 +69,6 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                 url: "./CreateBookingController.php",
                 data: {
                     action: "createBooking",
-                    tutorId: tutorId,
                     bookingTime: bookingTime,
                     bookingLocation: bookingLocation,
                 },
@@ -192,7 +190,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                         $bookingId = $booking->getBookingId();
                         $studentId = $booking->getStudentId();
                         $studentName = is_string(UserRepository::read($studentId)) ? 'None' : UserRepository::read($studentId)->getFirstName();
-                        $bookingLocation = $booking->getStatus();
+                        $bookingLocation = $booking->getLocation();
 
                         echo "
                                 <td class='user-booked-timeslot'>

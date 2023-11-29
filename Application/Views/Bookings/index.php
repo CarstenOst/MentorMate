@@ -136,7 +136,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                                     <i class='clock-icon fa-regular fa-clock'></i> {$booking->getBookingTime()->format('H:i')}
                                 </td>
                                 <td>
-                                    <i class='location-icon fa-regular fa-location-dot'></i> {$booking->getStatus()}
+                                    <i class='location-icon fa-regular fa-location-dot'></i> {$booking->getLocation()}
                                 </td>
                                 <td>
                                     <i class='fa-solid fa-user'></i> {$userName}

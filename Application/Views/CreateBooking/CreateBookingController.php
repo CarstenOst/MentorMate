@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $booking = new Booking();
     $booking->setTutorId($_SESSION[SessionConst::USER_ID]);
     $booking->setBookingTime(new DateTime($_POST['bookingTime']));
-    $booking->setStatus($_POST['bookingLocation']);
+    $booking->setLocation($_POST['bookingLocation']);
 
     BookingRepository::create($booking);
 }

@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 // Books the booking by updating the studentId to the studentId
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'bookBooking') {
     $booking = BookingRepository::read($_POST['bookingId']);
-    $studentId = $_POST['studentId'];
+    $studentId = $_SESSION[SessionConst::USER_ID];
     $booking->setStudentId($studentId);
     BookingRepository::update($booking);
 }

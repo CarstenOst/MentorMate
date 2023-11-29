@@ -22,10 +22,10 @@ class BookingRepository implements IBookingRepository
         $query = "INSERT INTO Booking (
                      tutorId,
                      bookingTime, 
-                     status) 
+                     location) 
                 VALUES (:tutorId, 
                         :bookingTime, 
-                        :status);
+                        :location);
 
             SELECT LAST_INSERT_ID() as id;
         ";
@@ -34,7 +34,7 @@ class BookingRepository implements IBookingRepository
         $sql = $connection->prepare($query);
         $sql->bindValue(':tutorId', $booking->getTutorId());
         $sql->bindValue(':bookingTime', $booking->getBookingTime()->format('Y-m-d H:i:s'));
-        $sql->bindValue(':status', $booking->getStatus());
+        $sql->bindValue(':location', $booking->getLocation());
 
         try {
             // Execute the statement
@@ -71,7 +71,7 @@ class BookingRepository implements IBookingRepository
             $booking->setStudentId($row['studentId']);
             $booking->setTutorId($row['tutorId']);
             $booking->setBookingTime(new DateTime($row['bookingTime']) ?? null);
-            $booking->setStatus($row['status']);
+            $booking->setLocation($row['location']);
             $booking->setCreatedAt(new DateTime($row['createdAt']) ?? null); // Could cause exception
             $booking->setUpdatedAt(new DateTime($row['updatedAt']) ?? null);
             return $booking;
@@ -93,7 +93,7 @@ class BookingRepository implements IBookingRepository
                 studentId=:studentId, 
                 tutorId=:tutorId, 
                 bookingTime=:bookingTime, 
-                status=:status,
+                location=:location,
                 createdAt=:createdAt, 
                 updatedAt=:updatedAt 
             WHERE bookingId=:bookingId";
@@ -102,7 +102,7 @@ class BookingRepository implements IBookingRepository
         $sql->bindValue(':studentId', $booking->getStudentId());
         $sql->bindValue(':tutorId', $booking->getTutorId());
         $sql->bindValue(':bookingTime', $booking->getBookingTime()->format('Y-m-d H:i:s'));
-        $sql->bindValue(':status', $booking->getStatus());
+        $sql->bindValue(':location', $booking->getLocation());
         $sql->bindValue(':createdAt', $booking->getCreatedAt()->format('Y-m-d H:i:s'));
         $sql->bindValue(':updatedAt', $booking->getUpdatedAt()->format('Y-m-d H:i:s'));
 
@@ -147,7 +147,7 @@ class BookingRepository implements IBookingRepository
         $sql->bindValue(':studentId', $booking->getStudentId());
         $sql->bindValue(':tutorId', $booking->getTutorId());
         $sql->bindValue(':bookingTime', $booking->getBookingTime()->format('Y-m-d H:i:s'));
-        $sql->bindValue(':status', $booking->getStatus());
+        $sql->bindValue(':location', $booking->getLocation());
         $sql->bindValue(':createdAt', $booking->getCreatedAt()->format('Y-m-d H:i:s'));
         $sql->bindValue(':updatedAt', $booking->getUpdatedAt()->format('Y-m-d H:i:s'));
 
@@ -168,7 +168,7 @@ class BookingRepository implements IBookingRepository
             $booking->setStudentId($row['studentId']);
             $booking->setTutorId($row['tutorId']);
             $booking->setBookingTime(new DateTime($row['bookingTime']) ?? null);
-            $booking->setStatus($row['status']);
+            $booking->setLocation($row['location']);
             $booking->setCreatedAt(new DateTime($row['createdAt']) ?? null);
             $booking->setUpdatedAt(new DateTime($row['updatedAt']) ?? null);
 

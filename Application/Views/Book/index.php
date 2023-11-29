@@ -60,7 +60,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
         }
 
 
-        function bookTimeslot(bookingId, studentId) {
+        function bookTimeslot(bookingId) {
             // Use AJAX to call a PHP controller action
             $.ajax({
                 type: "POST",
@@ -68,7 +68,6 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                 data: {
                     action: "bookBooking",
                     bookingId: bookingId,
-                    studentId: studentId,
                 },
             });
         }
@@ -162,7 +161,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                                     <td class='user-booked-timeslot'>
                                         <i class='clock-icon fa-regular fa-clock'></i> {$booking->getBookingTime()->format('H:i')}
                                         <br>
-                                        <i class='location-icon fa-regular fa-location-dot'></i> <i> {$booking->getStatus()}</i>
+                                        <i class='location-icon fa-regular fa-location-dot'></i> <i> {$booking->getLocation()}</i>
                                         <button class='table-button right-button' onclick='confirmCancelation({$booking->getBookingId()})'>
                                             <i class='cancel-icon fa-solid fa-ban'></i> Cancel
                                         </button>
@@ -183,8 +182,8 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                                     <td class='available-timeSlot'>
                                         <i class='clock-icon fa-regular fa-clock'></i> {$booking->getBookingTime()->format('H:i')}
                                         <br>
-                                        <i class='location-icon fa-regular fa-location-dot'></i> <i>{$booking->getStatus()}</i>
-                                        <button class='table-button right-button' onclick='bookTimeslot({$booking->getBookingId()}, {$_SESSION[SessionConst::USER_ID]})''>
+                                        <i class='location-icon fa-regular fa-location-dot'></i> <i>{$booking->getLocation()}</i>
+                                        <button class='table-button right-button' onclick='bookTimeslot({$booking->getBookingId()})''>
                                             <i class='book-icon fa-solid fa-circle-plus'></i> Book
                                         </button>
                                     </td>";
