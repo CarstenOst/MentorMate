@@ -216,6 +216,15 @@ class BookingRepository implements IBookingRepository
     }
 
 
+    /**
+     * Retrieves upcoming bookings for a specific student by querying the database
+     * to fetch bookings for that student, that occur on or after a specified date.
+     *
+     * @param DateTime $currentDate The starting date from which to retrieve bookings.
+     * @param int      $studentId   The unique identifier of the student.
+     *
+     * @return array An array of Booking objects representing the student's bookings.
+     */
     public static function getStudentBookings(DateTime $currentDate, int $studentId): array {
         $connection = DBConnector::getConnection();
         // Sets start and end -Date to be the hour interval from 08:00:00 to 23:59:59
@@ -250,6 +259,15 @@ class BookingRepository implements IBookingRepository
     }
 
 
+    /**
+     * Retrieves upcoming bookings for a specific tutor by querying the database
+     * to fetch bookings for that tutor, that occur on or after a specified date.
+     *
+     * @param DateTime $currentDate The starting date from which to retrieve bookings.
+     * @param int      $tutorId   The unique identifier of the tutor.
+     *
+     * @return array An array of Booking objects representing the tutor's bookings.
+     */
     public static function getTutorBookings(DateTime $currentDate, int $tutorId): array {
         $connection = DBConnector::getConnection();
         // Sets start and end -Date to be the hour interval from 08:00:00 to 23:59:59
@@ -284,6 +302,15 @@ class BookingRepository implements IBookingRepository
     }
 
 
+    /**
+     * Retrieves bookings within time interval 08:00 and 23:59:59 for a specific tutor by
+     * querying the database to fetch bookings for that tutor, that occur on the specified date.
+     *
+     * @param DateTime $currentDate The date (08:00 and 23:59:59) from which to retrieve bookings.
+     * @param int      $tutorId   The unique identifier of the tutor.
+     *
+     * @return array An array of Booking objects representing the tutor's bookings.
+     */
     public static function getTutorBookingsForDate(DateTime $startDate, int $tutorId): array {
         $connection = DBConnector::getConnection();
         // Sets start and end -Date to be the hour interval from 'Y-m-d 08:00:00' to 'Y-m-d 23:59:59'
