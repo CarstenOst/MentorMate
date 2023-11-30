@@ -8,10 +8,22 @@ use Application\Validators\Auth;
 use Application\Views\Shared\Layout;
 use Application\Constants\SessionConst;
 
-if (!Auth::checkAuth()) {// Starts session, and checks if user is logged in. If not, redirects to login page
+// Starts session, and checks if user is logged in. If not, redirects to login page
+if (!Auth::checkAuth()) {
     header('Location: ./Login.php');
     exit();
 }
+
+// Check if the logout action is requested
+if (isset($_GET['logout']) && $_GET['logout'] == 1) {
+    // Call the logOut function from your class
+    Auth::logOut();
+
+    // Redirect to login page after logout
+    header('Location: ../User/Login.php');
+    exit();
+}
+
 // TODO Need to figure out how the profile page should look like
 class Profile
 {
