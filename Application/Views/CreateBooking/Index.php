@@ -40,8 +40,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
-        function getPreviousDate(previousDate) {
-            console.log(previousDate);
+        function getPreviousDate(previousDate, location) {
             // Use AJAX to submit a PHP GET
             $.ajax({
                 type: "POST",
@@ -49,6 +48,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                 data: {
                     action: "previousDate",
                     previousDate: previousDate,
+                    location: location,
                 },
                 success: function(data) {
                     // Redirects so GET can post new date
@@ -59,8 +59,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
         }
 
 
-        function getNextDate(nextDate) {
-            console.log(nextDate);
+        function getNextDate(nextDate, location) {
             // Use AJAX to submit a PHP GET
             $.ajax({
                 type: "POST",
@@ -68,6 +67,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                 data: {
                     action: "nextDate",
                     nextDate: nextDate,
+                    location: location,
                 },
                 success: function(data) {
                     // Redirects so GET can post new date
@@ -143,23 +143,31 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
             // Dates for forward and backward date selection with arrows
             $previousDate = (new DateTime($dateValue))->modify('-1 day')->format('Y-m-d');
             $nextDate = (new DateTime($dateValue))->modify('+1 day')->format('Y-m-d');
+
+            // Sets location for the new bookings the tutor creates
+            $validLocations = ['Digital', 'UiA'];
+            $bookingsLocation = (isset($_GET['location']) && ($_GET['location']) && in_array($_GET['location'], $validLocations)) ? $_GET['location'] : 'Digital';
+
+            // Date selection form
             echo "
                 <form class='booking-date-form' method='GET' action=''>
-                        <i class='left-arrow fa-solid fa-angles-left' onclick='getPreviousDate(\"$previousDate\")'></i>
+                        <i class='left-arrow fa-solid fa-angles-left' onclick='getPreviousDate(\"$previousDate\", \"$bookingsLocation\")'></i>
                         <input class='input-calendar' type='date' name='date' value='" . $dateValue . "'>
-                        <i class='right-arrow fa-solid fa-angles-right' onclick='getNextDate(\"$nextDate\")'></i>
+                        <i class='right-arrow fa-solid fa-angles-right' onclick='getNextDate(\"$nextDate\", \"$bookingsLocation\")'></i>
                         <input class='calendar-submit' type='submit' value='Check Date'>
                 </form>
             ";
-
-
-            // Sets location for the new bookings the tutor creates
-            $bookingsLocation = (isset($_GET['location']) && ($_GET['location'])) ? $_GET['location'] : 'Digital';
+            // Location selection form
             echo "
-                <form class='booking-location-form' method='GET' action=''>
-                        <input class='input-location' type='text' name='location' placeholder=''> 
-                        <input class='location-submit' type='submit' value='Set Location'>
-                </form>
+                <div class='location-dropdown'>
+                    <button class='location-dropbtn'>
+                        Location: <u>$bookingsLocation</u> <i class='fa-solid fa-chevron-down'></i>
+                    </button>
+                    <div class='location-dropdown-content'>
+                        <a href='?date=" . $dateValue . "&location=Digital'>Digital</a>
+                        <a href='?date=" . $dateValue . "&location=UiA'>UiA</a>
+                    </div>
+                </div>
             ";
             ?>
         </div>

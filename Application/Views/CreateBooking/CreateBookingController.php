@@ -26,14 +26,16 @@ if ($_SESSION[SessionConst::USER_TYPE] !== 'Tutor') {
 // Sets the date to be the previous day
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'previousDate') {
     $previousDate = $_POST['previousDate'];
-    echo json_encode(['redirect' => "./index.php?date=$previousDate"]);
+    $location = $_POST['location'];
+    echo json_encode(['redirect' => "./index.php?date=$previousDate&location=$location"]);
     exit();
 }
 
 // Sets the date to be the next day
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'nextDate') {
     $nextDate = $_POST['nextDate'];
-    echo json_encode(['redirect' => "./index.php?date=$nextDate"]);
+    $location = $_POST['location'];
+    echo json_encode(['redirect' => "./index.php?date=$nextDate&location=$location"]);
     exit();
 }
 
