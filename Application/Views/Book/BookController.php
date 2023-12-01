@@ -47,7 +47,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 
     } catch (Exception $error) {
         // Returns status of the action
-        echo json_encode(['message' => "Failed to cancel the booking."]);
+        http_response_code(400);
+        echo json_encode(['error' => "Failed to cancel the booking."]);
     }
 }
 
@@ -65,7 +66,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 
     } catch (Exception $error) {
         // Returns status of the action
-        echo json_encode(['message' => "Failed to book the booking."]);
+        http_response_code(400);
+        echo json_encode(['error' => "Failed to book the booking."]);
     }
 
     exit();

@@ -92,7 +92,9 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                         action: "cancelBooking",
                         bookingId: bookingId,
                     },
-                    success: function(data) {
+                    error: function(data) {
+                        let response = JSON.parse(data);
+                        alert(response.error);
                     }
                 });
             }
@@ -108,8 +110,9 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                     action: "bookBooking",
                     bookingId: bookingId,
                 },
-                success: function(data) {
-
+                error: function(data) {
+                    let response = JSON.parse(data);
+                    alert(response.error);
                 }
             });
         }
