@@ -24,14 +24,6 @@
 }
 
 
-.user-profile {
-    margin: 5px;
-    padding: 10px;
-    border: solid 2px black;
-    border-radius: 10px;
-}
-
-
 /* Global styles */
 body {
     font-family: Arial, sans-serif;
@@ -92,6 +84,65 @@ body {
     padding: 20px;
 }
 
+
+/* Profile view */
+.profile-container {
+    text-align: center;
+    max-width: 60%;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+}
+
+.profile-container img {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%; /* Make the profile picture round */
+}
+
+.tutor-name {
+    color: #008CBA; /* Set the color for the tutor's name */
+    margin-top: 10px;
+}
+
+.bio {
+    font-style: italic;
+    margin-bottom: 20px;
+}
+
+.user-type {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.about,
+.contact-info,
+.availability {
+    margin-bottom: 20px;
+}
+
+h2 {
+    color: #008CBA; /* Set the color for section headings */
+}
+
+.message-button {
+    background-color: #008CBA;
+    color: #fff;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.message-button:hover {
+    background-color: #00506b; /* Darker shade on hover */
+}
+
+
+
 /* Card view around table view */
 .booking-view {
     background-color: #fff;
@@ -117,11 +168,34 @@ body {
     align-items: center;
 }
 
+.arrow-button {
+    background-color: transparent;
+    border: none;
+}
+
+.left-arrow {
+    padding: 11px; /* Fix the height to be correct */
+    font-size: 14px;
+    border: 3px solid #008CBA;
+    background-color: #008CBA;
+    border-radius: 12px 0 0 0;
+    color: white;
+}
+
+.right-arrow {
+    padding: 11px;
+    font-size: 14px;
+    border: 3px solid #008CBA;
+    border-radius: 0 0 0 0;
+    background-color: #008CBA;
+    color: white;
+}
+
 .input-calendar {
     padding: 8px;
     font-size: 16px;
     border: 3px solid #008CBA;
-    border-radius: 12px 0 0 0;
+    border-radius: 0 0 0 0;
 }
 
 .calendar-submit {
