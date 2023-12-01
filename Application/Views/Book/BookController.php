@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 // Sets the date to be the next day
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'nextDate') {
     $nextDate = $_POST['nextDate'];
-    echo json_encode(['redirect' => "../Book/index.php?date=$nextDate"]);
+    echo json_encode(['redirect' => "./index.php?date=$nextDate"]);
     exit();
 }
 
