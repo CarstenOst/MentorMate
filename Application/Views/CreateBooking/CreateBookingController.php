@@ -4,6 +4,7 @@ namespace Views\Book\CreateBookingController;
 
 require("../../../autoloader.php");
 
+use Exception;
 use Application\Validators\Auth;
 use Application\Constants\SessionConst;
 use Infrastructure\Repositories\BookingRepository;
@@ -22,16 +23,36 @@ if ($_SESSION[SessionConst::USER_TYPE] !== 'Tutor') {
 
 // Removes the booking
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'removeBooking') {
-    BookingRepository::delete($_POST['bookingId']);
+    try {
+        BookingRepository::delete($_POST['bookingId']);
+
+        // Returns status of the action
+        echo json_encode(['message' => "Successfully removed the booking."]);
+
+    } catch (Exception $error) {
+        // Returns status of the action
+        http_response_code(400);
+        echo json_encode(['error' => "Failed to remove the booking."]);
+    }
 }
 
 
 // Creates a booking
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'createBooking') {
-    $booking = new Booking();
-    $booking->setTutorId($_SESSION[SessionConst::USER_ID]);
-    $booking->setBookingTime(new DateTime($_POST['bookingTime']));
-    $booking->setLocation($_POST['bookingLocation']);
+    try {
+        $booking = new Booking();
+        $booking->setTutorId($_SESSION[SessionConst::USER_ID]);
+        $booking->setBookingTime(new DateTime($_POST['bookingTime']));
+        $booking->setLocation($_POST['bookingLocation']);
+        BookingRepository::create($booking);
 
-    BookingRepository::create($booking);
+        // Returns status of the action
+        echo json_encode(['message' => "Successfully created the booking."]);
+
+    } catch (Exception $error) {
+        // Returns status of the action
+        http_response_code(400);
+        echo json_encode(['error' => "Failed to create the booking."]);
+    }
+
 }

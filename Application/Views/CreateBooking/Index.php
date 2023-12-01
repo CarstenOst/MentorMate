@@ -53,6 +53,10 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                         action: "removeBooking",
                         bookingId: bookingId,
                     },
+                    error: function(data) {
+                        let response = JSON.parse(data);
+                        alert(response.error);
+                    }
                 });
             }
         }
@@ -72,6 +76,10 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                     bookingTime: bookingTime,
                     bookingLocation: bookingLocation,
                 },
+                error: function(data) {
+                    let response = JSON.parse(data);
+                    alert(response.error);
+                }
             });
 
         }
