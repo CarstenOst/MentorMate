@@ -42,6 +42,43 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
+        function getPreviousDate(previousDate) {
+            console.log(previousDate);
+            // Use AJAX to submit a PHP GET
+            $.ajax({
+                type: "POST",
+                url: "./BookController.php",
+                data: {
+                    action: "previousDate",
+                    previousDate: previousDate,
+                },
+                success: function(data) {
+                    // Redirects so GET can post new date
+                    const response = JSON.parse(data);
+                    window.location.href = response.redirect;
+                }
+            });
+        }
+
+        function getNextDate(nextDate) {
+            console.log(nextDate);
+            // Use AJAX to submit a PHP GET
+            $.ajax({
+                type: "POST",
+                url: "./BookController.php",
+                data: {
+                    action: "nextDate",
+                    nextDate: nextDate,
+                },
+                success: function(data) {
+                    // Redirects so GET can post new date
+                    const response = JSON.parse(data);
+                    window.location.href = response.redirect;
+                }
+            });
+        }
+
+
         function confirmCancelation(bookingId) {
             // Confirmation dialog before cancelling
             var result = confirm("Are you sure you want cancel this booking?");
@@ -55,6 +92,8 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                         action: "cancelBooking",
                         bookingId: bookingId,
                     },
+                    success: function(data) {
+                    }
                 });
             }
         }
@@ -69,6 +108,9 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                     action: "bookBooking",
                     bookingId: bookingId,
                 },
+                success: function(data) {
+
+                }
             });
         }
 
@@ -85,19 +127,24 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
 <div class="main-view">
 
     <div class="booking-view">
-            <!-- TODO update/style this title to better describe the page -->
-            <h2>Book a timeslot from a Tutor</h2>
+            <h2>Book a Tutoring Session</h2>
 
             <div class="booking-date">
                 <?php
                 // Gets today's date (which cannot be earlier than today)
                 $minDateValue = new DateTime();
-                $date = (isset($_GET['date']) && (new DateTime($_GET['date']) >= new DateTime($minDateValue->format('d-m-Y'))) ) ? new DateTime($_GET['date']) : new DateTime();
-                $dateValue = (isset($_GET['date']) && (new DateTime($_GET['date']) >= new DateTime($minDateValue->format('d-m-Y'))) ) ? $_GET['date'] : $date->format('d-m-Y');
+                $date = (isset($_GET['date']) && (new DateTime($_GET['date']) >= new DateTime($minDateValue->format('Y-m-d'))) ) ? new DateTime($_GET['date']) : new DateTime();
+                $dateValue = date('Y-m-d', $date->getTimestamp());
+
+                // Dates for forward and backward date selection with arrows
+                $previousDate = (new DateTime($dateValue))->modify('-1 day')->format('Y-m-d');
+                $nextDate = (new DateTime($dateValue))->modify('+1 day')->format('Y-m-d');
 
                 echo "
                         <form class='booking-date-form' method='GET' action=''>
-                                <input class='input-calendar' type='date' name='date' value='$dateValue'>
+                                <i class='left-arrow fa-solid fa-angles-left' onclick='getPreviousDate(\"$previousDate\")'></i>
+                                <input class='input-calendar' type='date' name='date' value='" . $dateValue . "'>
+                                <i class='right-arrow fa-solid fa-angles-right' onclick='getNextDate(\"$nextDate\")'></i>
                                 <input class='calendar-submit' type='submit' value='Check Date'>
                         </form>
                     ";
@@ -112,7 +159,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                     if (sizeof($bookings) == 0) {
                         echo "
                             <tr>
-                                <th>Seems like there are no available Timeslots for {$date->format('d-m-Y')}...</th>
+                                <th>Seems like there are no available sessions for {$date->format('d-m-Y')}...</th>
                             </tr>
                         ";
                     }

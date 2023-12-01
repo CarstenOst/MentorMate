@@ -31,6 +31,10 @@ body {
     padding: 0;
 }
 
+h2 {
+    color: #008CBA;
+}
+
 /* Side menu */
 .side-menu {
     z-index: 2;
@@ -123,10 +127,6 @@ body {
     margin-bottom: 20px;
 }
 
-h2 {
-    color: #008CBA; /* Set the color for section headings */
-}
-
 .message-button {
     background-color: #008CBA;
     color: #fff;
@@ -165,7 +165,6 @@ h2 {
 .booking-date-form {
     margin-bottom: 0;
     display: flex;
-    align-items: center;
 }
 
 .arrow-button {
@@ -174,8 +173,8 @@ h2 {
 }
 
 .left-arrow {
-    padding: 11px; /* Fix the height to be correct */
-    font-size: 14px;
+    padding: 8px;
+    font-size: 20px;
     border: 3px solid #008CBA;
     background-color: #008CBA;
     border-radius: 12px 0 0 0;
@@ -183,24 +182,25 @@ h2 {
 }
 
 .right-arrow {
-    padding: 11px;
-    font-size: 14px;
+    padding: 8px;
+    font-size: 20px;
     border: 3px solid #008CBA;
-    border-radius: 0 0 0 0;
     background-color: #008CBA;
     color: white;
 }
 
 .input-calendar {
-    padding: 8px;
+    height: 100%;
+    padding: 9px;
     font-size: 16px;
     border: 3px solid #008CBA;
     border-radius: 0 0 0 0;
 }
 
 .calendar-submit {
+    height: 100%;
     padding: 11px;
-    font-size: 14px;
+    font-size: 16px;
     border: 3px solid #008CBA;
     border-radius: 0 12px 0 0;
     background-color: #008CBA;
