@@ -43,7 +43,6 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
         function getPreviousDate(previousDate) {
-            console.log(previousDate);
             // Use AJAX to submit a PHP GET
             $.ajax({
                 type: "POST",
@@ -61,7 +60,6 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
         }
 
         function getNextDate(nextDate) {
-            console.log(nextDate);
             // Use AJAX to submit a PHP GET
             $.ajax({
                 type: "POST",
