@@ -40,6 +40,44 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
+        function getPreviousDate(previousDate) {
+            console.log(previousDate);
+            // Use AJAX to submit a PHP GET
+            $.ajax({
+                type: "POST",
+                url: "./CreateBookingController.php",
+                data: {
+                    action: "previousDate",
+                    previousDate: previousDate,
+                },
+                success: function(data) {
+                    // Redirects so GET can post new date
+                    const response = JSON.parse(data);
+                    window.location.href = response.redirect;
+                }
+            });
+        }
+
+
+        function getNextDate(nextDate) {
+            console.log(nextDate);
+            // Use AJAX to submit a PHP GET
+            $.ajax({
+                type: "POST",
+                url: "./CreateBookingController.php",
+                data: {
+                    action: "nextDate",
+                    nextDate: nextDate,
+                },
+                success: function(data) {
+                    // Redirects so GET can post new date
+                    const response = JSON.parse(data);
+                    window.location.href = response.redirect;
+                }
+            });
+        }
+
+
         function removeBooking(bookingId) {
             // Confirmation dialog before removing the booking
             var result = confirm("Are you sure you want remove this booking?");
@@ -93,44 +131,42 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
 ?>
 
 <div class="main-view">
-
-        <!-- TODO update/style this title to better describe the page -->
-        <h2>Create bookings for when you can tutor</h2>
+        <h2>Set Your Tutoring Availability</h2>
 
         <div class="booking-date">
             <?php
             // Gets today's date (which cannot be earlier than today)
             $minDateValue = new DateTime();
             $startDate = (isset($_GET['date']) && (new DateTime($_GET['date']) >= new DateTime($minDateValue->format('d-m-Y'))) ) ? new DateTime($_GET['date']) : new DateTime();
-            $dateValue = (isset($_GET['date']) && (new DateTime($_GET['date']) >= new DateTime($minDateValue->format('d-m-Y'))) ) ? $_GET['date'] : $startDate->format('d-m-Y');
+            $dateValue = date('Y-m-d', $startDate->getTimestamp());
+
+            // Dates for forward and backward date selection with arrows
+            $previousDate = (new DateTime($dateValue))->modify('-1 day')->format('Y-m-d');
+            $nextDate = (new DateTime($dateValue))->modify('+1 day')->format('Y-m-d');
+            echo "
+                <form class='booking-date-form' method='GET' action=''>
+                        <i class='left-arrow fa-solid fa-angles-left' onclick='getPreviousDate(\"$previousDate\")'></i>
+                        <input class='input-calendar' type='date' name='date' value='" . $dateValue . "'>
+                        <i class='right-arrow fa-solid fa-angles-right' onclick='getNextDate(\"$nextDate\")'></i>
+                        <input class='calendar-submit' type='submit' value='Check Date'>
+                </form>
+            ";
+
 
             // Sets location for the new bookings the tutor creates
             $bookingsLocation = (isset($_GET['location']) && ($_GET['location'])) ? $_GET['location'] : 'Digital';
             echo "
-                        <form class='booking-date-form' method='GET' action=''>
-                                <input class='input-calendar' type='date' name='date' value='$dateValue'>
-                                <input class='calendar-submit' type='submit' value='Check Date'>
-                        </form>
-                    ";
-
-            echo "
-                        <form class='booking-location-form' method='GET' action=''>
-                                <input class='input-location' type='text' name='location' placeholder='Set the booking location'> 
-                                <!-- <select class='tutor-input-location' name='location'>
-                                    <option>Digital</option>
-                                </select> -->
-                                <input class='location-submit' type='submit' value='Set Location'>
-                        </form>
-                    ";
+                <form class='booking-location-form' method='GET' action=''>
+                        <input class='input-location' type='text' name='location' placeholder=''> 
+                        <input class='location-submit' type='submit' value='Set Location'>
+                </form>
+            ";
             ?>
         </div>
 
         <form method='POST' action=''>
             <table class='calendar'>
                 <?php
-                // Start and end dates for timeSlots (startDate is set in form above)
-                $endDate = DateTime::createFromFormat('d-m-Y H:i:s', $startDate->format('d-m-Y H:i:s'));
-
                 // Creates DateTime variables for timeSlot intervals as keys
                 $startHourMinute = DateTime::createFromFormat('d-m-Y H:i:s' , $startDate->format('d-m-Y') . ' 08:00:00');
                 $endHourMinute = DateTime::createFromFormat('d-m-Y H:i:s', $startDate->format('d-m-Y') . ' 23:59:59');

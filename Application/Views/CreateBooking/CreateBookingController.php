@@ -21,6 +21,23 @@ if ($_SESSION[SessionConst::USER_TYPE] !== 'Tutor') {
     header('Location: ../User/Profile.php');
 }
 
+
+
+// Sets the date to be the previous day
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'previousDate') {
+    $previousDate = $_POST['previousDate'];
+    echo json_encode(['redirect' => "./index.php?date=$previousDate"]);
+    exit();
+}
+
+// Sets the date to be the next day
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'nextDate') {
+    $nextDate = $_POST['nextDate'];
+    echo json_encode(['redirect' => "./index.php?date=$nextDate"]);
+    exit();
+}
+
+
 // Removes the booking
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'removeBooking') {
     try {
