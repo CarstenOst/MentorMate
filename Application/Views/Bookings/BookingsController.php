@@ -5,6 +5,7 @@ namespace Views\Bookings\BookingsController;
 
 require("../../../autoloader.php");
 
+use Exception;
 use Application\Validators\Auth;
 use Infrastructure\Repositories\BookingRepository;
 
@@ -17,9 +18,19 @@ if (!Auth::checkAuth()) {
 
 // Cancels the booking by updating the studentId to be null
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'cancelBooking') {
-    $booking = BookingRepository::read($_POST['bookingId']);
-    $booking->setStudentId(null);
-    BookingRepository::update($booking);
+    try {
+        $booking = BookingRepository::read($_POST['bookingId']);
+        $booking->setStudentId(null);
+        BookingRepository::update($booking);
+
+        // Returns status of the action
+        echo json_encode(['message' => "Successfully cancelled the booking."]);
+
+    } catch (Exception $error) {
+        // Returns status of the action
+        http_response_code(400);
+        echo json_encode(['error' => "Failed to cancel the booking."]);
+    }
 }
 
 

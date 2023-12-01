@@ -51,6 +51,10 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                             action: "cancelBooking",
                             bookingId: bookingId
                         },
+                        error: function (data) {
+                            let response = JSON.parse(data);
+                            alert(response.error);
+                        }
                     });
                 }
             }
