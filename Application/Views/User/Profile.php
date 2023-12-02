@@ -8,11 +8,22 @@ use Application\Validators\Auth;
 use Application\Views\Shared\Layout;
 use Application\Constants\SessionConst;
 
-if (!Auth::checkAuth()) {// Starts session, and checks if user is logged in. If not, redirects to login page
+// Starts session, and checks if user is logged in. If not, redirects to login page
+if (!Auth::checkAuth()) {
     header('Location: ./Login.php');
     exit();
 }
-// TODO Need to figure out how the profile page should look like
+
+// Check if the logout action is requested
+if (isset($_GET['logout']) && $_GET['logout'] == 1) {
+    // Call the logOut function from your class
+    Auth::logOut();
+
+    // Redirect to login page after logout
+    header('Location: ../User/Login.php');
+    exit();
+}
+
 class Profile
 {
     /**
@@ -27,13 +38,31 @@ class Profile
         $lastName = $_SESSION[SessionConst::LAST_NAME];
         $userType = $_SESSION[SessionConst::USER_TYPE];
         $email = $_SESSION[SessionConst::EMAIL];
-        $about = $_SESSION[SessionConst::ABOUT];
+        $about = $_SESSION[SessionConst::ABOUT] === '' ? 'Bio in progress...' : $_SESSION[SessionConst::ABOUT];
         echo "
-            <div class='user-profile'>
-                <h5>$firstName $lastName</h5>
-                <p><small>$userType</small></p>
-                <p>Email: $email</p>
-                <p>Bio: $about</p>
+            <div class='profile-container'>
+                <img src='../../Assets/profile.svg' alt='Tutors Profile Picture'>
+        
+                <h1 class='tutor-name'>$firstName $lastName</h1>
+                
+                <p class='user-type'>$userType</p>
+        
+                <div class='about'>
+                    <h2>About $firstName</h2>
+                    <p>$about</p>
+                </div>
+        
+                <div class='availability'>
+                    <h2>Availability</h2>
+                    <p>Display relevant availability details here.</p>
+                </div>
+                
+                <div class='contact-info'>
+                    <h2>Contact Information</h2>
+                    <p><b>Email:</b> $email</p>
+                    <!-- <button class='message-button'>Message $userType</button> -->
+                </div>
+        
             </div>
         ";
     }

@@ -11,7 +11,7 @@ class Booking
     private ?int $studentId;
     private int $tutorId;
     private DateTime $bookingTime;
-    private string $status;
+    private string $location;
     private DateTime $createdAt;
     private DateTime $updatedAt;
 
@@ -59,14 +59,14 @@ class Booking
         return $this;
     }
 
-    public function getStatus(): string
+    public function getLocation(): string
     {
-        return $this->status;
+        return $this->location;
     }
 
-    public function setStatus(string $status): self
+    public function setLocation(string $location): self
     {
-        $this->status = $status;
+        $this->location = $location;
         return $this;
     }
 

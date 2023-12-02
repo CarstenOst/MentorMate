@@ -40,6 +40,44 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
+        function getPreviousDate(previousDate, location) {
+            // Use AJAX to submit a PHP GET
+            $.ajax({
+                type: "POST",
+                url: "./CreateBookingController.php",
+                data: {
+                    action: "previousDate",
+                    previousDate: previousDate,
+                    location: location,
+                },
+                success: function(data) {
+                    // Redirects so GET can post new date
+                    const response = JSON.parse(data);
+                    window.location.href = response.redirect;
+                }
+            });
+        }
+
+
+        function getNextDate(nextDate, location) {
+            // Use AJAX to submit a PHP GET
+            $.ajax({
+                type: "POST",
+                url: "./CreateBookingController.php",
+                data: {
+                    action: "nextDate",
+                    nextDate: nextDate,
+                    location: location,
+                },
+                success: function(data) {
+                    // Redirects so GET can post new date
+                    const response = JSON.parse(data);
+                    window.location.href = response.redirect;
+                }
+            });
+        }
+
+
         function removeBooking(bookingId) {
             // Confirmation dialog before removing the booking
             var result = confirm("Are you sure you want remove this booking?");
@@ -53,6 +91,10 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                         action: "removeBooking",
                         bookingId: bookingId,
                     },
+                    error: function(data) {
+                        let response = JSON.parse(data);
+                        alert(response.error);
+                    }
                 });
             }
         }
@@ -60,9 +102,8 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
 
         function createTimeslotBooking(encodedBookingArray) {
             // Extract values from the array
-            var tutorId = encodedBookingArray[0];
-            var bookingTime = encodedBookingArray[1];
-            var bookingLocation = encodedBookingArray[2];
+            var bookingTime = encodedBookingArray[0];
+            var bookingLocation = encodedBookingArray[1];
 
             // Use AJAX to call a PHP controller action
             $.ajax({
@@ -70,10 +111,13 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                 url: "./CreateBookingController.php",
                 data: {
                     action: "createBooking",
-                    tutorId: tutorId,
                     bookingTime: bookingTime,
                     bookingLocation: bookingLocation,
                 },
+                error: function(data) {
+                    let response = JSON.parse(data);
+                    alert(response.error);
+                }
             });
 
         }
@@ -87,45 +131,50 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
 ?>
 
 <div class="main-view">
-
-    <div class="booking-view">
-        <!-- TODO update/style this title to better describe the page -->
-        <h2>Create bookings for when you can tutor</h2>
+        <h2>Set Your Tutoring Availability</h2>
 
         <div class="booking-date">
             <?php
             // Gets today's date (which cannot be earlier than today)
             $minDateValue = new DateTime();
             $startDate = (isset($_GET['date']) && (new DateTime($_GET['date']) >= new DateTime($minDateValue->format('d-m-Y'))) ) ? new DateTime($_GET['date']) : new DateTime();
-            $dateValue = (isset($_GET['date']) && (new DateTime($_GET['date']) >= new DateTime($minDateValue->format('d-m-Y'))) ) ? $_GET['date'] : $startDate->format('d-m-Y');
+            $dateValue = date('Y-m-d', $startDate->getTimestamp());
+
+            // Dates for forward and backward date selection with arrows
+            $previousDate = (new DateTime($dateValue))->modify('-1 day')->format('Y-m-d');
+            $nextDate = (new DateTime($dateValue))->modify('+1 day')->format('Y-m-d');
 
             // Sets location for the new bookings the tutor creates
-            $bookingsLocation = (isset($_GET['location']) && ($_GET['location'])) ? $_GET['location'] : 'Digital';
-            echo "
-                        <form class='booking-date-form' method='GET' action=''>
-                                <input class='input-calendar' type='date' name='date' value='$dateValue'>
-                                <input class='calendar-submit' type='submit' value='Check Date'>
-                        </form>
-                    ";
+            $validLocations = ['Digital', 'UiA'];
+            $bookingsLocation = (isset($_GET['location']) && ($_GET['location']) && in_array($_GET['location'], $validLocations)) ? $_GET['location'] : 'Digital';
 
+            // Date selection form
             echo "
-                        <form class='booking-location-form' method='GET' action=''>
-                                <input class='input-location' type='text' name='location' placeholder='Set the booking location'> 
-                                <!-- <select class='tutor-input-location' name='location'>
-                                    <option>Digital</option>
-                                </select> -->
-                                <input class='location-submit' type='submit' value='Set Location'>
-                        </form>
-                    ";
+                <form class='booking-date-form' method='GET' action=''>
+                        <i class='left-arrow fa-solid fa-angles-left' onclick='getPreviousDate(\"$previousDate\", \"$bookingsLocation\")'></i>
+                        <input class='input-calendar' type='date' name='date' value='" . $dateValue . "'>
+                        <i class='right-arrow fa-solid fa-angles-right' onclick='getNextDate(\"$nextDate\", \"$bookingsLocation\")'></i>
+                        <input class='calendar-submit' type='submit' value='Check Date'>
+                </form>
+            ";
+            // Location selection form
+            echo "
+                <div class='location-dropdown'>
+                    <button class='location-dropbtn'>
+                        Location: <u>$bookingsLocation</u> <i class='fa-solid fa-chevron-down'></i>
+                    </button>
+                    <div class='location-dropdown-content'>
+                        <a href='?date=" . $dateValue . "&location=Digital'>Digital</a>
+                        <a href='?date=" . $dateValue . "&location=UiA'>UiA</a>
+                    </div>
+                </div>
+            ";
             ?>
         </div>
 
         <form method='POST' action=''>
             <table class='calendar'>
                 <?php
-                // Start and end dates for timeSlots (startDate is set in form above)
-                $endDate = DateTime::createFromFormat('d-m-Y H:i:s', $startDate->format('d-m-Y H:i:s'));
-
                 // Creates DateTime variables for timeSlot intervals as keys
                 $startHourMinute = DateTime::createFromFormat('d-m-Y H:i:s' , $startDate->format('d-m-Y') . ' 08:00:00');
                 $endHourMinute = DateTime::createFromFormat('d-m-Y H:i:s', $startDate->format('d-m-Y') . ' 23:59:59');
@@ -192,7 +241,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                         $bookingId = $booking->getBookingId();
                         $studentId = $booking->getStudentId();
                         $studentName = is_string(UserRepository::read($studentId)) ? 'None' : UserRepository::read($studentId)->getFirstName();
-                        $bookingLocation = $booking->getStatus();
+                        $bookingLocation = $booking->getLocation();
 
                         echo "
                                 <td class='user-booked-timeslot'>
@@ -219,8 +268,6 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
 
     </div>
 
-
-</div>
 
 </body>
 

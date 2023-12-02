@@ -22,10 +22,10 @@ class BookingRepository implements IBookingRepository
         $query = "INSERT INTO Booking (
                      tutorId,
                      bookingTime, 
-                     status) 
+                     location) 
                 VALUES (:tutorId, 
                         :bookingTime, 
-                        :status);
+                        :location);
 
             SELECT LAST_INSERT_ID() as id;
         ";
@@ -34,7 +34,7 @@ class BookingRepository implements IBookingRepository
         $sql = $connection->prepare($query);
         $sql->bindValue(':tutorId', $booking->getTutorId());
         $sql->bindValue(':bookingTime', $booking->getBookingTime()->format('Y-m-d H:i:s'));
-        $sql->bindValue(':status', $booking->getStatus());
+        $sql->bindValue(':location', $booking->getLocation());
 
         try {
             // Execute the statement
@@ -71,7 +71,7 @@ class BookingRepository implements IBookingRepository
             $booking->setStudentId($row['studentId']);
             $booking->setTutorId($row['tutorId']);
             $booking->setBookingTime(new DateTime($row['bookingTime']) ?? null);
-            $booking->setStatus($row['status']);
+            $booking->setLocation($row['location']);
             $booking->setCreatedAt(new DateTime($row['createdAt']) ?? null); // Could cause exception
             $booking->setUpdatedAt(new DateTime($row['updatedAt']) ?? null);
             return $booking;
@@ -93,7 +93,7 @@ class BookingRepository implements IBookingRepository
                 studentId=:studentId, 
                 tutorId=:tutorId, 
                 bookingTime=:bookingTime, 
-                status=:status,
+                location=:location,
                 createdAt=:createdAt, 
                 updatedAt=:updatedAt 
             WHERE bookingId=:bookingId";
@@ -102,7 +102,7 @@ class BookingRepository implements IBookingRepository
         $sql->bindValue(':studentId', $booking->getStudentId());
         $sql->bindValue(':tutorId', $booking->getTutorId());
         $sql->bindValue(':bookingTime', $booking->getBookingTime()->format('Y-m-d H:i:s'));
-        $sql->bindValue(':status', $booking->getStatus());
+        $sql->bindValue(':location', $booking->getLocation());
         $sql->bindValue(':createdAt', $booking->getCreatedAt()->format('Y-m-d H:i:s'));
         $sql->bindValue(':updatedAt', $booking->getUpdatedAt()->format('Y-m-d H:i:s'));
 
@@ -147,7 +147,7 @@ class BookingRepository implements IBookingRepository
         $sql->bindValue(':studentId', $booking->getStudentId());
         $sql->bindValue(':tutorId', $booking->getTutorId());
         $sql->bindValue(':bookingTime', $booking->getBookingTime()->format('Y-m-d H:i:s'));
-        $sql->bindValue(':status', $booking->getStatus());
+        $sql->bindValue(':location', $booking->getLocation());
         $sql->bindValue(':createdAt', $booking->getCreatedAt()->format('Y-m-d H:i:s'));
         $sql->bindValue(':updatedAt', $booking->getUpdatedAt()->format('Y-m-d H:i:s'));
 
@@ -168,7 +168,7 @@ class BookingRepository implements IBookingRepository
             $booking->setStudentId($row['studentId']);
             $booking->setTutorId($row['tutorId']);
             $booking->setBookingTime(new DateTime($row['bookingTime']) ?? null);
-            $booking->setStatus($row['status']);
+            $booking->setLocation($row['location']);
             $booking->setCreatedAt(new DateTime($row['createdAt']) ?? null);
             $booking->setUpdatedAt(new DateTime($row['updatedAt']) ?? null);
 
@@ -216,6 +216,15 @@ class BookingRepository implements IBookingRepository
     }
 
 
+    /**
+     * Retrieves upcoming bookings for a specific student by querying the database
+     * to fetch bookings for that student, that occur on or after a specified date.
+     *
+     * @param DateTime $currentDate The starting date from which to retrieve bookings.
+     * @param int      $studentId   The unique identifier of the student.
+     *
+     * @return array An array of Booking objects representing the student's bookings.
+     */
     public static function getStudentBookings(DateTime $currentDate, int $studentId): array {
         $connection = DBConnector::getConnection();
         // Sets start and end -Date to be the hour interval from 08:00:00 to 23:59:59
@@ -250,6 +259,58 @@ class BookingRepository implements IBookingRepository
     }
 
 
+    /**
+     * Retrieves upcoming bookings for a specific tutor by querying the database
+     * to fetch bookings for that tutor, that occur on or after a specified date.
+     *
+     * @param DateTime $currentDate The starting date from which to retrieve bookings.
+     * @param int      $tutorId   The unique identifier of the tutor.
+     *
+     * @return array An array of Booking objects representing the tutor's bookings.
+     */
+    public static function getTutorBookings(DateTime $currentDate, int $tutorId): array {
+        $connection = DBConnector::getConnection();
+        // Sets start and end -Date to be the hour interval from 08:00:00 to 23:59:59
+        $startDate = new DateTime($currentDate->format('Y-m-d') . ' 08:00:00');
+        $sql = "SELECT * FROM Booking WHERE 
+            tutorId = :tutorId AND
+            bookingTime >= :startDate;
+        ";
+
+        // Prepares the SQL
+        $query = $connection->prepare($sql);
+        $query->bindValue(':tutorId', $tutorId);
+        $query->bindValue(':startDate', $startDate->format('Y-m-d H:i:s'));
+
+        // Executes the query
+        $resultList = [];
+        try {
+            $query->execute();
+            $results = $query->fetchAll(PDO::FETCH_ASSOC);
+            // Appends Booking objects if query results
+            if ($results) {
+                foreach ($results as $row) {
+                    $resultList[] = self::makeBookingFromRow($row);
+                }
+            }
+
+        } catch (PDOException $exception) {
+            echo "SQL Query fail: " . $exception->getMessage();
+        }
+
+        return $resultList;
+    }
+
+
+    /**
+     * Retrieves bookings within time interval 08:00 and 23:59:59 for a specific tutor by
+     * querying the database to fetch bookings for that tutor, that occur on the specified date.
+     *
+     * @param DateTime $currentDate The date (08:00 and 23:59:59) from which to retrieve bookings.
+     * @param int      $tutorId   The unique identifier of the tutor.
+     *
+     * @return array An array of Booking objects representing the tutor's bookings.
+     */
     public static function getTutorBookingsForDate(DateTime $startDate, int $tutorId): array {
         $connection = DBConnector::getConnection();
         // Sets start and end -Date to be the hour interval from 'Y-m-d 08:00:00' to 'Y-m-d 23:59:59'

@@ -42,6 +42,41 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
+        function getPreviousDate(previousDate) {
+            // Use AJAX to submit a PHP GET
+            $.ajax({
+                type: "POST",
+                url: "./BookController.php",
+                data: {
+                    action: "previousDate",
+                    previousDate: previousDate,
+                },
+                success: function(data) {
+                    // Redirects so GET can post new date
+                    const response = JSON.parse(data);
+                    window.location.href = response.redirect;
+                }
+            });
+        }
+
+        function getNextDate(nextDate) {
+            // Use AJAX to submit a PHP GET
+            $.ajax({
+                type: "POST",
+                url: "./BookController.php",
+                data: {
+                    action: "nextDate",
+                    nextDate: nextDate,
+                },
+                success: function(data) {
+                    // Redirects so GET can post new date
+                    const response = JSON.parse(data);
+                    window.location.href = response.redirect;
+                }
+            });
+        }
+
+
         function confirmCancelation(bookingId) {
             // Confirmation dialog before cancelling
             var result = confirm("Are you sure you want cancel this booking?");
@@ -55,12 +90,16 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                         action: "cancelBooking",
                         bookingId: bookingId,
                     },
+                    error: function(data) {
+                        let response = JSON.parse(data);
+                        alert(response.error);
+                    }
                 });
             }
         }
 
 
-        function bookTimeslot(bookingId, studentId) {
+        function bookTimeslot(bookingId) {
             // Use AJAX to call a PHP controller action
             $.ajax({
                 type: "POST",
@@ -68,8 +107,11 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                 data: {
                     action: "bookBooking",
                     bookingId: bookingId,
-                    studentId: studentId,
                 },
+                error: function(data) {
+                    let response = JSON.parse(data);
+                    alert(response.error);
+                }
             });
         }
 
@@ -85,20 +127,25 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
 
 <div class="main-view">
 
-        <div class="booking-view">
-            <!-- TODO update/style this title to better describe the page -->
-            <h2>Book a timeslot from a Tutor</h2>
+    <div class="booking-view">
+            <h2>Book a Tutoring Session</h2>
 
             <div class="booking-date">
                 <?php
                 // Gets today's date (which cannot be earlier than today)
                 $minDateValue = new DateTime();
-                $date = (isset($_GET['date']) && (new DateTime($_GET['date']) >= new DateTime($minDateValue->format('d-m-Y'))) ) ? new DateTime($_GET['date']) : new DateTime();
-                $dateValue = (isset($_GET['date']) && (new DateTime($_GET['date']) >= new DateTime($minDateValue->format('d-m-Y'))) ) ? $_GET['date'] : $date->format('d-m-Y');
+                $date = (isset($_GET['date']) && (new DateTime($_GET['date']) >= new DateTime($minDateValue->format('Y-m-d'))) ) ? new DateTime($_GET['date']) : new DateTime();
+                $dateValue = date('Y-m-d', $date->getTimestamp());
+
+                // Dates for forward and backward date selection with arrows
+                $previousDate = (new DateTime($dateValue))->modify('-1 day')->format('Y-m-d');
+                $nextDate = (new DateTime($dateValue))->modify('+1 day')->format('Y-m-d');
 
                 echo "
                         <form class='booking-date-form' method='GET' action=''>
-                                <input class='input-calendar' type='date' name='date' value='$dateValue'>
+                                <i class='left-arrow fa-solid fa-angles-left' onclick='getPreviousDate(\"$previousDate\")'></i>
+                                <input class='input-calendar' type='date' name='date' value='" . $dateValue . "'>
+                                <i class='right-arrow fa-solid fa-angles-right' onclick='getNextDate(\"$nextDate\")'></i>
                                 <input class='calendar-submit' type='submit' value='Check Date'>
                         </form>
                     ";
@@ -113,7 +160,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                     if (sizeof($bookings) == 0) {
                         echo "
                             <tr>
-                                <th>Seems like there are no available Timeslots for {$date->format('d-m-Y')}...</th>
+                                <th>Seems like there are no available sessions for {$date->format('d-m-Y')}...</th>
                             </tr>
                         ";
                     }
@@ -138,7 +185,6 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                             // appends "row" for each tutor, if no booking there, it will remain 'null'
                             $timeSlots[$booking->getBookingTime()->format('H:i')][$tutorId] = null;
                         }
-
                     }
 
                     // Inserts bookings into the datastructure where they are
@@ -146,6 +192,9 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                         // Replaces 'null' with 'booking' for indexes where the tutor has a booking
                         $timeSlots[$booking->getBookingTime()->format('H:i')][$booking->getTutorId()] = $booking;
                     }
+                    // Sorts timeSlots ascending
+                    ksort($timeSlots);
+
 
                     // Creates table with timeslots
                     foreach ($timeSlots as $timeSlot => $tutorIds) {
@@ -161,11 +210,12 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                                 echo "
                                     <td class='user-booked-timeslot'>
                                         <i class='clock-icon fa-regular fa-clock'></i> {$booking->getBookingTime()->format('H:i')}
-                                        <br>
-                                        <i class='location-icon fa-regular fa-location-dot'></i> <i> {$booking->getStatus()}</i>
                                         <button class='table-button right-button' onclick='confirmCancelation({$booking->getBookingId()})'>
                                             <i class='cancel-icon fa-solid fa-ban'></i> Cancel
                                         </button>
+                                        <br>
+                                        <i class='location-icon fa-regular fa-location-dot'></i> <i> {$booking->getLocation()}</i>
+                                        
                                     </td>";
                             }
 
@@ -182,11 +232,12 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                                 echo "
                                     <td class='available-timeSlot'>
                                         <i class='clock-icon fa-regular fa-clock'></i> {$booking->getBookingTime()->format('H:i')}
-                                        <br>
-                                        <i class='location-icon fa-regular fa-location-dot'></i> <i>{$booking->getStatus()}</i>
-                                        <button class='table-button right-button' onclick='bookTimeslot({$booking->getBookingId()}, {$_SESSION[SessionConst::USER_ID]})''>
+                                        <button class='table-button right-button' onclick='bookTimeslot({$booking->getBookingId()})''>
                                             <i class='book-icon fa-solid fa-circle-plus'></i> Book
                                         </button>
+                                        <br>
+                                        <i class='location-icon fa-regular fa-location-dot'></i> <i>{$booking->getLocation()}</i>
+                                        
                                     </td>";
                             }
 
@@ -201,7 +252,6 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
 
         </div>
 
-
-</div>
+    </div>
 
 </body>

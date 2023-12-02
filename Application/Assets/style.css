@@ -16,19 +16,10 @@
     margin: 20px;
     padding: 10px;
     border-radius: 12px;
-    border: none;
     background-color: #008CBA;
     border-color: #008CBA;
     color: white;
     font-size: 16px;
-}
-
-
-.user-profile {
-    margin: 5px;
-    padding: 10px;
-    border: solid 2px black;
-    border-radius: 10px;
 }
 
 
@@ -39,8 +30,13 @@ body {
     padding: 0;
 }
 
+h2 {
+    color: #00779d;
+}
+
 /* Side menu */
 .side-menu {
+    z-index: 2;
     background-color: #333;
     color: #fff;
     width: 20%;
@@ -91,13 +87,68 @@ body {
     padding: 20px;
 }
 
-/* CreateBooking view */
+
+/* Profile view */
+.profile-container {
+    text-align: center;
+    max-width: 60%;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+}
+
+.profile-container img {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%; /* Make the profile picture round */
+}
+
+.tutor-name {
+    color: #008CBA; /* Set the color for the tutor's name */
+    margin-top: 10px;
+}
+
+.bio {
+    font-style: italic;
+    margin-bottom: 20px;
+}
+
+.user-type {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.about,
+.contact-info,
+.availability {
+    margin-bottom: 20px;
+}
+
+.message-button {
+    background-color: #008CBA;
+    color: #fff;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.message-button:hover {
+    background-color: #00506b; /* Darker shade on hover */
+}
+
+
+
+/* Card view around table view */
 .booking-view {
     background-color: #fff;
     border: 1px solid #cbcbcb;
     padding: 20px;
     min-height: 400px;
-    max-height: 550px;
+    max-height: 85%;
     overflow: auto;
     border-radius: 12px;
 }
@@ -113,19 +164,42 @@ body {
 .booking-date-form {
     margin-bottom: 0;
     display: flex;
-    align-items: center;
+}
+
+.arrow-button {
+    background-color: transparent;
+    border: none;
+}
+
+.left-arrow {
+    padding: 8px;
+    font-size: 20px;
+    border: 3px solid #008CBA;
+    background-color: #008CBA;
+    border-radius: 12px 0 0 0;
+    color: white;
+}
+
+.right-arrow {
+    padding: 8px;
+    font-size: 20px;
+    border: 3px solid #008CBA;
+    background-color: #008CBA;
+    color: white;
 }
 
 .input-calendar {
-    padding: 8px;
+    height: 100%;
+    padding: 9px;
     font-size: 16px;
     border: 3px solid #008CBA;
-    border-radius: 12px 0 0 0;
+    border-radius: 0 0 0 0;
 }
 
 .calendar-submit {
+    height: 100%;
     padding: 11px;
-    font-size: 14px;
+    font-size: 16px;
     border: 3px solid #008CBA;
     border-radius: 0 12px 0 0;
     background-color: #008CBA;
@@ -133,24 +207,55 @@ body {
 }
 
 
-/* Tutor calendar & location input and submit */
-.booking-location-form {
-    margin-bottom: 0;
-    display: flex;
-    align-items: center;
+/* Tutor location dropdown */
+.location-dropdown {
+    position: relative;
+    display: inline-block;
 }
 
-.input-location {
+.location-dropbtn {
+    color: white;
     padding: 11px;
-    font-size: 14px;
+    font-size: 16px;
+    background-color: #008CBA;
     border: 3px solid #008CBA;
-    border-radius: 12px 0 0 0;
-    color: black;
+    border-radius: 12px 12px 0 0;
+    cursor: pointer;
 }
+
+.location-dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 100%;
+    box-shadow: 8px 8px 16px 8px rgba(0,0,0,0.2);
+    z-index: 2;
+}
+
+.location-dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.location-dropdown-content a:hover {
+    background-color: #e0e0e0
+}
+
+.location-dropdown:hover .location-dropdown-content {
+    display: block;
+}
+
+.location-dropdown:hover .dropbtn {
+    background-color: #017093;
+}
+
+
 
 .location-submit {
     padding: 11px;
-    font-size: 14px;
+    font-size: 16px;
     border: 3px solid #008CBA;
     border-radius: 0 12px 0 0;
     background-color: #008CBA;
@@ -165,13 +270,16 @@ body {
     width: 100%;
     min-height: 100px;
     border-collapse: collapse;
-    table-layout: fixed;
     justify-content: center;
+    overflow-x: auto;
 }
 
 
 .calendar th {
     position: sticky;
+    top: 0;
+    z-index: 1;
+    min-width: 155px;
     background-color: #008CBA;
     color: white;
     text-align: left;
