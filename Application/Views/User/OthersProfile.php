@@ -25,6 +25,16 @@ if (isset($_POST['userId']) && $_POST['userId'] != null) {
     exit();
 }
 
+// Check if the logout action is requested
+if (isset($_GET['logout']) && $_GET['logout'] == 1) {
+    // Call the logOut function from your class
+    Auth::logOut();
+
+    // Redirect to login page after logout
+    header('Location: ../User/Login.php');
+    exit();
+}
+
 
 class OthersProfile
 {
