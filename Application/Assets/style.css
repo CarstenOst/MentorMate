@@ -326,10 +326,6 @@ h2 {
     display: inline-block;
 }
 
-/* Class for styling of checkbox for the timeslots */
-.book-checkbox {
-}
-
 /* Class for styling of TAs unbooked timeslots that they can book */
 .unbooked-timeslot {
     font-size: 16px;
@@ -380,7 +376,6 @@ tr {
 
 
 
-
 /* Bookings icons */
 .table-button {
     background-color: transparent;
@@ -419,4 +414,61 @@ tr {
 
 .remove-icon {
     color: red;
+}
+
+
+
+.calendar {
+    width: 100%;
+    min-height: 100px;
+    border-collapse: collapse;
+    justify-content: center;
+    overflow-x: auto;
+}
+
+
+.calendar th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    min-width: 155px;
+    background-color: #008CBA;
+    color: white;
+    text-align: left;
+    padding: 5px;
+}
+/* Available Tutors table */
+.tutor-table {
+    width: 100%;
+    min-height: 100px;
+    border-collapse: collapse;
+    justify-content: center;
+    overflow-x: auto;
+}
+
+.tutor-table th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    min-width: 155px;
+    background-color: #008CBA;
+    color: white;
+    text-align: left;
+    padding: 5px;
+}
+
+.tutor-table td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+
+}
+
+.tutor-table tr:hover {
+    background-color: #004f69;
+    cursor: pointer;
+    color: #fff;
 }
