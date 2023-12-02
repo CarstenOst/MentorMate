@@ -78,12 +78,15 @@ class OthersProfile
         // Puts table with tutor's available bookings under "Availability"
         $date = new DateTime();
         $bookings = BookingRepository::getTutorBookings($date, $userId);
+        usort($bookings, function($a, $b) {
+            return $a->getBookingTime() <=> $b->getBookingTime();
+        });
 
         // Displays standard view if no upcoming bookings found, otherwise populates table with upcoming bookings
         if (sizeof($bookings) == 0) {
             echo "
                 <tr>
-                    <th>Seems like you have no future bookings...</th>
+                    <th><i>Seems like they have no available bookings...</i></th>
                 </tr>
             ";
         } else {
