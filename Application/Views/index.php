@@ -31,7 +31,6 @@ $isTutor = $_SESSION[SessionConst::USER_TYPE] === 'Tutor';
                 <br>
 
                 <?php
-                    // TODO update # links to new views for "AvailableTutors" and "Students"
                     if ($isTutor) {
                         echo "
                             <a href='../Views/CreateBooking/index.php' class='custom-img-link'><img width='160' height='160' src='../Assets/create_booking.svg' alt='Create booking sessions'></a>
