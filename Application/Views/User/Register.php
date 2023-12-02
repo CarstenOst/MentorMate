@@ -97,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         //Registers the user
         $registrationSuccess = Register::registerUser($formData);
         if ($registrationSuccess) {
-            header("Location: Profile.php");
+            header("Location: ../index.php");
             exit();
         }
     } else {
