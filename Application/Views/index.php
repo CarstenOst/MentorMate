@@ -31,11 +31,12 @@ $isTutor = $_SESSION[SessionConst::USER_TYPE] === 'Tutor';
                 <br>
 
                 <?php
+                    // TODO update # links to new views for "AvailableTutors" and "Students"
                     if ($isTutor) {
                         echo "
                             <a href='../Views/CreateBooking/index.php' class='custom-img-link'><img width='160' height='160' src='../Assets/create_booking.svg' alt='Create booking sessions'></a>
-                            <a href='#' class='custom-img-link'><img width='160' height='160' src='../Assets/available_tutors.svg' alt='Show available Tutors'></a>
-                            <a href='#' class='custom-img-link'><img width='160' height='160' src='../Assets/students.svg' alt='Students'></a>                            
+                            <a href='../Views/AvailableTutors/index.php' class='custom-img-link'><img width='160' height='160' src='../Assets/available_tutors.svg' alt='Show available Tutors'></a>
+                            <a href='../Views/Students/index.php' class='custom-img-link'><img width='160' height='160' src='../Assets/students.svg' alt='Students'></a>                            
                             <a href='../Views/Messages/index.php' class='custom-img-link'><img width='160' height='160' src='../Assets/messages.svg' alt='Your messages'></a>
                             <a href='../Views/User/Profile.php' class='custom-img-link'><img width='160' height='160' src='../Assets/profile.svg' alt='Your profile'></a>
                         ";
@@ -43,8 +44,8 @@ $isTutor = $_SESSION[SessionConst::USER_TYPE] === 'Tutor';
                         echo "
                             <a href='../Views/Book/index.php' class='custom-img-link'><img width='160' height='160' src='../Assets/book.svg' alt='Book session'></a>
                             <a href='../Views/Bookings/index.php' class='custom-img-link'><img width='160' height='160' src='../Assets/bookings.svg' alt='Your booked sessions'></a>
-                            <a href='#' class='custom-img-link'><img width='160' height='160' src='../Assets/available_tutors.svg' alt='Show available Tutors'></a>
-                            <a href='#' class='custom-img-link'><img width='160' height='160' src='../Assets/students.svg' alt='Students'></a>                            
+                            <a href='../Views/AvailableTutors/index.php' class='custom-img-link'><img width='160' height='160' src='../Assets/available_tutors.svg' alt='Show available Tutors'></a>
+                            <a href='../Views/Students/index.php' class='custom-img-link'><img width='160' height='160' src='../Assets/students.svg' alt='Students'></a>                            
                             <a href='../Views/Messages/index.php' class='custom-img-link'><img width='160' height='160' src='../Assets/messages.svg' alt='Your messages'></a>
                             <a href='../Views/User/Profile.php' class='custom-img-link'><img width='160' height='160' src='../Assets/profile.svg' alt='Your profile'></a>
                         ";
