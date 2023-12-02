@@ -75,13 +75,6 @@ class OthersProfile
                             <table class='calendar'> 
         ";
 
-
-        // TODO add ajax onclick button on profile icon's to view the Tutor user profile (Profile.php or own
-        // TODO page with view of "availability table" with datetime, "cancel", and "book" functionality
-        // TODO have the table list new date rows as header row
-
-
-
         // Puts table with tutor's available bookings under "Availability"
         $date = new DateTime();
         $bookings = BookingRepository::getTutorBookings($date, $userId);
