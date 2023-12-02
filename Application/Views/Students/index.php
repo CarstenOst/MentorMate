@@ -25,8 +25,6 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
     exit();
 }
 
-// TODO Make table list (like one in "CreateBookings") to show all available students
-
 ?>
 
 
