@@ -30,6 +30,9 @@ body {
     padding: 0;
 }
 
+h1 {
+    color: #00779d;
+}
 h2 {
     color: #00779d;
 }
@@ -106,8 +109,8 @@ h2 {
 }
 
 .tutor-name {
-    color: #008CBA; /* Set the color for the tutor's name */
     margin-top: 10px;
+    margin-bottom: 0;
 }
 
 .bio {
@@ -117,15 +120,22 @@ h2 {
 
 .user-type {
     font-weight: bold;
-    margin-bottom: 10px;
+    margin-top: 5px;
 }
 
 .about,
 .contact-info,
 .availability {
-    margin-bottom: 20px;
+    margin-bottom: 5px;
 }
 
+.container-availability-table {
+    border: 1px solid #cbcbcb;
+    max-height: 350px;
+    overflow: auto;
+    border-radius: 12px;
+}
+/*
 .message-button {
     background-color: #008CBA;
     color: #fff;
@@ -137,8 +147,9 @@ h2 {
 }
 
 .message-button:hover {
-    background-color: #00506b; /* Darker shade on hover */
+    background-color: #00506b;
 }
+*/
 
 
 

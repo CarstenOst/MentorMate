@@ -46,7 +46,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
             // Use AJAX to submit a PHP GET
             $.ajax({
                 type: "POST",
-                url: "./BookController.php",
+                url: "../../Controllers/BookingController.php",
                 data: {
                     action: "previousDate",
                     previousDate: previousDate,
@@ -63,7 +63,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
             // Use AJAX to submit a PHP GET
             $.ajax({
                 type: "POST",
-                url: "./BookController.php",
+                url: "../../Controllers/BookingController.php",
                 data: {
                     action: "nextDate",
                     nextDate: nextDate,
@@ -85,7 +85,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
             if (result) {
                 $.ajax({
                     type: "POST",
-                    url: "./BookController.php",
+                    url: "../../Controllers/BookingController.php",
                     data: {
                         action: "cancelBooking",
                         bookingId: bookingId,
@@ -103,7 +103,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
             // Use AJAX to call a PHP controller action
             $.ajax({
                 type: "POST",
-                url: "./BookController.php",
+                url: "../../Controllers/BookingController.php",
                 data: {
                     action: "bookBooking",
                     bookingId: bookingId,
@@ -160,7 +160,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                     if (sizeof($bookings) == 0) {
                         echo "
                             <tr>
-                                <th>Seems like there are no available sessions for {$date->format('d-m-Y')}...</th>
+                                <th>Seems like there are no available sessions for {$date->format('d-m-Y (l)')}...</th>
                             </tr>
                         ";
                     }
