@@ -1,3 +1,21 @@
+/* Global styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+h1 {
+    color: #00779d;
+}
+h2 {
+    color: #00779d;
+}
+tr {
+    border-bottom: 1px solid #ddd;
+}
+
+
+
 /* Landing page */
 .custom-container {
     display: flex;
@@ -16,31 +34,6 @@
 
 
 
-.submit-button {
-    margin: 20px;
-    padding: 10px;
-    border-radius: 12px;
-    background-color: #008CBA;
-    border-color: #008CBA;
-    color: white;
-    font-size: 16px;
-}
-
-
-/* Global styles */
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-}
-
-h1 {
-    color: #00779d;
-}
-h2 {
-    color: #00779d;
-}
-
 /* Side menu */
 .side-menu {
     z-index: 2;
@@ -50,13 +43,12 @@ h2 {
     height: 100vh;
     position: fixed;
 }
-
 .side-menu ul {
     list-style: none;
     padding: 0;
 }
 
-/* The menu logo "MentorMate" */
+/* The menu logo "MentorMate" in the side-menu */
 .logo-title {
     font-size: 32px;
 }
@@ -69,8 +61,12 @@ h2 {
     text-align: center;
     border-bottom: 1px solid #555;
 }
+.side-menu a:hover {
+    color: black;
+    background-color: #dcdbdb;
+}
 
-/* Make the first element twice as tall */
+/* Make the Profile element twice as tall */
 .side-menu-profile-link {
     height: 120px;
 }
@@ -81,18 +77,14 @@ h2 {
     font-size: 52px;
 }
 
-.side-menu a:hover {
-    color: black;
-    background-color: #dcdbdb;
-}
 
 
-
-/* Main view */
+/* Main view section where most content is viewed */
 .main-view {
     margin-left: 20%;
     padding: 20px;
 }
+
 
 
 /* Profile view */
@@ -105,7 +97,6 @@ h2 {
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
 }
-
 .profile-container img {
     width: 200px;
     height: 200px;
@@ -149,7 +140,6 @@ h2 {
     cursor: pointer;
     border-radius: 5px;
 }
-
 .message-button:hover {
     background-color: #00506b;
 }
@@ -174,8 +164,6 @@ h2 {
     display: flex;
     justify-content: space-between;
 }
-
-/* Calendar date input and submit */
 .booking-date-form {
     margin-bottom: 0;
     display: flex;
@@ -185,7 +173,6 @@ h2 {
     background-color: transparent;
     border: none;
 }
-
 .left-arrow {
     padding: 8px;
     font-size: 20px;
@@ -194,7 +181,6 @@ h2 {
     border-radius: 12px 0 0 0;
     color: white;
 }
-
 .right-arrow {
     padding: 8px;
     font-size: 20px;
@@ -210,7 +196,6 @@ h2 {
     border: 3px solid #008CBA;
     border-radius: 0 0 0 0;
 }
-
 .calendar-submit {
     height: 100%;
     padding: 11px;
@@ -221,13 +206,11 @@ h2 {
     color: white;
 }
 
-
 /* Tutor location dropdown */
 .location-dropdown {
     position: relative;
     display: inline-block;
 }
-
 .location-dropbtn {
     color: white;
     padding: 11px;
@@ -237,7 +220,6 @@ h2 {
     border-radius: 12px 12px 0 0;
     cursor: pointer;
 }
-
 .location-dropdown-content {
     display: none;
     position: absolute;
@@ -246,37 +228,21 @@ h2 {
     box-shadow: 8px 8px 16px 8px rgba(0,0,0,0.2);
     z-index: 2;
 }
-
 .location-dropdown-content a {
     color: black;
     padding: 12px 16px;
     text-decoration: none;
     display: block;
 }
-
 .location-dropdown-content a:hover {
     background-color: #e0e0e0
 }
-
 .location-dropdown:hover .location-dropdown-content {
     display: block;
 }
-
 .location-dropdown:hover .dropbtn {
     background-color: #017093;
 }
-
-
-
-.location-submit {
-    padding: 11px;
-    font-size: 16px;
-    border: 3px solid #008CBA;
-    border-radius: 0 12px 0 0;
-    background-color: #008CBA;
-    color: white;
-}
-
 
 
 
@@ -288,8 +254,6 @@ h2 {
     justify-content: center;
     overflow-x: auto;
 }
-
-
 .calendar th {
     position: sticky;
     top: 0;
@@ -300,46 +264,16 @@ h2 {
     text-align: left;
     padding: 5px;
 }
-
-
-
 .calendar td {
     padding: 5px;
 }
 
-
-/* Time slots column */
-.time-slots-columns {
-    display: flex;
-}
-
-/* TA column */
-.TA-column {
-    border: 1px solid #ddd;
-    margin: 1px;
-    padding: 10px;
-}
-
-/* The leftmost column with timestamps in calendar */
-.booking-time {
-    white-space: nowrap;
-    display: inline-block;
-}
-
-/* Class for styling of TAs unbooked timeslots that they can book */
-.unbooked-timeslot {
-    font-size: 16px;
-    justify-content: center;
-    background-color: #ffffff;
-    color: #000000;
-    padding: 5px;
-    margin-bottom: 10px;
-}
-
-/* Available time slot */
+/* Empty time slot */
 .no-booking-cell {
     font-size: 16px;
 }
+
+/* Un-booked time slot */
 .available-timeSlot {
     font-size: 16px;
     background-color: #a1e5a1;
@@ -348,6 +282,7 @@ h2 {
     margin-bottom: 10px;
 }
 
+/* Booked time slot */
 .unavailable-timeslot {
     font-size: 16px;
     background-color: #d0d0d0;
@@ -356,6 +291,7 @@ h2 {
     margin-bottom: 10px;
 }
 
+/* Time slot booked by the logged inn user */
 .user-booked-timeslot {
     font-size: 16px;
     background-color: #acf3ff;
@@ -367,12 +303,6 @@ h2 {
 .right-button {
     float: right;
 }
-
-/* For adding row styling */
-tr {
-    border-bottom: 1px solid #ddd;
-}
-
 
 
 
@@ -418,6 +348,7 @@ tr {
 
 
 
+/* Table calendar view of available bookings and future bookings */
 .calendar {
     width: 100%;
     min-height: 100px;
@@ -425,8 +356,6 @@ tr {
     justify-content: center;
     overflow-x: auto;
 }
-
-
 .calendar th {
     position: sticky;
     top: 0;
@@ -437,6 +366,7 @@ tr {
     text-align: left;
     padding: 5px;
 }
+
 /* Available Tutors table */
 .tutor-table {
     width: 100%;
@@ -445,7 +375,6 @@ tr {
     justify-content: center;
     overflow-x: auto;
 }
-
 .tutor-table th {
     position: sticky;
     top: 0;
@@ -456,7 +385,6 @@ tr {
     text-align: left;
     padding: 5px;
 }
-
 .tutor-table td {
     display: flex;
     align-items: center;
@@ -466,7 +394,6 @@ tr {
     text-align: left;
 
 }
-
 .tutor-table tr:hover {
     background-color: #004f69;
     cursor: pointer;
