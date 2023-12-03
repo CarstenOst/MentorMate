@@ -1,14 +1,23 @@
 /* Global styles */
+:root {
+    --theme-blue: #008CBA;
+    --theme-grey: #333;
+    --theme-white: #fff;
+    --theme-light-green: #a1e5a1;
+    --theme-light-blue: #acf3ff;
+    --hover-dark-blue: #004f69;
+    --hover-light-grey: #dcdbdb;
+}
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
 }
 h1 {
-    color: #00779d;
+    color: var(--theme-blue);
 }
 h2 {
-    color: #00779d;
+    color: var(--theme-blue);
 }
 tr {
     border-bottom: 1px solid #ddd;
@@ -37,8 +46,8 @@ tr {
 /* Side menu */
 .side-menu {
     z-index: 2;
-    background-color: #333;
-    color: #fff;
+    background-color: var(--theme-grey);
+    color: var(--theme-white);
     width: 20%;
     height: 100vh;
     position: fixed;
@@ -55,7 +64,7 @@ tr {
 
 .side-menu a {
     text-decoration: none;
-    color: #fff;
+    color: var(--theme-white);
     display: block;
     padding: 15px;
     text-align: center;
@@ -63,7 +72,7 @@ tr {
 }
 .side-menu a:hover {
     color: black;
-    background-color: #dcdbdb;
+    background-color: var(--hover-light-grey);
 }
 
 /* Make the Profile element twice as tall */
@@ -93,7 +102,7 @@ tr {
     max-width: 60%;
     margin: 20px auto;
     padding: 20px;
-    background-color: #fff;
+    background-color: var(--theme-white);
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
 }
@@ -132,8 +141,8 @@ tr {
 }
 /*
 .message-button {
-    background-color: #008CBA;
-    color: #fff;
+    background-color: var(--theme-blue);
+    color: var(--theme-white);
     padding: 10px 20px;
     font-size: 16px;
     border: none;
@@ -149,7 +158,7 @@ tr {
 
 /* Card view around table view */
 .booking-view {
-    background-color: #fff;
+    background-color: var(--theme-white);
     border: 1px solid #cbcbcb;
     padding: 20px;
     min-height: 400px;
@@ -176,34 +185,34 @@ tr {
 .left-arrow {
     padding: 8px;
     font-size: 20px;
-    border: 3px solid #008CBA;
-    background-color: #008CBA;
+    border: 3px solid var(--theme-blue);
+    background-color: var(--theme-blue);
     border-radius: 12px 0 0 0;
-    color: white;
+    color: var(--theme-white);
 }
 .right-arrow {
     padding: 8px;
     font-size: 20px;
-    border: 3px solid #008CBA;
-    background-color: #008CBA;
-    color: white;
+    border: 3px solid var(--theme-blue);
+    background-color: var(--theme-blue);
+    color: var(--theme-white);
 }
 
 .input-calendar {
     height: 100%;
     padding: 9px;
     font-size: 16px;
-    border: 3px solid #008CBA;
+    border: 3px solid var(--theme-blue);
     border-radius: 0 0 0 0;
 }
 .calendar-submit {
     height: 100%;
     padding: 11px;
     font-size: 16px;
-    border: 3px solid #008CBA;
+    border: 3px solid var(--theme-blue);
     border-radius: 0 12px 0 0;
-    background-color: #008CBA;
-    color: white;
+    background-color: var(--theme-blue);
+    color: var(--theme-white);
 }
 
 /* Tutor location dropdown */
@@ -212,11 +221,11 @@ tr {
     display: inline-block;
 }
 .location-dropbtn {
-    color: white;
+    color: var(--theme-white);
     padding: 11px;
     font-size: 16px;
-    background-color: #008CBA;
-    border: 3px solid #008CBA;
+    background-color: var(--theme-blue);
+    border: 3px solid var(--theme-blue);
     border-radius: 12px 12px 0 0;
     cursor: pointer;
 }
@@ -240,9 +249,6 @@ tr {
 .location-dropdown:hover .location-dropdown-content {
     display: block;
 }
-.location-dropdown:hover .dropbtn {
-    background-color: #017093;
-}
 
 
 
@@ -259,8 +265,8 @@ tr {
     top: 0;
     z-index: 1;
     min-width: 155px;
-    background-color: #008CBA;
-    color: white;
+    background-color: var(--theme-blue);
+    color: var(--theme-white);
     text-align: left;
     padding: 5px;
 }
@@ -276,7 +282,7 @@ tr {
 /* Un-booked time slot */
 .available-timeSlot {
     font-size: 16px;
-    background-color: #a1e5a1;
+    background-color: var(--theme-light-green);
     color: #000000;
     padding: 5px;
     margin-bottom: 10px;
@@ -294,7 +300,7 @@ tr {
 /* Time slot booked by the logged inn user */
 .user-booked-timeslot {
     font-size: 16px;
-    background-color: #acf3ff;
+    background-color: var(--theme-light-blue);
     color: #000000;
     padding: 5px;
     margin-bottom: 10px;
@@ -361,8 +367,8 @@ tr {
     top: 0;
     z-index: 1;
     min-width: 155px;
-    background-color: #008CBA;
-    color: white;
+    background-color: var(--theme-blue);
+    color: var(--theme-white);
     text-align: left;
     padding: 5px;
 }
@@ -380,8 +386,8 @@ tr {
     top: 0;
     z-index: 1;
     min-width: 155px;
-    background-color: #008CBA;
-    color: white;
+    background-color: var(--theme-blue);
+    color: var(--theme-white);
     text-align: left;
     padding: 5px;
 }
@@ -389,13 +395,12 @@ tr {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border: 1px solid #ddd;
     padding: 8px;
     text-align: left;
 
 }
 .tutor-table tr:hover {
-    background-color: #004f69;
+    background-color: var(--hover-dark-blue);
     cursor: pointer;
-    color: #fff;
+    color: var(--theme-white);
 }
