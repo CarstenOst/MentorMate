@@ -451,6 +451,8 @@ tr {
 
 /* TODO finish the styling of the chat conversation and messages so they appear in rows, and on right and left side */
 #chat-messages {
+    display: flex;
+    flex-direction: column;
     margin-bottom: 20px;
 }
 
