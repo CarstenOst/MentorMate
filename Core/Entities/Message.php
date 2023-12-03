@@ -1,17 +1,17 @@
 <?php
 
-namespace Entities;
+namespace Core\Entities;
 
 class Message
 {
-    private int $messageId;
+    private ?int $messageId;
     private int $senderId;
     private int $receiverId;
-    private DateTime $sentAt;
+    private ?DateTime $sentAt;
     private string $messageText;
-    private bool $isRead;
+    private ?bool $isRead;
 
-    public function __construct(int $messageId, int $senderId, int $receiverId, DateTime $sentAt, string $messageText, bool $isRead)
+    public function __construct(?int $messageId, int $senderId, int $receiverId, ?DateTime $sentAt, string $messageText, ?bool $isRead)
     {
         $this->messageId = $messageId;
         $this->senderId = $senderId;

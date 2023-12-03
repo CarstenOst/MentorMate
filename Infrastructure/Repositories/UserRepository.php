@@ -34,8 +34,6 @@ class UserRepository implements IUserRepository
                         :password, 
                         :userType, 
                         :about);
-
-            SELECT LAST_INSERT_ID() as id;
                         ";
 
         $sql = self::getSql($query, $user);
@@ -43,7 +41,7 @@ class UserRepository implements IUserRepository
         try {
             // Execute the statement
             $sql->execute();
-            return $sql->fetch(PDO::FETCH_ASSOC) ?? -1 ;
+            return $sql->lastInsertId();
 
         } catch (PDOException $e) {
             // Check if the error is due to a duplicate key on 'email'
