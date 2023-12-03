@@ -10,7 +10,7 @@ use Exception;
 use Application\Constants\SessionConst;
 use Application\Validators\Auth;
 use Infrastructure\Repositories\BookingRepository;
-
+use Infrastructure\Repositories\UserRepository;
 
 // Starts session, and checks if user is logged in. If not, redirects to login page
 if (!Auth::checkAuth()) {
@@ -105,10 +105,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             break;
 
         case 'messageUser':
-            // Logic for opening message conversation with the Tutor
-            $loggedInnUser = $_SESSION[SessionConst::USER_ID];
-            $userId = $_POST['userId'];
-            echo json_encode(["message" => "Started conversation with user"]);
+            // Checks if the user exists before redirecting
+            if ($_POST['userId']) {
+                $_SESSION['chat_last_receiver'] = $_POST['userId'];
+                echo json_encode(["redirect" => "/MentorMate/Application/Views/Messages/index.php"]);
+            } else {
+                http_response_code(400);
+                echo json_encode(["errorThrown" => "Failed to message user."]);
+            }
             break;
 
 

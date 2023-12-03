@@ -3,6 +3,7 @@
     --theme-blue: #008CBA;
     --theme-grey: #333;
     --theme-white: #fff;
+    --theme-light-grey: #dcdbdb;
     --theme-light-green: #a1e5a1;
     --theme-light-blue: #acf3ff;
     --hover-dark-blue: #004f69;
@@ -403,4 +404,101 @@ tr {
     background-color: var(--hover-dark-blue);
     cursor: pointer;
     color: var(--theme-white);
+}
+
+
+
+/* Chat page */
+
+/*
+#chat-container {
+    max-width: 400px;
+    margin: 20px auto;
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+#chat-messages {
+    max-height: 300px;
+    overflow-y: auto;
+    border-bottom: 1px solid #ccc;
+}
+#chat-form {
+    display: flex;
+    margin-top: 10px;
+}
+#message {
+    flex: 1;
+    padding: 5px;
+}
+.chat-button {
+    padding: 5px 10px;
+}
+ */
+
+#chat-container {
+    max-width: 60%;
+    max-height: 80%;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+}
+
+.chat-receiver {
+    text-align: center;
+}
+
+/* TODO finish the styling of the chat conversation and messages so they appear in rows, and on right and left side */
+#chat-messages {
+    margin-bottom: 20px;
+}
+
+.message {
+    display: inline-block;
+    max-width: 80%;
+    float: right;
+    background-color: var(--theme-light-blue);
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 12px;
+}
+.receiver-message {
+    display: inline-block;
+    max-width: 80%;
+    float: left;
+    background-color: var(--theme-light-grey);
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 12px;
+}
+
+#chat-form {
+    display: flex;
+    margin-top: 10px;
+}
+
+#message {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+#message:focus {
+    outline: none;
+    border-color: var(--theme-blue);
+}
+
+#chat-form button {
+    background-color: var(--theme-blue);
+    color: var(--theme-white);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+#chat-form button:hover {
+    background-color: var(--hover-dark-blue);
 }

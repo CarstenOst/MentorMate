@@ -68,6 +68,14 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                     data: {
                         action: "messageUser",
                         userId: userId
+                    },
+                    success: function (data) {
+                        let response = JSON.parse(data);
+                        window.location.href = response.redirect;
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        // Directly access the error message without parsing JSON
+                        alert("Error: " + jqXHR.responseText);
                     }
                 });
             }
@@ -82,7 +90,6 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                         userId: userId,
                     },
                     success: function(data) {
-                        // Redirects so GET can post new date
                         const response = JSON.parse(data);
                         window.location.href = response.redirect;
                     }
@@ -191,7 +198,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                                         <button class='table-button' onclick='confirmCancelation($bookingId)'><i class='cancel-icon fa-solid fa-ban'></i> Cancel</button>
                                     </td>
                                     <td>
-                                        <button class='table-button' onclick='messageUser($userId)'><i class='message-icon fa-solid fa-message'></i> Message</button>
+                                        
                                     </td>
                                     <td>
                                         <button class='table-button'><i class='calendar-icon fa-regular fa-calendar-plus'></i> Add boooking</button>
