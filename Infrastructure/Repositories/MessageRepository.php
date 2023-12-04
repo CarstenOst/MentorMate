@@ -139,6 +139,104 @@ class MessageRepository
 
 
 
+    static public function getUserConversations(int $userId): array {
+        $connection = DBConnector::getConnection();
+
+        $sql = "
+            SELECT
+                conversationPartner.userId AS conversationPartnerId,
+                user.firstName,
+                user.lastName,
+                MAX(message.sentAt) AS lastMessageTime,
+                MAX(message.isRead) AS lastMessageRead,
+                message.messageText AS lastMessage
+            FROM
+                (
+                    SELECT DISTINCT
+                        CASE
+                            WHEN senderId = :userId THEN receiverId
+                            WHEN receiverId = :userId THEN senderId
+                        END AS userId
+                    FROM
+                        Message
+                    WHERE
+                        senderId = :userId OR 
+                        receiverId = :userId
+                ) AS conversationPartner
+            JOIN User user ON 
+                conversationPartner.userId = user.userId
+            LEFT JOIN (
+                SELECT *
+                FROM Message
+                WHERE receiverId = :userId
+            ) message ON 
+                (message.senderId = :userId AND message.receiverId = conversationPartner.userId) OR 
+                (message.receiverId = :userId AND message.senderId = conversationPartner.userId)
+            GROUP BY
+                conversationPartner.userId
+            ORDER BY
+                message.isRead ASC,
+                lastMessageTime DESC;
+        ";
+
+        // Prepares the SQL
+        $query = $connection->prepare($sql);
+        $query->bindValue(':userId', $userId);
+
+        // Executes the query
+        try {
+            $query->execute();
+            $conversations = $query->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $exception) {
+            echo "SQL Query failed.";
+        }
+
+        return $conversations;
+    }
+
+
+    public static function getUnreadConversations(int $userId): array {
+        $connection = DBConnector::getConnection();
+
+        $sql = "
+            SELECT COUNT(DISTINCT conversationPartnerId) AS unreadConversations
+            FROM (
+                SELECT
+                    CASE
+                        WHEN senderId = :userId THEN receiverId
+                        WHEN receiverId = :userId THEN senderId
+                    END AS conversationPartnerId,
+                    MAX(sentAt) AS lastMessageTime
+                FROM
+                    Message
+                WHERE
+                    (senderId = :userId OR receiverId = :userId)
+                    AND (
+                        (receiverId = :userId AND isRead = 0)
+                        OR (senderId = :userId AND receiverId != :userId)
+                    )
+                GROUP BY
+                    conversationPartnerId
+            ) AS subquery;
+        ";
+
+        // Prepares the SQL
+        $query = $connection->prepare($sql);
+        $query->bindValue(':userId', $userId);
+
+        // Executes the query
+        try {
+            $query->execute();
+            $conversations = $query->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $exception) {
+            echo "SQL Query failed.";
+        }
+
+        return $conversations;
+    }
+
+
+
 
 
 
