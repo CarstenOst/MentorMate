@@ -488,16 +488,15 @@ tr {
     text-align: center;
 }
 
-/* TODO finish the styling of the chat conversation and messages so they appear in rows, and on right and left side */
 #chat-messages {
-    display: inline-block;
-    width: 100%;
+    display: flex;
     flex-direction: column;
+    width: 100%;
     margin-bottom: 20px;
 }
 
 .message {
-    display: inline-block;
+    align-self: flex-end;
     max-width: 80%;
     float: right;
     background-color: var(--theme-blue);
@@ -507,7 +506,7 @@ tr {
     border-radius: 12px;
 }
 .receiver-message {
-    display: inline-block;
+    align-self: flex-start;
     max-width: 80%;
     float: left;
     background-color: var(--theme-light-grey);
