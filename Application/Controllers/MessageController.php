@@ -46,13 +46,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                         if ($message->getSenderId() == $sender) {
                             echo "
                                 <div class='message'>
-                                    {$message->getMessageText()} <small><i>{$message->getSentAt()->format('H:m')}</i></small>
+                                    <small><i>{$message->getSentAt()->format('H:m')}</i></small>
+                                    <div class='message-content'>
+                                        {$message->getMessageText()}
+                                    </div>
                                 </div>
+                                
                             ";
                         } else {
                             echo "
                                 <div class='receiver-message'>
-                                    <small><i>{$message->getSentAt()->format('H:m')}</i></small> {$message->getMessageText()}
+                                    <small><i>{$message->getSentAt()->format('H:m')}</i></small>
+                                    <div class='receiver-message-content'>
+                                        {$message->getMessageText()}
+                                    </div>
                                 </div>
                             ";
                         }

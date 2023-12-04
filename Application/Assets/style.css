@@ -497,18 +497,25 @@ tr {
 
 .message {
     align-self: flex-end;
-    max-width: 80%;
     float: right;
+    max-width: 80%;
+    text-align: right;
+}
+.message-content {
     background-color: var(--theme-blue);
     color: var(--theme-white);
     padding: 10px;
     margin-bottom: 10px;
     border-radius: 12px;
 }
+
 .receiver-message {
     align-self: flex-start;
-    max-width: 80%;
     float: left;
+    max-width: 80%;
+    text-align: left;
+}
+.receiver-message-content {
     background-color: var(--theme-light-grey);
     padding: 10px;
     margin-bottom: 10px;
