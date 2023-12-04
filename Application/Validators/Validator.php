@@ -2,8 +2,6 @@
 
 namespace Application\Validators;
 
-use Exception;
-
 class Validator
 {
     public const TEXT = 'text';
@@ -13,8 +11,9 @@ class Validator
     public const PHONE_NUMBER = 'phoneNumber';
     public const VALID_USER_TYPES = ['student', 'tutor'];
 
+
     /**
-     * This function is made for Module 6, task 5 to validate
+     * This function was made for Module 6, task 5 to validate
      * either an email, password or a phone number in the same function.
      *
      * @param string $type must be string of one of these: text | email | password | phone.
@@ -24,13 +23,32 @@ class Validator
     public static function isValid(string $type, string $value): bool
     {
         return match ($type) {
-            self::TEXT => $value != "" && !ctype_space($value) && preg_match("/[a-zA-Z]/", $value),
-            self::EMAIL => filter_var($value, FILTER_VALIDATE_EMAIL) !== false,
+            self::TEXT => $value != "" && !ctype_space($value) && preg_match("/[a-zæøåA-ZÆØÅ]/", $value),
+            self::EMAIL => self::validEmailInput($value),
             self::PASSWORD => self::isPassword($value),
             self::USER_TYPE => self::isUserType($value),
             self::PHONE_NUMBER => preg_match("/^[0-9]{8}$/", $value),
             default => false,
         };
+    }
+
+    /**
+     * Checks if the email is valid.
+     *
+     * @param string $original_email The email to check.
+     * @return bool true if the email is valid, false if the email is invalid.
+     */
+    private static function validEmailInput(string $original_email): bool
+    {
+        $clean_email = filter_var($original_email,FILTER_SANITIZE_EMAIL);
+
+        // If the email is the same after sanitizing, and it is a valid email, return true
+        if ($original_email == $clean_email && filter_var($original_email,FILTER_VALIDATE_EMAIL)) {
+            return true;
+        }
+        // Else the user might have typed wrong, so do not upload it to the database, even if it is valid.
+        // This email won't be accepted "test<?php echo 'test';?\>@gmail.com"
+        return false;
     }
 
     /**
@@ -41,7 +59,7 @@ class Validator
      */
     private static function isUserType(string $userType): bool
     {
-        return in_array($userType, self::VALID_USER_TYPES, true);
+        return in_array(strtolower($userType), self::VALID_USER_TYPES, true);
     }
 
     /**
@@ -61,18 +79,6 @@ class Validator
     }
 
     /**
-    * Checks if string is a valid email.
-    *
-    * @param string $email The email to check.
-    * @return mixed $email if valid, false if not.
-    */
-    public static function isEmail(string $email): mixed
-    {
-        return filter_var($email, FILTER_VALIDATE_EMAIL);
-    }
-
-
-    /**
      * Checks if string has no special characters and only letters (numbers are discarded too).
      *
      * @param string $str The string to check for special characters.
@@ -83,7 +89,6 @@ class Validator
         // Type cast to bool is here redundant, as the not operator is used, forcing the return value to be bool.
         return !preg_match('/[^A-ZÆØÅ ]/iu', $str);
     }
-
 
     /**
      * Removes whitespace from string.
@@ -106,16 +111,17 @@ class Validator
      */
     public static function validateName(string $name, array &$errorMessage): bool
     {
-        if (self::hasNoSpecialCharacters($name)) {
+        if (Validator::hasNoSpecialCharacters($name)) {
             return true;
         }
+        $name = htmlspecialchars($name);
         $errorMessage[] = "Names can only contain letters. You typed in '$name'";
         return false;
     }
 
 
     /**
-     * Warning reference is used here, so the error message is added to the array given in the parameter.
+     * Function to validate an email.
      *
      * @param string $email The email to validate.
      * @param array $errorMessage Reference to the array where the error message should be added.
@@ -123,9 +129,10 @@ class Validator
      */
     public static function validateEmail(string $email, array &$errorMessage): bool
     {
-        if (self::isEmail($email)) {
+        if (Validator::isValid(Validator::EMAIL, $email)) {
             return true;
         }
+        $email = htmlspecialchars($email);
         $errorMessage[] = "Email: '$email' is not valid";
         return false;
     }
@@ -151,11 +158,18 @@ class Validator
     }
 
 
+    /**
+     * Function to validate user type.
+     *
+     * @param string $userTypeInput The user type to validate.
+     * @param array $errorMessage Reference to the array where the error message should be added.
+     * @return bool true if phone number is valid
+     */
     public static function validateUserType(string $userTypeInput, array &$errorMessage): bool
     {
-        if (Validator::isValid(Validator::USER_TYPE, strtolower($userTypeInput)))
+        if (Validator::isValid(Validator::USER_TYPE, strtolower($userTypeInput))) {
             return true;
-
+        }
         $errorMessage[] = 'Must be one of these types: ' . implode(', ',Validator::VALID_USER_TYPES);
         return false;
     }
