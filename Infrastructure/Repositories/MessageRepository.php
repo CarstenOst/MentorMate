@@ -103,7 +103,7 @@ class MessageRepository
 
 
 
-    public static function getMessagesBetweenUsers(int $user1, int $user2): array {
+    public static function getMessagesBetweenUsers(int $sender, int $receiver): array {
         $connection = DBConnector::getConnection();
 
         $sql = "SELECT * FROM Message WHERE 
@@ -115,8 +115,8 @@ class MessageRepository
 
         // Prepares the SQL
         $query = $connection->prepare($sql);
-        $query->bindValue(':senderId', $user1);
-        $query->bindValue(':receiverId', $user2);
+        $query->bindValue(':senderId', $sender);
+        $query->bindValue(':receiverId', $receiver);
 
         // Executes the query
         $resultList = [];
@@ -135,6 +135,28 @@ class MessageRepository
         }
 
         return $resultList;
+    }
+
+
+    public static function markMessagesAsRead(int $receiver, int $sender): void {
+        $connection = DBConnector::getConnection();
+
+        $sql = "UPDATE Message 
+            SET isRead = 1
+            WHERE (senderId = :senderId AND receiverId = :receiverId AND isRead = 0);
+        ";
+
+        // Prepares the SQL
+        $query = $connection->prepare($sql);
+        $query->bindValue(':receiverId', $receiver);
+        $query->bindValue(':senderId', $sender);
+
+        // Executes the query to mark messages as read
+        try {
+            $query->execute();
+        } catch (PDOException $exception) {
+            echo "SQL Query fail: ";
+        }
     }
 
 

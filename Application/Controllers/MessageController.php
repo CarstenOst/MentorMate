@@ -40,7 +40,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             try {
                 $sender = $_SESSION[SessionConst::USER_ID];
                 $receiver = $_SESSION['chat_last_receiver'];
+                // Fetches the messages between the two users, then marks the messages from receiver as read
                 $messages = MessageRepository::getMessagesBetweenUsers($sender, $receiver);
+                MessageRepository::markMessagesAsRead($sender, $receiver);
                 if ($messages) {
                     foreach ($messages as $message) {
                         if ($message->getSenderId() == $sender) {
