@@ -56,7 +56,7 @@ class Profile
         echo "
             <div class='profile-container'>
                  <img src='../../ProfileImages/$imageFileName.$fileExtension' alt='Tutors Profile Picture' id='profileImage'>
-                <input type='file' id='imageUpload' name='image' style='display: none;'>
+                <input type='file' id='imageUpload' name='image' accept='image/png, image/jpeg' style='display: none;'>
                 <h1 class='tutor-name'>$firstName $lastName</h1>
                 <p class='user-type'>$userType</p>
         
