@@ -45,7 +45,7 @@ class OthersProfile
         $lastName = $user->getLastName();
         $userType = $user->getUserType();
         $email = $user->getEmail();
-        $about = $user->getAbout() === '' ? 'Bio in progress...' : $user->getAbout();
+        $about = $user->getAbout()?? 'Bio in progress...';
 
         // Displays upper half of profile section
         echo "
@@ -165,7 +165,7 @@ class OthersProfile
         $lastName = $user->getLastName();
         $userType = $user->getUserType();
         $email = $user->getEmail();
-        $about = $user->getAbout() === '' ? 'Bio in progress...' : $user->getAbout();
+        $about = $user->getAbout() ?? 'Bio in progress...';
 
         // Displays upper half of profile section
         echo "
