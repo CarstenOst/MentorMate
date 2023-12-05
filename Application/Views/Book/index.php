@@ -128,12 +128,10 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                         bookingId: bookingId,
                     },
                     success: function (data) {
-                        console.log(data);
                         let response = JSON.parse(data);
                         if (response.message === "Successfully booked the booking.") {
                             // Find the corresponding timeslot element and update its content and class
                             let timeslotElement = document.getElementById('timeslot-' + bookingId);
-                            console.log(timeslotElement);
                             if (timeslotElement) {
                                 timeslotElement.classList.remove('available-timeSlot');
                                 timeslotElement.classList.add('user-booked-timeslot');
