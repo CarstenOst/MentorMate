@@ -11,6 +11,7 @@ use Application\Validators\Auth;
 use Application\Views\Shared\Layout;
 use Application\Validators\Validator;
 use Application\Views\Shared\HtmlRenderer;
+use Infrastructure\Repositories\ErrorCode;
 use Infrastructure\Repositories\UserRepository;
 
 class Register
@@ -31,29 +32,46 @@ class Register
 
     /**
      * Registers a user using the form field values
+     *
      * @param array $formData the form fields and values as an associated matrix
      * @return int the id of the inserted user
      */
-    public static function registerUser(array $formData): int
+    private static function registerUser(array $formData, &$notValidResponseMessage): int
     {
         // Creates the user, and sends this to the database
         $user = new User();
-        $user->setFirstName(self::formatName($formData[self::FIRST_NAME]));
-        $user->setLastName(self::formatName($formData[self::LAST_NAME]));
-        $user->setEmail($formData[self::EMAIL]);
-        $user->setPassword(password_hash($formData[self::PASSWORD], PASSWORD_BCRYPT));
-        $user->setUserType($formData[self::USER_TYPE]);
+        $user->setFirstName(self::capitalizeFirstLetter($formData[self::FIRST_NAME][0]));
+        $user->setLastName(self::capitalizeFirstLetter($formData[self::LAST_NAME][0]));
+        $user->setEmail($formData[self::EMAIL][0]);
+        $user->setPassword(password_hash($formData[self::PASSWORD][0], PASSWORD_BCRYPT));
+        $user->setUserType(self::capitalizeFirstLetter($formData[self::USER_TYPE][0]));
         $user->setAbout("");
-        $user->setCreatedAt(new \DateTime());
-        $user->setUpdatedAt(new \DateTime());
 
-        $createdUserId = UserRepository::create($user);
+        // If the user was created, we want to authenticate the user, and exit the script
+        if (($createdUserId = UserRepository::create($user)) > 0) {
+            // This chains the database queries, which is not the best thing to do
+            // TODO less coupling, move this out of here, or change function name
+            Auth::authenticate($formData[self::PASSWORD][0], $formData[self::EMAIL][0]);
+            return $createdUserId;
+        }
 
-        // This chains the database queries, which might not be the best
-        // TODO less coupling
-        Auth::authenticate($formData[self::PASSWORD], $formData[self::EMAIL]);
-        // Returns the status of the sql updating the user
-        return $createdUserId;
+        // If the email already exists, we want to tell the user. We should not tell the user, or
+        // add a cool down to the register button, to prevent brute force attacks.
+        // Here we could add a session keeping count of how many times the user has tried to register
+        if ($createdUserId == -ErrorCode::DUPLICATE_EMAIL) {
+            $notValidResponseMessage[] = "Your email already exists. Try to login or use another email";
+            return -ErrorCode::DUPLICATE_EMAIL;
+        }
+        $notValidResponseMessage[] = "Something went wrong. 
+        Please try again later, and contact an admin if the problem persists.";
+        return 0;
+    }
+
+    private static function notValidResponse(array $notValidResponseMessage, $dataInput): void
+    {
+        HtmlRenderer::generateResponse($notValidResponseMessage, false,
+            count($notValidResponseMessage) * 1500 + 1000); // Time until death! (of msg)
+        self::renderPage($dataInput);
     }
 
     /**
@@ -62,7 +80,7 @@ class Register
      *
      * @return string of the name formatted with each word's first letter capitalized
      */
-    public static function formatName(string $name): string
+    public static function capitalizeFirstLetter(string $name): string
     {
         return mb_convert_case(
             mb_strtolower($name), MB_CASE_TITLE, "UTF-8"
@@ -106,7 +124,7 @@ class Register
         $handler->addConfig(self::PASSWORD, [Validator::class, 'validatePassword']);
         $handler->addConfig(self::USER_TYPE, [Validator::class, 'validateUserType']);
 
-        //TODO ADD LENGTH RESTRICTION OF 255!
+        //TODO ADD LENGTH RESTRICTION OF 255 CHARS!
 
         // Process inputs based on configured rules, and store them as dataInput and notValidResponseMessage
         list($dataInput, $notValidResponseMessage) = $handler->processInputs($_POST);
@@ -121,21 +139,21 @@ class Register
             return;
         }
 
-        // If we get here, we know that the data is valid, and we can create the success message.
-        $validMessage = [ // The task asked for array, and array is given
-            "User was successfully registered:",
-            "First name: {$dataInput[self::FIRST_NAME][0]}",
-            "Last name: {$dataInput[self::LAST_NAME][0]}",
-            "Email: {$dataInput[self::EMAIL][0]}",
-            "Password: {$dataInput[self::PASSWORD][0]}", // This stupid, TODO REMOVE!
-            "User type: {$dataInput[self::USER_TYPE][0]}"
-        ];
+        // Try to register the user. If the user was registered, we want to authenticate the user.
+        self::registerUser($dataInput, $notValidResponseMessage);
+        // if register user returns a negative number, it means an error code was triggered,
+        // such as duplicate email for example.
+        if (!empty($notValidResponseMessage)) {
+            self::notValidResponse($notValidResponseMessage, $dataInput);
+        }
 
-        self::renderPage($dataInput); // Rerender the page with the data from the form. (so we get the success css triggered).
-        HtmlRenderer::generateResponse($validMessage, true); // Generate the success message.
+        // If we get here, then the user is authenticated.
+        // Now we could send an email verification to the user, but since we use fake emails, we will not
+        // do that.
+        // Just change the header to view the profile:
+        header("Location: Profile.php");
+        exit();
 
-        echo "<br><br>"; // Space between the response and the success message.
-        echo implode("<br>", $validMessage); // Echo the success message. To keep it visible for the user.
     }
 }
 
@@ -146,31 +164,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 } else {
     Register::renderPage();
 }
-
-/*
-$formData = $_POST;
-// Checks if form was submitted
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $isValid = Register::validateFields($formData);
-
-    if ($isValid) {
-        //Registers the user
-        $registrationSuccess = Register::registerUser($formData);
-        // if register user returns a negative number, it means an error code was triggered,
-        // such as duplicate email for example.
-        if ($registrationSuccess >= 0) {
-            header("Location: Profile.php");
-            exit();
-        }
-        echo 'Id = ' . $registrationSuccess;
-        echo '<br> Your email already exists. Try to login or use another email';
-    } else {
-        // Submitted form was invalid
-        echo "Error!";
-        Register::viewRegister($formData);
-    }
-} else {
-    // Displays the register form
-    Register::viewRegister($formData);
-}
-*/

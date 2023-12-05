@@ -36,22 +36,30 @@ class UserRepository implements IUserRepository
                         :about);
                         ";
 
-        $sql = self::getSql($query, $user);
+
+        $connection = DBConnector::getConnection();
+        $sql = $connection->prepare($query);
+
+        // Bind parameters using named parameters and bindValue
+        $sql->bindValue(':firstName', $user->getFirstName());
+        $sql->bindValue(':lastName', $user->getLastName());
+        $sql->bindValue(':password', $user->getPassword());
+        $sql->bindValue(':userType', $user->getUserType());
+        $sql->bindValue(':about', $user->getAbout());
+        $sql->bindValue(':email', $user->getEmail());
 
         try {
             // Execute the statement
             $sql->execute();
-            return $sql->lastInsertId();
+            return $connection->lastInsertId();
 
         } catch (PDOException $e) {
             // Check if the error is due to a duplicate key on 'email'
-            if ($e->getCode() == 23000 &&
-                str_contains($e->getMessage(), 'Duplicate entry') &&
-                str_contains($e->getMessage(), 'for key \'email\''))
+            if ($e->getCode() == ErrorCode::DUPLICATE_EMAIL ||
+                str_contains($e->getMessage(), 'Duplicate entry'))
             {
                 // Handle duplicate email error
-                echo "Error: The provided email already exists in the database!";
-                return ErrorCode::DUPLICATE_EMAIL;
+                return -ErrorCode::DUPLICATE_EMAIL;
             } else {
                 // Handle other errors or rethrow the exception
                 throw $e;
