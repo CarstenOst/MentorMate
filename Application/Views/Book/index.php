@@ -79,7 +79,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
             }
 
 
-            window.confirmCancelation = function confirmCancelation(bookingId) {
+            window.confirmCancellation = function confirmCancelation(bookingId) {
                 // Confirmation dialog before cancelling
                 var result = confirm("Are you sure you want cancel this booking?");
 
@@ -249,7 +249,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                             echo "
                                 <td class='user-booked-timeslot' id='timeslot-{$booking->getBookingId()}'>
                                     <i class='clock-icon fa-regular fa-clock'></i> $timeSlot-$timeSlotEnd
-                                    <button class='table-button right-button' onclick='confirmCancelation({$booking->getBookingId()})'>
+                                    <button class='table-button right-button' onclick='confirmCancellation({$booking->getBookingId()})'>
                                         <i class='cancel-icon fa-solid fa-ban'></i> Cancel
                                     </button>
                                     <br>
