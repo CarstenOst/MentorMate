@@ -211,6 +211,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
 
                 // Creates table with free timeslots (or existing 'booking')
                 foreach ($timeSlots as $timeSlot => $booking) {
+                    $timeSlotEnd = DateTime::createFromFormat('H:i', $timeSlot)->modify('+15 minutes')->format('H:i');
 
                     // The timeslot is available
                     if ($booking == null) {
@@ -223,7 +224,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
 
                         echo "
                                 <td class='available-timeSlot'>
-                                    <i class='clock-icon fa-regular fa-clock'></i> $timeSlot
+                                    <i class='clock-icon fa-regular fa-clock'></i> $timeSlot-$timeSlotEnd
                                     <br>
                                     <i class='location-icon fa-regular fa-location-dot'></i> <i>$bookingsLocation</i>
                                     <br>
@@ -245,7 +246,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
 
                         echo "
                                 <td class='user-booked-timeslot'>
-                                        <i class='clock-icon fa-regular fa-clock'></i> {$booking->getBookingTime()->format('H:i')}
+                                        <i class='clock-icon fa-regular fa-clock'></i> $timeSlot-$timeSlotEnd
                                         <br>
                                         <i class='location-icon fa-regular fa-location-dot'></i> <i> $bookingLocation</i>
                                         <br>

@@ -150,6 +150,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
 
                     // Populates table with booking rows
                     foreach ($bookings as $booking) {
+                        $timeSlotEnd = $booking->getBookingTime()->modify('+15 minutes')->format('H:i');
                         // Gets info about associated user (if there is one associated with the booking)
                         $userId = $isTutor ? $booking->getStudentId() : $booking->getTutorId();
                         $userName = $userId != null ? UserRepository::read($userId)->getFirstName() : '';
@@ -161,7 +162,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                                     <td>
                                         <i class='calendar-icon fa-regular fa-calendar'></i> {$booking->getBookingTime()->format('d-m-Y')}
                                         <br>
-                                        <i class='clock-icon fa-regular fa-clock'></i> {$booking->getBookingTime()->format('H:i')}
+                                        <i class='clock-icon fa-regular fa-clock'></i> {$booking->getBookingTime()->format('H:i')}-$timeSlotEnd
                                     </td>
                                     <td>
                                         <i class='location-icon fa-regular fa-location-dot'></i> {$booking->getLocation()}
@@ -186,7 +187,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                                     <td>
                                         <i class='calendar-icon fa-regular fa-calendar'></i> {$booking->getBookingTime()->format('d-m-Y')}
                                         <br>
-                                        <i class='clock-icon fa-regular fa-clock'></i> {$booking->getBookingTime()->format('H:i')}
+                                        <i class='clock-icon fa-regular fa-clock'></i> {$booking->getBookingTime()->format('H:i')}-$timeSlotEnd
                                     </td>
                                     <td>
                                         <i class='location-icon fa-regular fa-location-dot'></i> {$booking->getLocation()}

@@ -37,7 +37,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
 
 <html>
 <head>
-    <link rel="stylesheet" href="/Assets/style.css">
+    <link rel="stylesheet" href="../../Assets/style.css">
     <script src="https://kit.fontawesome.com/5928831ae4.js" crossorigin="anonymous"></script>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -198,8 +198,10 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
 
                     // Creates table with timeslots
                     foreach ($timeSlots as $timeSlot => $tutorIds) {
+                        $timeSlotEnd = DateTime::createFromFormat('H:i', $timeSlot)->modify('+15 minutes')->format('H:i');
                         echo "<tr>";
                         foreach ($tutorIds as $tutorId => $booking) {
+
                             // The tutor has no booking for this 'timeSlot'
                             if ($booking == null) {
                                 echo "<td class='no-booking-cell'></td>";
@@ -209,7 +211,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                             elseif ($booking->getStudentId() == $_SESSION[SessionConst::USER_ID]) {
                                 echo "
                                     <td class='user-booked-timeslot'>
-                                        <i class='clock-icon fa-regular fa-clock'></i> {$booking->getBookingTime()->format('H:i')}
+                                        <i class='clock-icon fa-regular fa-clock'></i> $timeSlot-$timeSlotEnd
                                         <button class='table-button right-button' onclick='confirmCancelation({$booking->getBookingId()})'>
                                             <i class='cancel-icon fa-solid fa-ban'></i> Cancel
                                         </button>
@@ -223,9 +225,9 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                             elseif ($booking->getStudentId()) {
                                 echo "
                                     <td class='unavailable-timeslot'>
-                                        <i class='clock-icon fa-regular fa-clock'></i> $timeSlot
+                                            <i class='clock-icon fa-regular fa-clock'></i> $timeSlot-$timeSlotEnd
                                         <div class='right-button'>
-                                            <i class='fa-solid fa-user-clock'></i> Booked
+                                            <i class='fa-solid fa-user-lock'></i> Booked
                                         </div>
                                     </td>";
                             }
@@ -234,7 +236,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                             else {
                                 echo "
                                     <td class='available-timeSlot'>
-                                        <i class='clock-icon fa-regular fa-clock'></i> {$booking->getBookingTime()->format('H:i')}
+                                            <i class='clock-icon fa-regular fa-clock'></i> $timeSlot-$timeSlotEnd
                                         <button class='table-button right-button' onclick='bookTimeslot({$booking->getBookingId()})''>
                                             <i class='book-icon fa-solid fa-circle-plus'></i> Book
                                         </button>

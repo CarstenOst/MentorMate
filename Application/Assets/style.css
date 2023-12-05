@@ -265,7 +265,7 @@ tr {
     position: sticky;
     top: 0;
     z-index: 1;
-    min-width: 155px;
+    min-width: 220px;
     background-color: var(--theme-blue);
     color: var(--theme-white);
     text-align: left;
@@ -274,11 +274,13 @@ tr {
 
 /* Empty time slot */
 .no-booking-cell {
+    min-width: 220px;
     font-size: 16px;
 }
 
 /* Un-booked time slot */
 .available-timeSlot {
+    min-width: 220px;
     font-size: 16px;
     background-color: var(--theme-light-green);
     color: #000000;
@@ -288,6 +290,7 @@ tr {
 
 /* Booked time slot */
 .unavailable-timeslot {
+    min-width: 220px;
     font-size: 16px;
     background-color: #d0d0d0;
     color: #000000;
@@ -298,6 +301,7 @@ tr {
 
 /* Time slot booked by the logged inn user */
 .user-booked-timeslot {
+    min-width: 220px;
     font-size: 16px;
     background-color: var(--theme-light-blue);
     color: #000000;

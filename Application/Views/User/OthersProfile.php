@@ -98,6 +98,8 @@ class OthersProfile
 
             // Populates table with booking rows
             foreach ($bookings as $booking) {
+                $timeSlotEnd = $booking->modify('+15 minutes')->format('H:i');
+
                 // Shows row with sticky date header for each unique date
                 $bookingDate = $booking->getBookingTime()->format('d-m-Y');
                 if (array_key_exists($bookingDate, $uniqueDates)) {
@@ -115,7 +117,7 @@ class OthersProfile
                     echo "
                         <tr>
                             <td class='available-timeSlot'>
-                                <i class='clock-icon fa-regular fa-clock'></i> {$booking->getBookingTime()->format('H:i')}
+                                <i class='clock-icon fa-regular fa-clock'></i> {$booking->getBookingTime()->format('H:i')}-$timeSlotEnd
                                 <button class='table-button right-button' onclick='bookTimeslot({$booking->getBookingId()})''>
                                     <i class='book-icon fa-solid fa-circle-plus'></i> Book
                                 </button>
@@ -131,7 +133,7 @@ class OthersProfile
                     echo "
                         <tr>
                             <td class='user-booked-timeslot'>
-                                <i class='clock-icon fa-regular fa-clock'></i> {$booking->getBookingTime()->format('H:i')}
+                                <i class='clock-icon fa-regular fa-clock'></i> {$booking->getBookingTime()->format('H:i')}-$timeSlotEnd
                                 <button class='table-button right-button' onclick='confirmCancellation({$booking->getBookingId()})'>
                                     <i class='cancel-icon fa-solid fa-ban'></i> Cancel
                                 </button>
