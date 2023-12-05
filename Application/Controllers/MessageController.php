@@ -4,15 +4,12 @@ namespace Application\Controllers;
 
 require("../../autoloader.php");
 
-use Core\Entities\Booking;
-use Core\Entities\Message;
-use PDOException;
-use DateTime;
-use Exception;
+
 use Infrastructure\Repositories\MessageRepository;
 use Application\Constants\SessionConst;
 use Application\Validators\Auth;
-use Infrastructure\Repositories\BookingRepository;
+use Core\Entities\Message;
+use PDOException;
 
 
 // Starts session, and checks if user is logged in. If not, redirects to login page
@@ -25,10 +22,14 @@ if (!Auth::checkAuth()) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     switch ($_POST['action']) {
         case 'sendMessage':
-            $message = new Message();
-            $message->setSenderId($_SESSION[SessionConst::USER_ID]);
-            $message->setReceiverId($_SESSION['chat_last_receiver']);
-            $message->setMessageText(htmlspecialchars($_POST['message']));
+            $message = new Message(
+                messageId: null,
+                senderId: $_SESSION[SessionConst::USER_ID],
+                receiverId: $_SESSION['chat_last_receiver'],
+                sentAt: null,
+                messageText: htmlspecialchars($_POST['message']),
+                isRead: null
+            );
             try {
                 MessageRepository::create($message);
             } catch (PDOException $e) {
