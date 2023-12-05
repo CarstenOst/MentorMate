@@ -88,10 +88,7 @@ class InputHandler
 
 
     /**
-     * Sanitizes a given value with the strip_tags function, and then with an additional method if provided.
-     *
-     * This method is a helper to maintain a base level of sanitization (using strip_tags) and then
-     * allows for further sanitization with another provided method.
+     * Sanitizes a given value with an additional method if provided.
      *
      * @param string $value Raw input value
      * @param callable|null $additionalSanitization Additional sanitization method
@@ -99,15 +96,13 @@ class InputHandler
      */
     private function sanitizeInput(string $value, callable $additionalSanitization = null): string
     {
-        // Strip tags to remove HTML and PHP tags
-        $sanitized = strip_tags($value);  // Base level of sanitization
 
         // Apply the additional sanitization, if provided
         if ($additionalSanitization) {
-            $sanitized = call_user_func($additionalSanitization, $sanitized);
+            $value = call_user_func($additionalSanitization, $value);
         }
 
-        return $sanitized;
+        return $value;
     }
 }
 
