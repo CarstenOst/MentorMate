@@ -224,6 +224,9 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                                 echo "
                                     <td class='unavailable-timeslot'>
                                         <i class='clock-icon fa-regular fa-clock'></i> $timeSlot
+                                        <div class='right-button'>
+                                            <i class='fa-solid fa-user-clock'></i> Booked
+                                        </div>
                                     </td>";
                             }
 
