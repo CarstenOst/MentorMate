@@ -16,11 +16,11 @@ if (!Auth::checkAuth()) {
     header('Location: ../User/Login.php');
     exit();
 }
-header('Content-Type: application/json');
 
-$response = ['status' => 'error', 'message' => ''];
-
+// Check if the logout action is requested
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
+    $response = ['status' => 'error', 'message' => ''];
+
     switch ($_POST['action']) {
         case 'uploadProfilePicture':
             $message = [];
