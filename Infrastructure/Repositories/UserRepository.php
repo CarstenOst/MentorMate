@@ -175,6 +175,25 @@ class UserRepository implements IUserRepository
     }
 
     /**
+     * Update the about section of a user
+     *
+     * @param int $userId
+     * @param string $about
+     * @return bool true if successful, false otherwise
+     */
+    public static function updateAbout(int $userId, string $about): bool
+    {
+        $query = "UPDATE User SET about=:about WHERE userId=:userId";
+        $connection = DBConnector::getConnection();
+        $sql = $connection->prepare($query);
+
+        $sql->bindValue(':about', $about);
+        $sql->bindValue(':userId', $userId, PDO::PARAM_INT);
+
+        return $sql->execute();
+    }
+
+    /**
      * Get all users based on their role
      *
      * @param string $role Either Student or Tutor
