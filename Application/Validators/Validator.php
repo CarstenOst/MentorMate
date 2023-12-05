@@ -21,6 +21,9 @@ class Validator
      */
     public static function isValid(string $type, string $value): bool
     {
+        if (strlen($value) > 255 && $type !== self::STRIPPED_TEXT) {
+            return false; // Database set to not accept more than 255 characters
+        }
         return match ($type) {
             self::STRIPPED_TEXT => self::isStrippedText($value),
             self::TEXT => self::isText($value),

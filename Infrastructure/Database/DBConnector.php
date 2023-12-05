@@ -29,9 +29,8 @@ class DBConnector
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $conn->exec("set names utf8");
         } catch (PDOException $exception) {
-            // TODO add logging
-            // TODO do not echo exceptions to the user
-            echo "Connection error: " . $exception->getMessage();
+            // TODO add logging, and handle this somehow
+            echo "Connection error: please set up the database correctly :)";
         }
 
         return $conn ?? null;

@@ -90,8 +90,8 @@ class UserRepository implements IUserRepository
                 return 'User was not found';
             }
         } catch (PDOException $e) {
-            // You can log the error or handle it appropriately
-            return 'Database error: ' . $e->getMessage(); // TODO just don't echo this later on
+            // We should log the error or handle it appropriately, not like this of course
+            return 'Database error: something went wrong when trying to read user';
         } finally {
             $connection = null;  // Close the connection
         }

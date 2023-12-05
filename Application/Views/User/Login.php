@@ -53,7 +53,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             exit();
         } else {
             HtmlRenderer::generateResponse("Wrong password, or email!", false);
-            Auth::logOut(); // Logout the user TODO remove this
 
             // Do not worry about this, it is just to make the form fields red or green
             $formData[Login::EMAIL] = [$formData[Login::EMAIL], true];

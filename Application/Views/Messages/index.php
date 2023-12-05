@@ -18,7 +18,7 @@ if (!Auth::checkAuth()) {
 
 // Check if the logout action is requested
 if (isset($_GET['logout']) && $_GET['logout'] == 1) {
-    // Call the logOut function from your class
+    // Call the logOut function
     Auth::logOut();
 
     // Redirect to login page after logout
