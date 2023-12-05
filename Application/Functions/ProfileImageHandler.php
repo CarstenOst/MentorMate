@@ -31,14 +31,15 @@ class ProfileImageHandler
             return false;
         }
 
-
+        // Get the file extension, and build the file name and target file path
         $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
         $fileName = $userId . '.' . $extension;
         $targetFile = $uploadDir . $fileName;
-        self::deleteFilesByName($uploadDir, (string)$userId); // TODO add this later for more cleanup
+
+        self::deleteFilesByName($uploadDir, (string)$userId); // Delete all files with the same name as the user id
         if (move_uploaded_file($file['tmp_name'], $targetFile)) { // If the file was uploaded successfully
-            $message[] = "Image was uploaded successfully.";
-            if (file_exists($targetFile)) {
+            $message[] = "Image was uploaded successfully."; // Save some message
+            if (file_exists($targetFile)) { // If the file exists, return true (extra check)
                 return true;
             } else {
                 $message[] = "Failed unexpectedly";
@@ -100,7 +101,7 @@ class ProfileImageHandler
                 }
             }
         }
-
+        // This is not really
         if (empty($deletedFiles) && !$hasErrors) {
             // No matching files found
             return "No files found to delete.";
