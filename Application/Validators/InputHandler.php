@@ -2,7 +2,7 @@
 
 declare(strict_types=1); // Type safety
 
-namespace Application\Views\User;
+namespace Application\Validators;
 
 if (__FILE__ == $_SERVER['SCRIPT_FILENAME']) {
     header('Location: ../index.php');
