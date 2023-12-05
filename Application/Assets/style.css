@@ -140,7 +140,7 @@ tr {
     overflow: auto;
     border-radius: 12px;
 }
-/*
+
 .message-button {
     background-color: var(--theme-blue);
     color: var(--theme-white);
@@ -148,12 +148,12 @@ tr {
     font-size: 16px;
     border: none;
     cursor: pointer;
-    border-radius: 5px;
+    border-radius: 12px;
 }
 .message-button:hover {
     background-color: #00506b;
 }
-*/
+
 
 
 

@@ -63,7 +63,7 @@ class OthersProfile
                 <div class='contact-info'>
                     <h2>Contact Information</h2>
                     <p><b>Email:</b> $email</p>
-                    <!-- <button class='message-button'>Message $userType</button> -->
+                    <button class='message-button' onclick='messageUser({$user->getUserId()})'>Message $userType</button>                
                 </div>
                 
         
@@ -181,7 +181,7 @@ class OthersProfile
                 <div class='contact-info'>
                     <h2>Contact Information</h2>
                     <p><b>Email:</b> $email</p>
-                    <!-- <button class='message-button'>Message $userType</button> -->
+                    <button class='message-button' onclick='messageUser({$user->getUserId()})'>Message $userType</button>
                 </div>
             </div>
         ";
@@ -271,8 +271,28 @@ class OthersProfile
                     }
                 });
             }
-        });
 
+
+            window.messageUser = function messageUser(userId) {
+                // Use AJAX to call a PHP controller action
+                $.ajax({
+                    type: "POST",
+                    url: "../../Controllers/BookingController.php",
+                    data: {
+                        action: "messageUser",
+                        userId: userId
+                    },
+                    success: function (data) {
+                        let response = JSON.parse(data);
+                        window.location.href = response.redirect;
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        // Directly access the error message without parsing JSON
+                        alert("Error: " + jqXHR.responseText);
+                    }
+                });
+            }
+        });
     </script>
 </head>
 
