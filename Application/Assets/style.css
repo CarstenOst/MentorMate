@@ -556,3 +556,34 @@ tr {
 #chat-form button:hover {
     background-color: var(--hover-dark-blue);
 }
+
+/* Profile */
+
+@keyframes fadeOut {
+    from {opacity: 1;}
+    to {opacity: 0;}
+}
+
+.fadeOut {
+    animation-name: fadeOut;
+    animation-duration: 3s;
+}
+
+.editable-text, .editable-input {
+    padding: 5px;
+    width: 100%; /* Adjust as necessary to fit your layout */
+    box-sizing: border-box; /* Ensures padding is included in the total width */
+    margin: 0; /* Adjust as necessary */
+    border: 1px solid transparent; /* Makes transition smoother */
+}
+
+.editable-text {
+    cursor: pointer;
+}
+
+.editable-input {
+    display: none;
+    border: 1px solid #ccc;
+}
+
+

@@ -5,6 +5,7 @@ namespace Application\Validators;
 class Validator
 {
     public const TEXT = 'text';
+    public const STRIPPED_TEXT = 'strippedText';
     public const EMAIL = 'email';
     public const PASSWORD = 'password';
     public const USER_TYPE = 'userType';
@@ -14,19 +15,31 @@ class Validator
     /**
      * Check if the input is valid.
      *
-     * @param string $type must be string of one of these: text | email | password | userType.
+     * @param string $type must be string of one of these: strippedText | text | email | password | userType.
      * @param string $value The string to check if is valid.
      * @return bool True if valid, false if not.
      */
     public static function isValid(string $type, string $value): bool
     {
         return match ($type) {
+            self::STRIPPED_TEXT => self::isStrippedText($value),
             self::TEXT => self::isText($value),
             self::EMAIL => self::validEmailInput($value),
             self::PASSWORD => self::isPassword($value),
             self::USER_TYPE => self::isUserType($value),
             default => false,
         };
+    }
+
+    /**
+     * Check if the string contains php code
+     *
+     * @param string $value
+     * @return bool true if the string already is clean, false if we got a script kiddie
+     */
+    private static function isStrippedText(string $value): bool
+    {
+        return $value == strip_tags($value);
     }
 
     /**

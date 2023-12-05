@@ -13,7 +13,6 @@ if (!Auth::checkAuth()) {
     exit();
 }
 
-// TODO REMOVE THI
 $isTutor = $_SESSION[SessionConst::USER_TYPE] === 'Tutor';
 
 ?>
@@ -35,22 +34,19 @@ $isTutor = $_SESSION[SessionConst::USER_TYPE] === 'Tutor';
                     if ($isTutor) {
                         echo "
                             <a href='../Views/CreateBooking/Index.php' class='custom-img-link'><img width='160' height='160' src='../Assets/create_booking.svg' alt='Create booking sessions'></a>
-                            <a href='../Views/Bookings/index.php' class='custom-img-link'><img width='160' height='160' src='../Assets/bookings.svg' alt='Your booked sessions'></a>
-                            <a href='../Views/AvailableTutors/index.php' class='custom-img-link'><img width='160' height='160' src='../Assets/available_tutors.svg' alt='Show available Tutors'></a>
-                            <a href='../Views/Students/index.php' class='custom-img-link'><img width='160' height='160' src='../Assets/students.svg' alt='Students'></a>                            
-                            <a href='../Views/Messages/Inbox.php' class='custom-img-link'><img width='160' height='160' src='../Assets/messages.svg' alt='Your messages'></a>
-                            <a href='../Views/User/Profile.php' class='custom-img-link'><img width='160' height='160' src='../Assets/profile.svg' alt='Your profile'></a>
-                        ";
+                         ";
                     } else {
                         echo "
                             <a href='../Views/Book/index.php' class='custom-img-link'><img width='160' height='160' src='../Assets/book.svg' alt='Book session'></a>
-                            <a href='../Views/Bookings/index.php' class='custom-img-link'><img width='160' height='160' src='../Assets/bookings.svg' alt='Your booked sessions'></a>
-                            <a href='../Views/AvailableTutors/index.php' class='custom-img-link'><img width='160' height='160' src='../Assets/available_tutors.svg' alt='Show available Tutors'></a>
-                            <a href='../Views/Students/index.php' class='custom-img-link'><img width='160' height='160' src='../Assets/students.svg' alt='Students'></a>                            
-                            <a href='../Views/Messages/Inbox.php' class='custom-img-link'><img width='160' height='160' src='../Assets/messages.svg' alt='Your messages'></a>
-                            <a href='../Views/User/Profile.php' class='custom-img-link'><img width='160' height='160' src='../Assets/profile.svg' alt='Your profile'></a>
-                        ";
+                          ";
                     }
+                    echo "
+                        <a href='../Views/Bookings/index.php' class='custom-img-link'><img width='160' height='160' src='../Assets/bookings.svg' alt='Your booked sessions'></a>
+                        <a href='../Views/AvailableTutors/index.php' class='custom-img-link'><img width='160' height='160' src='../Assets/available_tutors.svg' alt='Show available Tutors'></a>
+                        <a href='../Views/Students/index.php' class='custom-img-link'><img width='160' height='160' src='../Assets/students.svg' alt='Students'></a>                            
+                        <a href='../Views/Messages/Inbox.php' class='custom-img-link'><img width='160' height='160' src='../Assets/messages.svg' alt='Your messages'></a>
+                        <a href='../Views/User/Profile.php' class='custom-img-link'><img width='160' height='160' src='../Assets/profile.svg' alt='Your profile'></a>
+                        "
                 ?>
             </div>
         </div>
