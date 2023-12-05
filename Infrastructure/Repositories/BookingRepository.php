@@ -186,9 +186,13 @@ class BookingRepository implements IBookingRepository
         // Sets start and end -Date to be the hour interval from 08:00:00 to 23:59:59
         $startDate = new DateTime($date->format('Y-m-d') . ' 08:00:00');
         $endDate = new DateTime($date->format('Y-m-d') . ' 23:59:59');
-        $sql = "SELECT * FROM Booking WHERE 
-            bookingTime >= :startDate AND 
-            bookingTime < :endDate;
+
+        $sql = "
+            SELECT Booking.*, User.firstName AS tutorFirstName
+            FROM Booking
+            JOIN User ON Booking.tutorId = User.userId
+            WHERE Booking.bookingTime >= :startDate AND 
+                  Booking.bookingTime < :endDate;
         ";
 
         // Prepares the SQL
@@ -198,21 +202,25 @@ class BookingRepository implements IBookingRepository
 
         // Executes the query
         $resultList = [];
+        $users = [];
         try {
             $query->execute();
             $results = $query->fetchAll(PDO::FETCH_ASSOC);
             // Appends Booking objects if query results
             if ($results) {
-                foreach ($results as $row) {
-                    $resultList[] = self::makeBookingFromRow($row);
+                foreach ($results as $rowKey => $rowValue) {
+                    $resultList[] = self::makeBookingFromRow(array_slice($rowValue, 0, 7));
+                    $users[] = $rowValue['tutorFirstName'];
                 }
             }
+
 
         } catch (PDOException $exception) {
             echo "SQL Query fail: " . $exception->getMessage();
         }
 
-        return $resultList;
+        // Returns two arrays of equal length, one with bookings, the other with index matched tutors for each booking
+        return [$resultList, $users];
     }
 
 
