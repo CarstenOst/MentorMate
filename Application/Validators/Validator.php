@@ -8,30 +8,42 @@ class Validator
     public const EMAIL = 'email';
     public const PASSWORD = 'password';
     public const USER_TYPE = 'userType';
-    public const PHONE_NUMBER = 'phoneNumber';
     public const VALID_USER_TYPES = ['student', 'tutor'];
 
 
     /**
-     * This function was made for Module 6, task 5 to validate
-     * either an email, password or a phone number in the same function.
+     * Check if the input is valid.
      *
-     * @param string $type must be string of one of these: text | email | password | phone.
+     * @param string $type must be string of one of these: text | email | password | userType.
      * @param string $value The string to check if is valid.
      * @return bool True if valid, false if not.
      */
     public static function isValid(string $type, string $value): bool
     {
         return match ($type) {
-            self::TEXT => $value != "" && !ctype_space($value) && preg_match("/[a-zæøåA-ZÆØÅ]/", $value),
+            self::TEXT => self::isText($value),
             self::EMAIL => self::validEmailInput($value),
             self::PASSWORD => self::isPassword($value),
             self::USER_TYPE => self::isUserType($value),
-            self::PHONE_NUMBER => preg_match("/^[0-9]{8}$/", $value),
             default => false,
         };
     }
 
+    /**
+     * Checks if the string is text.
+     *
+     * @param string $value The string to check.
+     * @return bool true if the string is text, false if the string is not text.
+     */
+    private static function isText(string $value): bool
+    {
+        // Just simply return false if the input is not the same as the stripped input
+        if ($value !== strip_tags($value) || $value !== ltrim($value)) {
+            return false;
+        }
+
+        return $value != "" && !ctype_space($value) && !preg_match('/[^A-ZÆØÅ ]/iu', $value);
+    }
     /**
      * Checks if the email is valid.
      *
@@ -71,34 +83,16 @@ class Validator
      */
     private static function isPassword(string $password): bool
     {
+        // Just simply return false if the input is not the same as the stripped input
+        if ($password !== strip_tags($password)) {
+            return false;
+        }
+
         return strlen($password) >= 9 &&                    // Longer than, or 9 characters.
             preg_match('/[0-9]/', $password) &&     // Has one or more numbers.
-            preg_match('/[A-Z]/', $password) &&     // Has one or more upper case letters.
-            preg_match('/[a-z]/', $password) &&     // Has one or more lower case letters.
-            preg_match('/[^a-zA-Z0-9]/', $password);// Has one or more special characters.
-    }
-
-    /**
-     * Checks if string has no special characters and only letters (numbers are discarded too).
-     *
-     * @param string $str The string to check for special characters.
-     * @return bool true if string is only letters, false if not.
-     */
-    public static function hasNoSpecialCharacters(string $str): bool
-    {
-        // Type cast to bool is here redundant, as the not operator is used, forcing the return value to be bool.
-        return !preg_match('/[^A-ZÆØÅ ]/iu', $str);
-    }
-
-    /**
-     * Removes whitespace from string.
-     *
-     * @param string $str The string to remove whitespace from.
-     * @return string The string without whitespace.
-     */
-    public static function removeWhiteSpace(string $str): string
-    {
-        return preg_replace('/\s+/', '', $str);
+            preg_match('/[A-ZÆØÅ]/', $password) &&     // Has one or more upper case letters.
+            preg_match('/[a-zæøå]/', $password) &&     // Has one or more lower case letters.
+            preg_match('/[^a-zæøåA-ZÆØÅ0-9]/', $password);// Has one or more special characters.
     }
 
 
@@ -111,9 +105,10 @@ class Validator
      */
     public static function validateName(string $name, array &$errorMessage): bool
     {
-        if (Validator::hasNoSpecialCharacters($name)) {
+        if (Validator::isValid(self::TEXT, $name)) {
             return true;
         }
+
         $name = htmlspecialchars($name);
         $errorMessage[] = "Names can only contain letters. You typed in '$name'";
         return false;

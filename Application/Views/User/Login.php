@@ -20,21 +20,6 @@ class Login
     ];
 
     /**
-     * Validates the login credentials against the database values for authentication
-     * @param array $formData the form fields and values as an associated matrix
-     *
-     * @return boolean indicating the status of the query
-     * @throws Exception
-     */
-    public static function loginUser(array $formData): bool
-    {
-        // TODO replace this with data validation against database password
-        $validEmail = Validator::isValid('email', $formData['email']);
-        $validPassword = Validator::isValid('password', $formData['password']);
-        return $validEmail && $validPassword;
-    }
-
-    /**
      * Html component showing the login form
      * @param array $formData the form fields and values as an associated matrix
      *
@@ -60,20 +45,27 @@ $formData = $_POST;
 // Checks if form was submitted
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = $_POST[Login::EMAIL];
-    if (Validator::isValid('email', $email)) {
+    if (Validator::isValid(Validator::EMAIL, $email) && isset($_POST[Login::PASSWORD])) {
         // Logs inn the user
         $loginSuccess = Auth::authenticate($_POST[Login::PASSWORD], $email);
         if ($loginSuccess) {
             header("Location: ../index.php");
             exit();
         } else {
-            echo "Wrong password, or email!";
+            HtmlRenderer::generateResponse("Wrong password, or email!", false);
             Auth::logOut(); // Logout the user TODO remove this
+
+            // Do not worry about this, it is just to make the form fields red or green
+            $formData[Login::EMAIL] = [$formData[Login::EMAIL], true];
+            $formData[Login::PASSWORD] = [$formData[Login::PASSWORD], false];
+
             Login::viewLogin($formData);
         }
     } else {
+        $formData[Login::EMAIL] = [$formData[Login::EMAIL], false];
+        $formData[Login::PASSWORD] = [$formData[Login::PASSWORD], false];
         // Submitted form was invalid
-        echo "Your email is invalid!";
+        HtmlRenderer::generateResponse("Your email or password is invalid!", false);
         Login::viewLogin($formData);
     }
 } else {

@@ -119,7 +119,7 @@ class Register
         // Also, im going to use this code for the project, so I want to make it as reusable as possible.
         $handler->addConfig(self::FIRST_NAME, [Validator::class, 'validateName']);
         $handler->addConfig(self::LAST_NAME, [Validator::class, 'validateName']);
-        $handler->addConfig(self::EMAIL, [Validator::class, 'validateEmail'], [Validator::class, 'removeWhiteSpace']);
+        $handler->addConfig(self::EMAIL, [Validator::class, 'validateEmail']);
         $handler->addConfig(self::PASSWORD, [Validator::class, 'validatePassword']);
         $handler->addConfig(self::USER_TYPE, [Validator::class, 'validateUserType']);
 
