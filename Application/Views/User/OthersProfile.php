@@ -8,6 +8,7 @@ use DateTime;
 use Application\Constants\SessionConst;
 use Application\Validators\Auth;
 use Application\Views\Shared\Layout;
+use Core\Entities\User;
 use Infrastructure\Repositories\BookingRepository;
 use Infrastructure\Repositories\UserRepository;
 
@@ -38,14 +39,13 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
 
 class OthersProfile
 {
-    public static function viewTutorProfile(int $userId): void
+    public static function viewTutorProfile(User $user): void
     {
-        $user = UserRepository::read($userId);
         $firstName = $user->getFirstName();
         $lastName = $user->getLastName();
         $userType = $user->getUserType();
         $email = $user->getEmail();
-        $about = $user->getAbout()?? 'Bio in progress...';
+        $about = $user->getAbout() ?? 'Bio in progress...';
 
         // Displays upper half of profile section
         echo "
@@ -77,7 +77,7 @@ class OthersProfile
 
         // Puts table with tutor's available bookings under "Availability"
         $date = new DateTime();
-        $bookings = BookingRepository::getTutorBookings($date, $userId);
+        $bookings = BookingRepository::getTutorBookings($date, $user->getUserId());
         usort($bookings, function($a, $b) {
             return $a->getBookingTime() <=> $b->getBookingTime();
         });
@@ -158,9 +158,8 @@ class OthersProfile
 
 
 
-    public static function viewStudentProfile(int $userId): void
+    public static function viewStudentProfile(User $user): void
     {
-        $user = UserRepository::read($userId);
         $firstName = $user->getFirstName();
         $lastName = $user->getLastName();
         $userType = $user->getUserType();
@@ -248,11 +247,11 @@ class OthersProfile
 
     <div class="main-view">
         <?php
-            $userId = $_SESSION['last_viewed_profile'];
-            if ($isTutor) {
-                OthersProfile::viewStudentProfile($userId);
+            $user = UserRepository::read($_SESSION['last_viewed_profile']);
+            if ($isTutor || (!$isTutor && $user->getUserType() === 'Student')) {
+                OthersProfile::viewStudentProfile($user);
             } else {
-                OthersProfile::viewTutorProfile($userId);
+                OthersProfile::viewTutorProfile($user);
             }
         ?>
     </div>
