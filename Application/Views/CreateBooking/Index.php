@@ -82,7 +82,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
 
             window.removeBooking = function removeBooking(bookingTime, bookingLocation, bookingId) {
                 // Confirmation dialog before removing the booking
-                var result = confirm("Are you sure you want remove this booking?");
+                let result = confirm("Are you sure you want remove this booking?");
 
                 // Use AJAX to call a PHP controller action
                 if (result) {

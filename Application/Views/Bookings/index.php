@@ -42,7 +42,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
         document.addEventListener("DOMContentLoaded", function () {
             window.confirmCancellation = function confirmCancelation(bookingId) {
                 // Confirmation dialog before cancelling
-                var result = confirm("Are you sure you want cancel this booking?");
+                let result = confirm("Are you sure you want cancel this booking?");
 
                 // Use AJAX to call a PHP controller action
                 if (result) {

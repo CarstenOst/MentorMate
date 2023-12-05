@@ -202,7 +202,7 @@ class OthersProfile
         document.addEventListener("DOMContentLoaded", function () {
             window.confirmCancellation = function confirmCancellation(bookingId) {
                 // Confirmation dialog before cancelling
-                var result = confirm("Are you sure you want cancel this booking?");
+                let result = confirm("Are you sure you want cancel this booking?");
 
                 // Use AJAX to call a PHP controller action
                 if (result) {
