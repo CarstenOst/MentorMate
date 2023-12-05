@@ -77,7 +77,7 @@ class OthersProfile
 
         // Puts table with tutor's available bookings under "Availability"
         $date = new DateTime();
-        $bookings = BookingRepository::getTutorBookings($date, $user->getUserId());
+        list($bookings, $participants) = BookingRepository::getTutorBookings($date, $user->getUserId());
         usort($bookings, function($a, $b) {
             return $a->getBookingTime() <=> $b->getBookingTime();
         });
@@ -95,10 +95,9 @@ class OthersProfile
                 $uniqueDates[$booking->getBookingTime()->format('d-m-Y')] = 1;
             }
 
-
             // Populates table with booking rows
             foreach ($bookings as $booking) {
-                $timeSlotEnd = $booking->modify('+15 minutes')->format('H:i');
+                $timeSlotEnd = (DateTime::createFromFormat('d-m-Y H:i:s', $booking->getBookingTime()->format('d-m-Y H:i:s')))->modify('+15 minutes')->format('H:i');
 
                 // Shows row with sticky date header for each unique date
                 $bookingDate = $booking->getBookingTime()->format('d-m-Y');
