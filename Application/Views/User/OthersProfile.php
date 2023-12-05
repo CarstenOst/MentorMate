@@ -4,6 +4,7 @@ namespace Views\User\OthersProfile;
 
 require ("../../../autoloader.php");
 
+use Application\Functions\ProfileImageHandler;
 use DateTime;
 use Application\Constants\SessionConst;
 use Application\Validators\Auth;
@@ -39,6 +40,22 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
 
 class OthersProfile
 {
+
+    private static function getProfileImageFileName(?string $userId): string
+    {
+        $imageFileName = $userId ?? 'profile';
+        $fileExtension = ProfileImageHandler::getFileExtensionByFileName($imageFileName) ?? 'svg';
+
+        if (file_exists("../../ProfileImages/$imageFileName.$fileExtension")) {
+            $fileExtension = ProfileImageHandler::getFileExtensionByFileName($imageFileName);
+        } else {
+            $imageFileName = 'profile';
+            $fileExtension = 'svg';
+        }
+
+        return $imageFileName . '.' . $fileExtension;
+    }
+
     public static function viewTutorProfile(User $user): void
     {
         $firstName = $user->getFirstName();
@@ -46,11 +63,12 @@ class OthersProfile
         $userType = $user->getUserType();
         $email = $user->getEmail();
         $about = $user->getAbout() ?? 'Bio in progress...';
+        $fileName = self::getProfileImageFileName($user->getUserId());
 
         // Displays upper half of profile section
         echo "
             <div class='profile-container'>
-                <img src='../../Assets/profile.svg' alt='Tutors Profile Picture'>
+                <img src='../../ProfileImages/$fileName' alt='Tutors Profile Picture'>
                 <h1 class='tutor-name'>$firstName $lastName</h1>
                 <p class='user-type'>$userType</p>
         
@@ -164,11 +182,13 @@ class OthersProfile
         $userType = $user->getUserType();
         $email = $user->getEmail();
         $about = $user->getAbout() ?? 'Bio in progress...';
+        $fileName = self::getProfileImageFileName($user->getUserId());
+
 
         // Displays upper half of profile section
         echo "
             <div class='profile-container'>
-                <img src='../../Assets/profile.svg' alt='Tutors Profile Picture'>
+                <img src='../../ProfileImages/$fileName' alt='Tutors Profile Picture'>
                 <h1 class='tutor-name'>$firstName $lastName</h1>
                 <p class='user-type'>$userType</p>
         

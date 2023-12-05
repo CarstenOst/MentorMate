@@ -51,7 +51,6 @@ class SendMail
             $mail->Password = Secrets::SMTP_PASSWORD;            // SMTP password
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;  // Enable TLS encryption, `ssl` also accepted
             $mail->Port = 587;                                   // TCP port to connect to
-            $mail->SMTPDebug = 3;       // Enable verbose debug output TODO REMOVE before flight
 
 
              // for testing purposes only, as it is not recommended at all to disable SSL verification

@@ -545,9 +545,9 @@ tr {
 
 .editable-text, .editable-input {
     padding: 5px;
-    width: 100%; /* Adjust as necessary to fit your layout */
+    width: 100%;
     box-sizing: border-box; /* Ensures padding is included in the total width */
-    margin: 0; /* Adjust as necessary */
+    margin: 0;
     border: 1px solid transparent; /* Makes transition smoother */
 }
 

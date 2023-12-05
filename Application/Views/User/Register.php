@@ -144,6 +144,7 @@ class Register
         // such as duplicate email for example.
         if (!empty($notValidResponseMessage)) {
             self::notValidResponse($notValidResponseMessage, $dataInput);
+            exit();
         }
 
         // If we get here, then the user is authenticated.

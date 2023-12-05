@@ -2,11 +2,10 @@
 
 require("../../../autoloader.php");
 
-use Application\Constants\SessionConst;
-use Infrastructure\Repositories\MessageRepository;
 use Application\Validators\Auth;
 use Application\Views\Shared\Layout;
-use Infrastructure\Repositories\UserRepository;
+use Application\Constants\SessionConst;
+use Infrastructure\Repositories\MessageRepository;
 
 
 // Starts session, and checks if user is logged in. If not, redirects to login page
@@ -18,15 +17,13 @@ if (!Auth::checkAuth()) {
 
 // Check if the logout action is requested
 if (isset($_GET['logout']) && $_GET['logout'] == 1) {
-    // Call the logOut function from your class
+    // Logout
     Auth::logOut();
 
     // Redirect to login page after logout
     header('Location: ../User/Login.php');
     exit();
 }
-
-// TODO Make table for viewing list of chats user has with button ?and last message sendt viewable?
 ?>
 
 
@@ -130,8 +127,6 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                 ?>
             </div>
         </div>
-
-
     <div class='main-view'>
 
 </body>

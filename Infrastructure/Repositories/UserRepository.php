@@ -90,8 +90,8 @@ class UserRepository implements IUserRepository
                 return 'User was not found';
             }
         } catch (PDOException $e) {
-            // You can log the error or handle it appropriately
-            return 'Database error: ' . $e->getMessage(); // TODO just don't echo this later on
+            // We should log the error or handle it appropriately, not like this of course
+            return 'Database error: something went wrong when trying to read user';
         } finally {
             $connection = null;  // Close the connection
         }
@@ -136,22 +136,6 @@ class UserRepository implements IUserRepository
         return 'Not valid';
     }
 
-    public static function getUserPassword(int $userId): string {
-        $query = "SELECT password FROM User WHERE userId=:userId";
-        $connection = DBConnector::getConnection();
-
-        $sql = $connection->prepare($query);
-        $sql->bindParam(':userId', $userId, PDO::PARAM_INT);
-        $sql->execute();
-
-        $row = $sql->fetch(PDO::FETCH_ASSOC);
-        if ($row) {
-            return $row['password'];
-        }
-
-        return 'User does not exist';
-    }
-
 
     /**
      * TODO test this
@@ -193,39 +177,12 @@ class UserRepository implements IUserRepository
         return $sql->execute();
     }
 
+
     /**
-     * Get all users based on their role
-     *
-     * @param string $role Either Student or Tutor
-     * @return array of User
-     * @throws Exception If it fails
+     * function to delete a user, obviously won't work if the user has bookings, or messages
+     * @param $id
+     * @return bool
      */
-    public static function getAllUsersByRole(string $role): array
-    {
-        $query = "SELECT * FROM User WHERE userType = :role";
-        $connection = DBConnector::getConnection();
-        $sql = $connection->prepare($query);
-
-        $sql->execute(['role' => $role]);
-
-        $users = [];
-        while ($row = $sql->fetch(PDO::FETCH_ASSOC)) {
-            $user = new User();
-            $user->setAbout($row['about'] ?? '');
-            $user->setEmail($row['email']);
-            $user->setUserId($row['userId']);
-            $user->setUserType($row['userType']);
-            $user->setLastName($row['lastName']);
-            $user->setFirstName($row['firstName']);
-            $user->setCreatedAt(new DateTime($row['createdAt']) ?? null);
-            $user->setUpdatedAt(new DateTime($row['updatedAt']) ?? null);
-
-            $users[] = $user;
-        }
-        return $users;
-    }
-
-
     public static function delete($id): bool
     {
         $query = "DELETE FROM User WHERE userId = :id";
@@ -241,6 +198,7 @@ class UserRepository implements IUserRepository
 
 
     /**
+     * Just to reuse some sql code, but it was later deprecated (sorta)
      * @param string $query
      * @param $user
      * @return PDOStatement
