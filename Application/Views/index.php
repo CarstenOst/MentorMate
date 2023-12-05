@@ -13,11 +13,12 @@ if (!Auth::checkAuth()) {
     exit();
 }
 
+// TODO REMOVE THI
 $isTutor = $_SESSION[SessionConst::USER_TYPE] === 'Tutor';
 
 ?>
 <head>
-    <link rel="stylesheet" href="/Assets/style.css">
+    <link rel="stylesheet" href="../Assets/style.css">
     <script src="https://kit.fontawesome.com/5928831ae4.js" crossorigin="anonymous"></script>
 </head>
 
@@ -33,7 +34,7 @@ $isTutor = $_SESSION[SessionConst::USER_TYPE] === 'Tutor';
                 <?php
                     if ($isTutor) {
                         echo "
-                            <a href='../Views/CreateBooking/index.php' class='custom-img-link'><img width='160' height='160' src='../Assets/create_booking.svg' alt='Create booking sessions'></a>
+                            <a href='../Views/CreateBooking/Index.php' class='custom-img-link'><img width='160' height='160' src='../Assets/create_booking.svg' alt='Create booking sessions'></a>
                             <a href='../Views/Bookings/index.php' class='custom-img-link'><img width='160' height='160' src='../Assets/bookings.svg' alt='Your booked sessions'></a>
                             <a href='../Views/AvailableTutors/index.php' class='custom-img-link'><img width='160' height='160' src='../Assets/available_tutors.svg' alt='Show available Tutors'></a>
                             <a href='../Views/Students/index.php' class='custom-img-link'><img width='160' height='160' src='../Assets/students.svg' alt='Students'></a>                            

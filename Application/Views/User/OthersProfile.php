@@ -192,8 +192,8 @@ class OthersProfile
 
 
 
-<head>
-    <link rel="stylesheet" href="/Assets/style.css">
+<head lang="en">
+    <link rel="stylesheet" href="../../Assets/style.css">
     <script src="https://kit.fontawesome.com/5928831ae4.js" crossorigin="anonymous"></script>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>

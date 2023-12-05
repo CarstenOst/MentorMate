@@ -44,7 +44,6 @@ class Auth
 
         $user = UserRepository::getUserByEmail($email);
         if (is_string($user)) {
-            echo $user;
             return false;
         }
         $storedPassword = $user->getPassword();

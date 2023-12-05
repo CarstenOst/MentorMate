@@ -34,26 +34,32 @@ class UserRepository implements IUserRepository
                         :password, 
                         :userType, 
                         :about);
-
-            SELECT LAST_INSERT_ID() as id;
                         ";
 
-        $sql = self::getSql($query, $user);
+
+        $connection = DBConnector::getConnection();
+        $sql = $connection->prepare($query);
+
+        // Bind parameters using named parameters and bindValue
+        $sql->bindValue(':firstName', $user->getFirstName());
+        $sql->bindValue(':lastName', $user->getLastName());
+        $sql->bindValue(':password', $user->getPassword());
+        $sql->bindValue(':userType', $user->getUserType());
+        $sql->bindValue(':about', $user->getAbout());
+        $sql->bindValue(':email', $user->getEmail());
 
         try {
             // Execute the statement
             $sql->execute();
-            return $sql->fetch(PDO::FETCH_ASSOC) ?? -1 ;
+            return $connection->lastInsertId();
 
         } catch (PDOException $e) {
             // Check if the error is due to a duplicate key on 'email'
-            if ($e->getCode() == 23000 &&
-                str_contains($e->getMessage(), 'Duplicate entry') &&
-                str_contains($e->getMessage(), 'for key \'email\''))
+            if ($e->getCode() == ErrorCode::DUPLICATE_EMAIL ||
+                str_contains($e->getMessage(), 'Duplicate entry'))
             {
                 // Handle duplicate email error
-                echo "Error: The provided email already exists in the database!";
-                return ErrorCode::DUPLICATE_EMAIL;
+                return -ErrorCode::DUPLICATE_EMAIL;
             } else {
                 // Handle other errors or rethrow the exception
                 throw $e;
@@ -168,6 +174,37 @@ class UserRepository implements IUserRepository
         return $sql->execute();
     }
 
+    /**
+     * Get all users based on their role
+     *
+     * @param string $role Either Student or Tutor
+     * @return array of User
+     * @throws Exception If it fails
+     */
+    public static function getAllUsersByRole(string $role): array
+    {
+        $query = "SELECT * FROM User WHERE userType = :role";
+        $connection = DBConnector::getConnection();
+        $sql = $connection->prepare($query);
+
+        $sql->execute(['role' => $role]);
+
+        $users = [];
+        while ($row = $sql->fetch(PDO::FETCH_ASSOC)) {
+            $user = new User();
+            $user->setAbout($row['about'] ?? '');
+            $user->setEmail($row['email']);
+            $user->setUserId($row['userId']);
+            $user->setUserType($row['userType']);
+            $user->setLastName($row['lastName']);
+            $user->setFirstName($row['firstName']);
+            $user->setCreatedAt(new DateTime($row['createdAt']) ?? null);
+            $user->setUpdatedAt(new DateTime($row['updatedAt']) ?? null);
+
+            $users[] = $user;
+        }
+        return $users;
+    }
 
 
     public static function delete($id): bool

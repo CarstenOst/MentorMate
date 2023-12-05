@@ -37,9 +37,9 @@ if ($_SESSION['chat_last_receiver'] === null) {
 ?>
 
 
-<html>
+<html lang="en">
     <head>
-        <link rel="stylesheet" href="/Assets/style.css">
+        <link rel="stylesheet" href="../../Assets/style.css">
         <script src="https://kit.fontawesome.com/5928831ae4.js" crossorigin="anonymous"></script>
 
 
@@ -49,7 +49,7 @@ if ($_SESSION['chat_last_receiver'] === null) {
                 // Submit form using Ajax
                 $('#chat-form').submit(function(e) {
                     e.preventDefault();
-                    var message = $('#message').val();
+                    let message = $('#message').val();
 
                     if (message !== '') {
                         $.ajax({

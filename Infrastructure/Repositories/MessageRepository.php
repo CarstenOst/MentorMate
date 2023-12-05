@@ -222,7 +222,7 @@ class MessageRepository
             ORDER BY
                 message.isRead ASC,
                 lastMessageTime DESC;
-        ";
+        "; // TODO FIX THIS QUERY
 
         // Prepares the SQL
         $query = $connection->prepare($sql);
