@@ -67,26 +67,6 @@ class MessageRepository
     }
 
 
-
-    /*
-     * Unsure if messages need to have "update" functionality
-    public static function update($user): bool
-    {
-        $query = "UPDATE User SET 
-                firstName=:firstName, 
-                lastName=:lastName, 
-                password=:password, 
-                userType=:userType, 
-                email=:email, 
-                about=:about  
-            WHERE userId=:userId";
-        $sql = self::getSql($query, $user);
-        $sql->bindValue(':userId', $user->getUserId(), PDO::PARAM_INT);
-
-        return $sql->execute();
-    }
-    */
-
     public static function delete($id): bool
     {
         $query = "DELETE FROM Message WHERE messageId = :id";
@@ -277,10 +257,6 @@ class MessageRepository
 
         return $conversations;
     }
-
-
-
-
 
 
     /**
