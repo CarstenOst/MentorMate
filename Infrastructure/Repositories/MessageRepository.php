@@ -101,8 +101,13 @@ class MessageRepository
     }
 
 
-
-
+    /**
+     * Get messages between two users, the sender and receiver.
+     *
+     * @param int $sender The ID of the user who sent the messages.
+     * @param int $receiver The ID of the user who received the messages.
+     * @return array An array of Message objects representing the messages between the users.
+     */
     public static function getMessagesBetweenUsers(int $sender, int $receiver): array {
         $connection = DBConnector::getConnection();
 
@@ -138,6 +143,13 @@ class MessageRepository
     }
 
 
+    /**
+     * Mark messages from the sender as read in a conversation between two users.
+     *
+     * @param int $receiver The ID of the user who received the messages.
+     * @param int $sender The ID of the user who sent the messages.
+     * @return void
+     */
     public static function markMessagesAsRead(int $receiver, int $sender): void {
         $connection = DBConnector::getConnection();
 
@@ -161,6 +173,17 @@ class MessageRepository
 
 
 
+    /**
+     * Get user conversations with details.
+     *
+     * This function retrieves conversations for a given user, including information about
+     * the conversation partner, the last message time, and the last message text.
+     *
+     * @param int $userId The ID of the user for whom to retrieve conversations.
+     * @return array An array containing details of user conversations.
+     *               Each array includes: 'conversationPartnerId', 'firstName', 'lastName',
+ *                                        'lastMessageTime', 'lastMessageRead', 'lastMessage'
+     */
     static public function getUserConversations(int $userId): array {
         $connection = DBConnector::getConnection();
 
@@ -217,6 +240,16 @@ class MessageRepository
     }
 
 
+    /**
+     * Get the count of unread conversations for a specific user.
+     *
+     * This function retrieves the number of unread conversations for the given user.
+     * A conversation is considered unread if there are messages where the user is the receiver
+     * and the `isRead` attribute is set to 0.
+     *
+     * @param int $userId The ID of the user for whom to retrieve unread conversations.
+     * @return array An associative array containing the count of unread conversations.
+     */
     public static function getUnreadConversations(int $userId): array {
         $connection = DBConnector::getConnection();
 
@@ -262,6 +295,11 @@ class MessageRepository
 
 
 
+    /**
+     * @param string $query
+     * @param $message
+     * @return PDOStatement
+     */
     private static function getSql(string $query, Message $message): PDOStatement
     {
         $connection = DBConnector::getConnection();
@@ -278,6 +316,12 @@ class MessageRepository
     }
 
 
+    /**
+     * Creates a Message object from a database row.
+     *
+     * @param array $row The associative array representing a database row.
+     * @return Message Returns a Message object created from the provided database row.
+     */
     private static function createMessageFromRow(array $row): Message
     {
         $message = new Message();
