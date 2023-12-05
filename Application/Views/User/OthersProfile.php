@@ -200,17 +200,37 @@ class OthersProfile
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
-        function confirmCancellation(bookingId) {
-            // Confirmation dialog before cancelling
-            var result = confirm("Are you sure you want cancel this booking?");
+        // Waits for page to load, then makes functions available globally
+        document.addEventListener("DOMContentLoaded", function () {
+            function confirmCancellation(bookingId) {
+                // Confirmation dialog before cancelling
+                var result = confirm("Are you sure you want cancel this booking?");
 
-            // Use AJAX to call a PHP controller action
-            if (result) {
+                // Use AJAX to call a PHP controller action
+                if (result) {
+                    $.ajax({
+                        type: "POST",
+                        url: "../../Controllers/BookingController.php",
+                        data: {
+                            action: "cancelBooking",
+                            bookingId: bookingId,
+                        },
+                        error: function(data) {
+                            let response = JSON.parse(data);
+                            alert(response.error);
+                        }
+                    });
+                }
+            }
+
+
+            function bookTimeslot(bookingId) {
+                // Use AJAX to call a PHP controller action
                 $.ajax({
                     type: "POST",
                     url: "../../Controllers/BookingController.php",
                     data: {
-                        action: "cancelBooking",
+                        action: "bookBooking",
                         bookingId: bookingId,
                     },
                     error: function(data) {
@@ -219,24 +239,8 @@ class OthersProfile
                     }
                 });
             }
-        }
+        });
 
-
-        function bookTimeslot(bookingId) {
-            // Use AJAX to call a PHP controller action
-            $.ajax({
-                type: "POST",
-                url: "../../Controllers/BookingController.php",
-                data: {
-                    action: "bookBooking",
-                    bookingId: bookingId,
-                },
-                error: function(data) {
-                    let response = JSON.parse(data);
-                    alert(response.error);
-                }
-            });
-        }
     </script>
 </head>
 
