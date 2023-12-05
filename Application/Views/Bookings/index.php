@@ -194,7 +194,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                                         <button class='table-button' onclick='viewUser($userId)'><i class='fa-solid fa-user'></i> $userName</button>
                                     </td>
                                     <td>
-                                        <button class='table-button' onclick='removeBooking($bookingId)'><i class='remove-icon fa-solid fa-circle-xmark'></i> Cancel</button>
+                                        <button class='table-button' onclick='confirmCancellation($bookingId)'><i class='cancel-icon fa-solid fa-ban'></i> Cancel</button>
                                     </td>
                                     <td>
                                         <button class='table-button' onclick='messageUser($userId)'><i class='message-icon fa-solid fa-message'></i> Message</button>
@@ -216,7 +216,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                                         <i class='fa-solid fa-user'></i>
                                     </td>
                                     <td>
-                                        <button class='table-button' onclick='removeBooking($bookingId)'><i class='remove-icon fa-solid fa-circle-xmark'></i> Cancel</button>
+                                        <button class='table-button' onclick='confirmCancellation($bookingId)'><i class='cancel-icon fa-solid fa-ban'></i> Cancel</button>
                                     </td>
                                     <td>
                                         
