@@ -2,6 +2,8 @@
 
 namespace Core\Entities;
 
+use DateTime;
+
 class Message
 {
     private ?int $messageId;
