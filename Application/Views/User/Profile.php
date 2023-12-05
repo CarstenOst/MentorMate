@@ -65,7 +65,7 @@ class Profile
 ?>
 
 <head>
-    <link rel="stylesheet" href="/Assets/style.css">
+    <link rel="stylesheet" href="../../Assets/style.css">
     <script src="https://kit.fontawesome.com/5928831ae4.js" crossorigin="anonymous"></script>
 </head>
 

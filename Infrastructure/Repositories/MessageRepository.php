@@ -103,7 +103,7 @@ class MessageRepository
 
 
 
-    public static function getMessagesBetweenUsers(int $user1, int $user2): array {
+    public static function getMessagesBetweenUsers(int $senderId, int $receiverId): array {
         $connection = DBConnector::getConnection();
 
         $sql = "SELECT * FROM Message WHERE 
@@ -115,8 +115,8 @@ class MessageRepository
 
         // Prepares the SQL
         $query = $connection->prepare($sql);
-        $query->bindValue(':senderId', $user1);
-        $query->bindValue(':receiverId', $user2);
+        $query->bindValue(':senderId', $senderId);
+        $query->bindValue(':receiverId', $receiverId);
 
         // Executes the query
         $resultList = [];
@@ -177,7 +177,7 @@ class MessageRepository
             ORDER BY
                 message.isRead ASC,
                 lastMessageTime DESC;
-        ";
+        "; // TODO FIX THIS QUERY
 
         // Prepares the SQL
         $query = $connection->prepare($sql);
@@ -235,37 +235,14 @@ class MessageRepository
         return $conversations;
     }
 
-
-
-
-
-
-    private static function getSql(string $query, Message $message): PDOStatement
-    {
-        $connection = DBConnector::getConnection();
-        $sql = $connection->prepare($query);
-
-        // Bind parameters using named parameters and bindValue
-        $sql->bindValue(':senderId', $message->getSenderId());
-        $sql->bindValue(':receiverId', $message->getReceiverId());
-        $sql->bindValue(':sentAt', $message->getSentAt());
-        $sql->bindValue(':messageText', $message->getMessageText());
-        $sql->bindValue(':isRead', $message->getIsRead());
-
-        return $sql;
-    }
-
-
     private static function createMessageFromRow(array $row): Message
     {
-        $message = new Message();
-        $message->setMessageId($row['messageId']);
-        $message->setSenderId($row['senderId']);
-        $message->setReceiverId($row['receiverId']);
-        $message->setSentAt(new DateTime($row['sentAt']) ?? null);
-        $message->setMessageText($row['messageText']);
-        $message->setIsRead($row['isRead']);
-
-        return $message;
+        return new Message($row['messageId'],
+            $row['senderId'],
+            $row['receiverId'],
+            new DateTime($row['sentAt']) ?? null,
+            $row['messageText'],
+            $row['isRead']
+        );
     }
 }

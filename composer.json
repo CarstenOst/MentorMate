@@ -1,0 +1,23 @@
+{
+  "name": "vendor/mentormate",
+  "description": "For students seeking help from tutors or mentors",
+  "require": {
+    "phpmailer/phpmailer": "^6.9",
+    "ext-mbstring": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Vendor\\Mentormate\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "Carsten Østergaard",
+      "email": "carsteno@uia.no"
+    },
+    {
+      "name": "William Peter Åredal",
+      "email": "williamaredal@hotmail.com"
+    }
+  ]
+}

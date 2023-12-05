@@ -58,6 +58,11 @@ tr {
     padding: 0;
 }
 
+#messageBox {
+    transition: opacity 1s ease-in-out;
+}
+
+/* The menu logo "MentorMate" */
 /* The menu logo "MentorMate" in the side-menu */
 .logo-title {
     font-size: 32px;
@@ -350,6 +355,7 @@ tr {
 .remove-icon {
     color: red;
 }
+
 
 
 
