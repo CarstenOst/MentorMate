@@ -80,9 +80,13 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
             }
 
 
-            window.removeBooking = function removeBooking(bookingId) {
+            window.removeBooking = function removeBooking(encodedBookingArray) {
                 // Confirmation dialog before removing the booking
                 var result = confirm("Are you sure you want remove this booking?");
+                let bookingTime = encodedBookingArray[0];
+                let bookingLocation = encodedBookingArray[1];
+                let bookingId = encodedBookingArray[2];
+                let responseEncodedArray = JSON.stringify([bookingTime, bookingLocation, bookingId]);
 
                 // Use AJAX to call a PHP controller action
                 if (result) {
@@ -92,6 +96,23 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                         data: {
                             action: "removeBooking",
                             bookingId: bookingId,
+                        },
+                        success: function (data) {
+                            let response = JSON.parse(data);
+                            if (response.message === "Successfully removed the booking.") {
+                                // Revert the changes for a canceled booking
+                                let timeslotElement = document.getElementById('timeslot-' + bookingTime);
+                                if (timeslotElement) {
+                                    timeslotElement.classList.remove('user-booked-timeslot');
+                                    timeslotElement.classList.add('available-timeSlot');
+                                    // Finds and replaces the "cancel" button with "book" button
+                                    let existingButton = timeslotElement.querySelector('.table-button');
+                                    existingButton.setAttribute('onclick', `createTimeslotBooking(${responseEncodedArray})`);
+                                    existingButton.innerHTML = `
+                                        <i class="book-icon fa-solid fa-circle-plus" aria-hidden="true"></i> Create
+                                    `;
+                                }
+                            }
                         },
                         error: function (data) {
                             let response = JSON.parse(data);
@@ -104,8 +125,11 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
 
             window.createTimeslotBooking = function createTimeslotBooking(encodedBookingArray) {
                 // Extract values from the array
-                var bookingTime = encodedBookingArray[0];
-                var bookingLocation = encodedBookingArray[1];
+                let bookingTime = encodedBookingArray[0];
+                let bookingLocation = encodedBookingArray[1];
+                let bookingId = encodedBookingArray[2];
+                let responseEncodedArray = JSON.stringify([bookingTime, bookingLocation, bookingId]);
+
 
                 // Use AJAX to call a PHP controller action
                 $.ajax({
@@ -115,6 +139,23 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                         action: "createBooking",
                         bookingTime: bookingTime,
                         bookingLocation: bookingLocation,
+                    },
+                    success: function (data) {
+                        let response = JSON.parse(data);
+                        if (response.message === "Successfully created the booking.") {
+                            // Find the corresponding timeslot element and update its content and class
+                            let timeslotElement = document.getElementById('timeslot-' + bookingTime);
+                            if (timeslotElement) {
+                                timeslotElement.classList.remove('available-timeSlot');
+                                timeslotElement.classList.add('user-booked-timeslot');
+                                // Finds and replaces the "book" button with "cancel" button
+                                let existingButton = timeslotElement.querySelector('.table-button');
+                                existingButton.setAttribute('onclick', `removeBooking(${responseEncodedArray})`);
+                                existingButton.innerHTML = `
+                                    <i class="remove-icon fa-solid fa-circle-xmark" aria-hidden="true"></i> Cancel
+                                `;
+                            }
+                        }
                     },
                     error: function (data) {
                         let response = JSON.parse(data);
@@ -221,11 +262,12 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                     $bookingTime = $startDate->format('d-m-Y ') . $timeSlot;
                     $encodedBookingArray = json_encode([
                         $bookingTime,
-                        $bookingsLocation
+                        $bookingsLocation,
+                        null,
                     ]);
 
                     echo "
-                            <td class='available-timeSlot'>
+                            <td class='available-timeSlot' id='timeslot-$bookingTime'>
                                 <i class='clock-icon fa-regular fa-clock'></i> $timeSlot-$timeSlotEnd
                                 <br>
                                 <i class='location-icon fa-regular fa-location-dot'></i> <i>$bookingsLocation</i>
@@ -245,15 +287,20 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                     $studentId = $booking->getStudentId();
                     $studentName = is_string(UserRepository::read($studentId)) ? 'None' : UserRepository::read($studentId)->getFirstName();
                     $bookingLocation = $booking->getLocation();
-
+                    $bookingTime = $startDate->format('d-m-Y ') . $timeSlot;
+                    $encodedBookingArray = json_encode([
+                        $bookingTime,
+                        $bookingLocation,
+                        $booking->getBookingId(),
+                    ]);
                     echo "
-                            <td class='user-booked-timeslot'>
+                            <td class='user-booked-timeslot'  id='timeslot-$bookingTime'>
                                     <i class='clock-icon fa-regular fa-clock'></i> $timeSlot-$timeSlotEnd
                                     <br>
                                     <i class='location-icon fa-regular fa-location-dot'></i> <i> $bookingLocation</i>
                                     <br>
                                     <i class='fa-solid fa-user'></i> $studentName
-                                    <button class='table-button right-button' onclick='removeBooking($bookingId)'>
+                                    <button class='table-button right-button' onclick='removeBooking($encodedBookingArray)'>
                                         <i class='remove-icon fa-solid fa-circle-xmark'></i> Remove
                                     </button>
                                 

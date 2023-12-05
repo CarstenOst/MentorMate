@@ -71,8 +71,7 @@ class OthersProfile
                     <h2>Availability</h2>
                     
                     <div class='container-availability-table'>
-                        <form method='POST' action=''>
-                            <table class='calendar'> 
+                        <table class='calendar'> 
         ";
 
         // Puts table with tutor's available bookings under "Availability"
@@ -115,7 +114,7 @@ class OthersProfile
                 if ($booking->getStudentId() == null) {
                     echo "
                         <tr>
-                            <td class='available-timeSlot'>
+                            <td class='available-timeSlot' id='timeslot-{$booking->getBookingId()}'>
                                 <i class='clock-icon fa-regular fa-clock'></i> {$booking->getBookingTime()->format('H:i')}-$timeSlotEnd
                                 <button class='table-button right-button' onclick='bookTimeslot({$booking->getBookingId()})''>
                                     <i class='book-icon fa-solid fa-circle-plus'></i> Book
@@ -131,7 +130,7 @@ class OthersProfile
                 elseif ($booking->getStudentId() == $_SESSION[SessionConst::USER_ID]) {
                     echo "
                         <tr>
-                            <td class='user-booked-timeslot'>
+                            <td class='user-booked-timeslot' id='timeslot-{$booking->getBookingId()}'>
                                 <i class='clock-icon fa-regular fa-clock'></i> {$booking->getBookingTime()->format('H:i')}-$timeSlotEnd
                                 <button class='table-button right-button' onclick='confirmCancellation({$booking->getBookingId()})'>
                                     <i class='cancel-icon fa-solid fa-ban'></i> Cancel
@@ -148,8 +147,7 @@ class OthersProfile
         }
         // Finishes form and "Availability" section
         echo "
-                            </table>
-                        </form>
+                        </table>
                     </div>
             
                 </div>
@@ -215,7 +213,24 @@ class OthersProfile
                             action: "cancelBooking",
                             bookingId: bookingId,
                         },
-                        error: function(data) {
+                        success: function (data) {
+                            let response = JSON.parse(data);
+                            if (response.message === "Successfully cancelled the booking.") {
+                                // Revert the changes for a canceled booking
+                                let timeslotElement = document.getElementById('timeslot-' + bookingId);
+                                if (timeslotElement) {
+                                    timeslotElement.classList.remove('user-booked-timeslot');
+                                    timeslotElement.classList.add('available-timeSlot');
+                                    // Finds and replaces the "cancel" button with "book" button
+                                    let existingButton = timeslotElement.querySelector('.table-button');
+                                    existingButton.setAttribute('onclick', `bookTimeslot(${bookingId})`);
+                                    existingButton.innerHTML = `
+                                        <i class="book-icon fa-solid fa-circle-plus" aria-hidden="true"></i> Book
+                                    `;
+                                }
+                            }
+                        },
+                        error: function (data) {
                             let response = JSON.parse(data);
                             alert(response.error);
                         }
@@ -233,7 +248,24 @@ class OthersProfile
                         action: "bookBooking",
                         bookingId: bookingId,
                     },
-                    error: function(data) {
+                    success: function (data) {
+                        let response = JSON.parse(data);
+                        if (response.message === "Successfully booked the booking.") {
+                            // Find the corresponding timeslot element and update its content and class
+                            let timeslotElement = document.getElementById('timeslot-' + bookingId);
+                            if (timeslotElement) {
+                                timeslotElement.classList.remove('available-timeSlot');
+                                timeslotElement.classList.add('user-booked-timeslot');
+                                // Finds and replaces the "book" button with "cancel" button
+                                let existingButton = timeslotElement.querySelector('.table-button');
+                                existingButton.setAttribute('onclick', `confirmCancellation(${bookingId})`); // Update the onclick attribute
+                                existingButton.innerHTML = `
+                                    <i class="cancel-icon fa-solid fa-ban" aria-hidden="true"></i> Cancel
+                                `;
+                            }
+                        }
+                    },
+                    error: function (data) {
                         let response = JSON.parse(data);
                         alert(response.error);
                     }
