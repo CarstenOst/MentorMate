@@ -4,6 +4,8 @@ namespace Application\Controllers\BookingController;
 
 require("../../autoloader.php");
 
+use Application\Constants\Secrets;
+use Application\Functions\SendMail;
 use DateTime;
 use Exception;
 use Core\Entities\Booking;
@@ -61,6 +63,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
         case 'removeBooking':
             try {
+                $booking = BookingRepository::read($_POST['bookingId']);
+                /*
+                 * This is how we could have sent a mail notification to the user and/or tutor regarding the booking
+                if ($booking->getStudentId()) {
+                    SendMail::sendMailTo(
+                    // Replace this with the user email (chose not to have this dynamically set to be the user email)
+                        Secrets::HARDCODED_MAIL_FOR_TESTING_ONLY,
+                        "Your timeslot at {$booking->getBookingTime()->format('d-m-y H:i')} at {$booking->getLocation()} was cancelled",
+                        'The booked timeslot was deleted by your tutor.',
+                        'Message (alt - plain text)'
+                    );
+                }
+                */
                 BookingRepository::delete($_POST['bookingId']);
                 echo json_encode(['message' => "Successfully removed the booking."]);
             } catch (Exception $error) {
@@ -77,6 +92,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 $studentId = $_SESSION[SessionConst::USER_ID];
                 $booking->setStudentId($studentId);
                 BookingRepository::update($booking);
+                /*
+                 * This is how we could have sent a mail notification to the user and/or tutor regarding the booking
+                SendMail::sendMailTo(
+                    // Replace this with the user email (chose not to have this dynamically set to be the user email)
+                    Secrets::HARDCODED_MAIL_FOR_TESTING_ONLY,
+                    "New booked timeslot at {$booking->getBookingTime()->format('d-m-y H:i')}",
+                    "Time: {$booking->getBookingTime()->format('d-m-y H:i')} <br>Location: {$booking->getLocation()}.",
+                    "Message (alt - plain text)"
+                );
+                */
                 echo json_encode(['message' => "Successfully booked the booking."]);
             } catch (Exception $error) {
                 http_response_code(400);
@@ -90,6 +115,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 $booking = BookingRepository::read($_POST['bookingId']);
                 $booking->setStudentId(null);
                 BookingRepository::update($booking);
+                /*
+                 * This is how we could have sent a mail notification to the user and/or tutor regarding the booking
+                if ($booking->getStudentId()) {
+                    SendMail::sendMailTo(
+                    // Replace this with the user email (chose not to have this dynamically set to be the user email)
+                        Secrets::HARDCODED_MAIL_FOR_TESTING_ONLY,
+                        "Your timeslot at {$booking->getBookingTime()->format('d-m-y H:i')} at {$booking->getLocation()} was cancelled",
+                        'The booked timeslot was cancelled by your tutor.',
+                        'Message (alt - plain text)'
+                    );
+                }
+                */
                 echo json_encode(['message' => "Successfully cancelled the booking."]);
             } catch (Exception $error) {
                 http_response_code(400);
@@ -113,13 +150,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 http_response_code(400);
                 echo json_encode(["errorThrown" => "Failed to message user."]);
             }
-            break;
-
-
-        // Actions for user functions
-        case 'addToCalendar':
-            // Logic for adding to calendar using icalendar subscription
-            echo json_encode(["message" => "Added to calendar"]);
             break;
     }
 

@@ -79,7 +79,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
             }
 
 
-            window.confirmCancellation = function confirmCancelation(bookingId) {
+            window.confirmCancellation = function confirmCancellation(bookingId) {
                 // Confirmation dialog before cancelling
                 let result = confirm("Are you sure you want cancel this booking?");
 
@@ -102,7 +102,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                                     timeslotElement.classList.add('available-timeSlot');
                                     // Finds and replaces the "cancel" button with "book" button
                                     let existingButton = timeslotElement.querySelector('.table-button');
-                                    existingButton.setAttribute('onclick', `bookTimeslot(${bookingId})`); // Update the onclick attribute
+                                    existingButton.setAttribute('onclick', `bookTimeslot(${JSON.stringify(bookingId)})`); // Update the onclick attribute
                                     existingButton.innerHTML = `
                                         <i class="book-icon fa-solid fa-circle-plus" aria-hidden="true"></i> Book
                                     `;
@@ -137,7 +137,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                                 timeslotElement.classList.add('user-booked-timeslot');
                                 // Finds and replaces the "book" button with "cancel" button
                                 let existingButton = timeslotElement.querySelector('.table-button');
-                                existingButton.setAttribute('onclick', `confirmCancelation(${bookingId})`); // Update the onclick attribute
+                                existingButton.setAttribute('onclick', `confirmCancellation(${JSON.stringify(bookingId)})`); // Update the onclick attribute
                                 existingButton.innerHTML = `
                                     <i class="cancel-icon fa-solid fa-ban" aria-hidden="true"></i> Cancel
                                 `;
