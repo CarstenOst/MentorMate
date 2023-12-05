@@ -40,7 +40,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
     <script>
         // Waits for page to load, then makes functions available globally
         document.addEventListener("DOMContentLoaded", function () {
-            window.confirmCancellation = function confirmCancelation(bookingId) {
+            window.confirmCancellation = function confirmCancellation(bookingId) {
                 // Confirmation dialog before cancelling
                 let result = confirm("Are you sure you want cancel this booking?");
 

@@ -64,6 +64,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         case 'removeBooking':
             try {
                 $booking = BookingRepository::read($_POST['bookingId']);
+                /*
+                 * This is how we could have sent a mail notification to the user and/or tutor regarding the booking
                 if ($booking->getStudentId()) {
                     SendMail::sendMailTo(
                     // Replace this with the user email (chose not to have this dynamically set to be the user email)
@@ -73,6 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                         'Message (alt - plain text)'
                     );
                 }
+                */
                 BookingRepository::delete($_POST['bookingId']);
                 echo json_encode(['message' => "Successfully removed the booking."]);
             } catch (Exception $error) {
@@ -89,6 +92,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 $studentId = $_SESSION[SessionConst::USER_ID];
                 $booking->setStudentId($studentId);
                 BookingRepository::update($booking);
+                /*
+                 * This is how we could have sent a mail notification to the user and/or tutor regarding the booking
                 SendMail::sendMailTo(
                     // Replace this with the user email (chose not to have this dynamically set to be the user email)
                     Secrets::HARDCODED_MAIL_FOR_TESTING_ONLY,
@@ -96,6 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                     "Time: {$booking->getBookingTime()->format('d-m-y H:i')} <br>Location: {$booking->getLocation()}.",
                     "Message (alt - plain text)"
                 );
+                */
                 echo json_encode(['message' => "Successfully booked the booking."]);
             } catch (Exception $error) {
                 http_response_code(400);
@@ -107,6 +113,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             try {
                 // TODO Add safety check to see if the student is the one who booked the booking
                 $booking = BookingRepository::read($_POST['bookingId']);
+                $booking->setStudentId(null);
+                BookingRepository::update($booking);
+                /*
+                 * This is how we could have sent a mail notification to the user and/or tutor regarding the booking
                 if ($booking->getStudentId()) {
                     SendMail::sendMailTo(
                     // Replace this with the user email (chose not to have this dynamically set to be the user email)
@@ -116,8 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                         'Message (alt - plain text)'
                     );
                 }
-                $booking->setStudentId(null);
-                BookingRepository::update($booking);
+                */
                 echo json_encode(['message' => "Successfully cancelled the booking."]);
             } catch (Exception $error) {
                 http_response_code(400);
