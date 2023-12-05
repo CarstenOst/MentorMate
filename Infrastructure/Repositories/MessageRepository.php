@@ -324,13 +324,14 @@ class MessageRepository
      */
     private static function createMessageFromRow(array $row): Message
     {
-        $message = new Message();
-        $message->setMessageId($row['messageId']);
-        $message->setSenderId($row['senderId']);
-        $message->setReceiverId($row['receiverId']);
-        $message->setSentAt(new DateTime($row['sentAt']) ?? null);
-        $message->setMessageText($row['messageText']);
-        $message->setIsRead($row['isRead']);
+        $message = new Message(
+            $row['messageId'],
+            $row['senderId'],
+            $row['receiverId'],
+            new DateTime($row['sentAt']) ?? null,
+            $row['messageText'],
+            $row['isRead']
+        );
 
         return $message;
     }
