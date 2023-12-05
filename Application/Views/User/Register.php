@@ -2,14 +2,13 @@
 
 namespace Application\Views\User;
 
-include 'InputHandler.php';
 require("../../../autoloader.php");
 
-use Exception;
 use Core\Entities\User;
 use Application\Validators\Auth;
 use Application\Views\Shared\Layout;
 use Application\Validators\Validator;
+use Application\Validators\InputHandler;
 use Application\Views\Shared\HtmlRenderer;
 use Infrastructure\Repositories\ErrorCode;
 use Infrastructure\Repositories\UserRepository;
