@@ -21,6 +21,14 @@ use Application\Constants\Secrets;
 
 class SendMail
 {
+    /**
+     * Sends an email to the specified recipient
+     * @param string $recipientEmail The email address of the recipient
+     * @param string $subject The subject of the email
+     * @param string $htmlBody The HTML body of the email
+     * @param string $altBody The alternative body of the email
+     * @return bool Returns true if the email was sent successfully, false otherwise
+     */
     public static function sendMailTo(
         string $recipientEmail,
         string $subject,
@@ -75,7 +83,7 @@ class SendMail
 }
 
 // Example usage:
-// SendMail::sendMailTo('aquulsmurf@gmail.com', 'Test', 'Test');
+// SendMail::sendMailTo('example@example.com', 'Subject', 'Message (html)', 'Message (alt - plain text)');
 
 
 
