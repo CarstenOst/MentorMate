@@ -127,10 +127,10 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
 
                 if ($isTutor) {
                     list($bookings, $participant) = BookingRepository::getTutorBookings($date, $_SESSION[SessionConst::USER_ID]);
-                    $bookingHeaders = ["Booking date", "Location", "Student", "Cancel Timeslot", "Message", "Add to calendar"];
+                    $bookingHeaders = ["Booking date", "Location", "Student", "Reschedule", "Cancel Timeslot", "Message"];
                 } else {
                     list($bookings, $participant) = BookingRepository::getStudentBookings($date, $_SESSION[SessionConst::USER_ID]);
-                    $bookingHeaders = ["Booking date", "Location", "Tutor", "Cancel Timeslot", "Message", "Add to calendar"];
+                    $bookingHeaders = ["Booking date", "Location", "Tutor", "Cancel Timeslot", "Message"];
                 }
 
 
@@ -174,13 +174,10 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                                         <button class='table-button' onclick='viewUser($userId)'><i class='fa-solid fa-user'></i> $userName</button>
                                     </td>
                                     <td>
-                                        <button class='table-button' onclick='confirmCancelation($bookingId)'><i class='cancel-icon fa-solid fa-ban'></i> Cancel</button>
+                                        <button class='table-button' onclick='confirmCancellation($bookingId)'><i class='cancel-icon fa-solid fa-ban'></i> Cancel</button>
                                     </td>
                                     <td>
                                         <button class='table-button' onclick='messageUser($userId)'><i class='message-icon fa-solid fa-message'></i> Message</button>
-                                    </td>
-                                    <td>
-                                        <button class='table-button'><i class='calendar-icon fa-regular fa-calendar-plus'></i> Add boooking</button>
                                     </td>
                                 </tr>
                             ";
@@ -199,13 +196,10 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                                         <i class='fa-solid fa-user'></i>
                                     </td>
                                     <td>
-                                        <button class='table-button' onclick='confirmCancelation($bookingId)'><i class='cancel-icon fa-solid fa-ban'></i> Cancel</button>
+                                        <button class='table-button' onclick='confirmCancellation($bookingId)'><i class='cancel-icon fa-solid fa-ban'></i> Cancel</button>
                                     </td>
                                     <td>
                                         
-                                    </td>
-                                    <td>
-                                        <button class='table-button'><i class='calendar-icon fa-regular fa-calendar-plus'></i> Add boooking</button>
                                     </td>
                                 </tr>
                             ";
