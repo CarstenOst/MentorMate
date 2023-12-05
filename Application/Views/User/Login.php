@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Logs inn the user
         $loginSuccess = Auth::authenticate($_POST[Login::PASSWORD], $email);
         if ($loginSuccess) {
-            header("Location: Profile.php");
+            header("Location: ../index.php");
             exit();
         } else {
             echo "Wrong password, or email!";

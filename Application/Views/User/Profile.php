@@ -4,9 +4,12 @@ namespace Application\Views\User;
 
 require ("../../../autoloader.php");
 
+use DateTime;
 use Application\Validators\Auth;
 use Application\Views\Shared\Layout;
 use Application\Constants\SessionConst;
+use Infrastructure\Repositories\BookingRepository;
+use Infrastructure\Repositories\UserRepository;
 
 // Starts session, and checks if user is logged in. If not, redirects to login page
 if (!Auth::checkAuth()) {
@@ -42,30 +45,22 @@ class Profile
         echo "
             <div class='profile-container'>
                 <img src='../../Assets/profile.svg' alt='Tutors Profile Picture'>
-        
                 <h1 class='tutor-name'>$firstName $lastName</h1>
-                
                 <p class='user-type'>$userType</p>
         
                 <div class='about'>
                     <h2>About $firstName</h2>
-                    <p>$about</p>
+                    <i>$about</i>
                 </div>
         
-                <div class='availability'>
-                    <h2>Availability</h2>
-                    <p>Display relevant availability details here.</p>
-                </div>
-                
                 <div class='contact-info'>
                     <h2>Contact Information</h2>
                     <p><b>Email:</b> $email</p>
                     <!-- <button class='message-button'>Message $userType</button> -->
                 </div>
-        
-            </div>
         ";
     }
+
 }
 ?>
 
@@ -75,14 +70,14 @@ class Profile
 </head>
 
 <body>
-<?php
-    $isTutor = $_SESSION[SessionConst::USER_TYPE] == 'Tutor';
-    Layout::displaySideMenu($isTutor);
-?>
+    <?php
+        $isTutor = $_SESSION[SessionConst::USER_TYPE] == 'Tutor';
+        Layout::displaySideMenu($isTutor);
+    ?>
 
-<div class="main-view">
-<?php
-    Profile::viewUserProfile();
-?>
-</div>
+    <div class="main-view">
+        <?php
+            Profile::viewUserProfile();
+        ?>
+    </div>
 </body>

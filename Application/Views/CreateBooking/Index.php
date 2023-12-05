@@ -44,9 +44,9 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
             // Use AJAX to submit a PHP GET
             $.ajax({
                 type: "POST",
-                url: "./CreateBookingController.php",
+                url: "../../Controllers/BookingController.php",
                 data: {
-                    action: "previousDate",
+                    action: "previousDateWithLocation",
                     previousDate: previousDate,
                     location: location,
                 },
@@ -63,9 +63,9 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
             // Use AJAX to submit a PHP GET
             $.ajax({
                 type: "POST",
-                url: "./CreateBookingController.php",
+                url: "../../Controllers/BookingController.php",
                 data: {
-                    action: "nextDate",
+                    action: "nextDateWithLocation",
                     nextDate: nextDate,
                     location: location,
                 },
@@ -86,7 +86,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
             if (result) {
                 $.ajax({
                     type: "POST",
-                    url: "./CreateBookingController.php",
+                    url: "../../Controllers/BookingController.php",
                     data: {
                         action: "removeBooking",
                         bookingId: bookingId,
@@ -108,7 +108,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
             // Use AJAX to call a PHP controller action
             $.ajax({
                 type: "POST",
-                url: "./CreateBookingController.php",
+                url: "../../Controllers/BookingController.php",
                 data: {
                     action: "createBooking",
                     bookingTime: bookingTime,

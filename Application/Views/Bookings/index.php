@@ -46,7 +46,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                 if (result) {
                     $.ajax({
                         type: "POST",
-                        url: "./BookingsController.php",
+                        url: "../../Controllers/BookingController.php",
                         data: {
                             action: "cancelBooking",
                             bookingId: bookingId
@@ -64,10 +64,34 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                 // Use AJAX to call a PHP controller action
                 $.ajax({
                     type: "POST",
-                    url: "./BookingsController.php",
+                    url: "../../Controllers/BookingController.php",
                     data: {
                         action: "messageUser",
                         userId: userId
+                    },
+                    success: function (data) {
+                        let response = JSON.parse(data);
+                        window.location.href = response.redirect;
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        // Directly access the error message without parsing JSON
+                        alert("Error: " + jqXHR.responseText);
+                    }
+                });
+            }
+
+            function viewUser(userId) {
+                // Use AJAX to call a PHP controller action
+                $.ajax({
+                    type: "POST",
+                    url: "../../Controllers/BookingController.php",
+                    data: {
+                        action: "viewUser",
+                        userId: userId,
+                    },
+                    success: function(data) {
+                        const response = JSON.parse(data);
+                        window.location.href = response.redirect;
                     }
                 });
             }
@@ -131,30 +155,58 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                         $userName = $userId != null ? UserRepository::read($userId)->getFirstName() : '';
                         $bookingId = $booking->getBookingId();
 
-                        echo "
-                            <tr>
-                                <td>
-                                    <i class='calendar-icon fa-regular fa-calendar'></i> {$booking->getBookingTime()->format('d-m-Y')}
-                                    <br>
-                                    <i class='clock-icon fa-regular fa-clock'></i> {$booking->getBookingTime()->format('H:i')}
-                                </td>
-                                <td>
-                                    <i class='location-icon fa-regular fa-location-dot'></i> {$booking->getLocation()}
-                                </td>
-                                <td>
-                                    <i class='fa-solid fa-user'></i> {$userName}
-                                </td>
-                                <td>
-                                    <button class='table-button' onclick='confirmCancelation($bookingId)'><i class='cancel-icon fa-solid fa-ban'></i> Cancel</button>
-                                </td>
-                                <td>
-                                    <button class='table-button' onclick='messageUser($userId)'><i class='message-icon fa-solid fa-message'></i> Message</button>
-                                </td>
-                                <td>
-                                    <button class='table-button'><i class='calendar-icon fa-regular fa-calendar-plus'></i> Add boooking</button>
-                                </td>
-                            </tr>
-                        ";
+                        if ($booking->getStudentId()) {
+                            echo "
+                                <tr>
+                                    <td>
+                                        <i class='calendar-icon fa-regular fa-calendar'></i> {$booking->getBookingTime()->format('d-m-Y')}
+                                        <br>
+                                        <i class='clock-icon fa-regular fa-clock'></i> {$booking->getBookingTime()->format('H:i')}
+                                    </td>
+                                    <td>
+                                        <i class='location-icon fa-regular fa-location-dot'></i> {$booking->getLocation()}
+                                    </td>
+                                    <td>
+                                        <button class='table-button' onclick='viewUser($userId)'><i class='fa-solid fa-user'></i> $userName</button>
+                                    </td>
+                                    <td>
+                                        <button class='table-button' onclick='confirmCancelation($bookingId)'><i class='cancel-icon fa-solid fa-ban'></i> Cancel</button>
+                                    </td>
+                                    <td>
+                                        <button class='table-button' onclick='messageUser($userId)'><i class='message-icon fa-solid fa-message'></i> Message</button>
+                                    </td>
+                                    <td>
+                                        <button class='table-button'><i class='calendar-icon fa-regular fa-calendar-plus'></i> Add boooking</button>
+                                    </td>
+                                </tr>
+                            ";
+                        } else {
+                            echo "
+                                <tr>
+                                    <td>
+                                        <i class='calendar-icon fa-regular fa-calendar'></i> {$booking->getBookingTime()->format('d-m-Y')}
+                                        <br>
+                                        <i class='clock-icon fa-regular fa-clock'></i> {$booking->getBookingTime()->format('H:i')}
+                                    </td>
+                                    <td>
+                                        <i class='location-icon fa-regular fa-location-dot'></i> {$booking->getLocation()}
+                                    </td>
+                                    <td>
+                                        <i class='fa-solid fa-user'></i>
+                                    </td>
+                                    <td>
+                                        <button class='table-button' onclick='confirmCancelation($bookingId)'><i class='cancel-icon fa-solid fa-ban'></i> Cancel</button>
+                                    </td>
+                                    <td>
+                                        
+                                    </td>
+                                    <td>
+                                        <button class='table-button'><i class='calendar-icon fa-regular fa-calendar-plus'></i> Add boooking</button>
+                                    </td>
+                                </tr>
+                            ";
+                        }
+
                     }
 
                 }
