@@ -35,22 +35,25 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
-        function viewUser(userId) {
-            // Use AJAX to call a PHP controller action
-            $.ajax({
-                type: "POST",
-                url: "../../Controllers/BookingController.php",
-                data: {
-                    action: "viewUser",
-                    userId: userId,
-                },
-                success: function(data) {
-                    // Redirects so GET can post new date
-                    const response = JSON.parse(data);
-                    window.location.href = response.redirect;
-                }
-            });
-        }
+        // Waits for page to load, then makes functions available globally
+        document.addEventListener("DOMContentLoaded", function () {
+            window.viewUser = function viewUser(userId) {
+                // Use AJAX to call a PHP controller action
+                $.ajax({
+                    type: "POST",
+                    url: "../../Controllers/BookingController.php",
+                    data: {
+                        action: "viewUser",
+                        userId: userId,
+                    },
+                    success: function (data) {
+                        // Redirects so GET can post new date
+                        const response = JSON.parse(data);
+                        window.location.href = response.redirect;
+                    }
+                });
+            }
+        });
     </script>
 </head>
 

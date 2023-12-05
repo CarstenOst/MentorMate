@@ -40,87 +40,90 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
-        function getPreviousDate(previousDate, location) {
-            // Use AJAX to submit a PHP GET
-            $.ajax({
-                type: "POST",
-                url: "../../Controllers/BookingController.php",
-                data: {
-                    action: "previousDateWithLocation",
-                    previousDate: previousDate,
-                    location: location,
-                },
-                success: function(data) {
-                    // Redirects so GET can post new date
-                    const response = JSON.parse(data);
-                    window.location.href = response.redirect;
-                }
-            });
-        }
-
-
-        function getNextDate(nextDate, location) {
-            // Use AJAX to submit a PHP GET
-            $.ajax({
-                type: "POST",
-                url: "../../Controllers/BookingController.php",
-                data: {
-                    action: "nextDateWithLocation",
-                    nextDate: nextDate,
-                    location: location,
-                },
-                success: function(data) {
-                    // Redirects so GET can post new date
-                    const response = JSON.parse(data);
-                    window.location.href = response.redirect;
-                }
-            });
-        }
-
-
-        function removeBooking(bookingId) {
-            // Confirmation dialog before removing the booking
-            var result = confirm("Are you sure you want remove this booking?");
-
-            // Use AJAX to call a PHP controller action
-            if (result) {
+        // Waits for page to load, then makes functions available globally
+        document.addEventListener("DOMContentLoaded", function () {
+            window.getPreviousDate = function getPreviousDate(previousDate, location) {
+                // Use AJAX to submit a PHP GET
                 $.ajax({
                     type: "POST",
                     url: "../../Controllers/BookingController.php",
                     data: {
-                        action: "removeBooking",
-                        bookingId: bookingId,
+                        action: "previousDateWithLocation",
+                        previousDate: previousDate,
+                        location: location,
                     },
-                    error: function(data) {
+                    success: function (data) {
+                        // Redirects so GET can post new date
+                        const response = JSON.parse(data);
+                        window.location.href = response.redirect;
+                    }
+                });
+            }
+
+
+            window.getNextDate = function getNextDate(nextDate, location) {
+                // Use AJAX to submit a PHP GET
+                $.ajax({
+                    type: "POST",
+                    url: "../../Controllers/BookingController.php",
+                    data: {
+                        action: "nextDateWithLocation",
+                        nextDate: nextDate,
+                        location: location,
+                    },
+                    success: function (data) {
+                        // Redirects so GET can post new date
+                        const response = JSON.parse(data);
+                        window.location.href = response.redirect;
+                    }
+                });
+            }
+
+
+            window.removeBooking = function removeBooking(bookingId) {
+                // Confirmation dialog before removing the booking
+                var result = confirm("Are you sure you want remove this booking?");
+
+                // Use AJAX to call a PHP controller action
+                if (result) {
+                    $.ajax({
+                        type: "POST",
+                        url: "../../Controllers/BookingController.php",
+                        data: {
+                            action: "removeBooking",
+                            bookingId: bookingId,
+                        },
+                        error: function (data) {
+                            let response = JSON.parse(data);
+                            alert(response.error);
+                        }
+                    });
+                }
+            }
+
+
+            window.createTimeslotBooking = function createTimeslotBooking(encodedBookingArray) {
+                // Extract values from the array
+                var bookingTime = encodedBookingArray[0];
+                var bookingLocation = encodedBookingArray[1];
+
+                // Use AJAX to call a PHP controller action
+                $.ajax({
+                    type: "POST",
+                    url: "../../Controllers/BookingController.php",
+                    data: {
+                        action: "createBooking",
+                        bookingTime: bookingTime,
+                        bookingLocation: bookingLocation,
+                    },
+                    error: function (data) {
                         let response = JSON.parse(data);
                         alert(response.error);
                     }
                 });
+
             }
-        }
-
-
-        function createTimeslotBooking(encodedBookingArray) {
-            // Extract values from the array
-            var bookingTime = encodedBookingArray[0];
-            var bookingLocation = encodedBookingArray[1];
-
-            // Use AJAX to call a PHP controller action
-            $.ajax({
-                type: "POST",
-                url: "../../Controllers/BookingController.php",
-                data: {
-                    action: "createBooking",
-                    bookingTime: bookingTime,
-                    bookingLocation: bookingLocation,
-                },
-                error: function(data) {
-                    let response = JSON.parse(data);
-                    alert(response.error);
-                }
-            });
-
-        }
+        });
     </script>
 </head>
 
@@ -172,100 +175,98 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
             ?>
         </div>
 
-        <form method='POST' action=''>
-            <table class='calendar'>
-                <?php
-                // Creates DateTime variables for timeSlot intervals as keys
-                $startHourMinute = DateTime::createFromFormat('d-m-Y H:i:s' , $startDate->format('d-m-Y') . ' 08:00:00');
-                $endHourMinute = DateTime::createFromFormat('d-m-Y H:i:s', $startDate->format('d-m-Y') . ' 23:59:59');
+        <table class='calendar'>
+            <?php
+            // Creates DateTime variables for timeSlot intervals as keys
+            $startHourMinute = DateTime::createFromFormat('d-m-Y H:i:s' , $startDate->format('d-m-Y') . ' 08:00:00');
+            $endHourMinute = DateTime::createFromFormat('d-m-Y H:i:s', $startDate->format('d-m-Y') . ' 23:59:59');
 
-                $timeSlots = [];
+            $timeSlots = [];
 
-                // Queries database for bookings for hour interval '08-23'
-                $queriedBookings = BookingRepository::getTutorBookingsForDate($startDate, $_SESSION[SessionConst::USER_ID]);
-                $existingTutorBookings = [];
-                foreach ($queriedBookings as $booking) {
-                    $existingTutorBookings[$booking->getBookingTime()->format('H:i')] = $booking;
+            // Queries database for bookings for hour interval '08-23'
+            $queriedBookings = BookingRepository::getTutorBookingsForDate($startDate, $_SESSION[SessionConst::USER_ID]);
+            $existingTutorBookings = [];
+            foreach ($queriedBookings as $booking) {
+                $existingTutorBookings[$booking->getBookingTime()->format('H:i')] = $booking;
+            }
+
+            // Populates associative array with 'booking' or null if none exists for that time slot
+            while ($startHourMinute < $endHourMinute) {
+                $days = DateTime::createFromFormat('d-m-Y H:i:s' , $startDate->format('d-m-Y'));
+                $currentTimeSlot = $startHourMinute->format('H:i');
+
+                // Sets timeslots for each 15-minute interval from 08:00 to 23:45 to be 'booking' or null if the tutor does not have one existing
+                $timeSlotBooking = array_key_exists($currentTimeSlot, $existingTutorBookings) ? $existingTutorBookings[$currentTimeSlot] : null;
+                $timeSlots[$currentTimeSlot] = $timeSlotBooking;
+
+                // Increment time by 15 minutes for next timeSlot
+                $startHourMinute->modify('+15 minutes');
+            }
+
+            // Creates table headers with dates
+            echo "
+                <tr>
+                    <th>{$startDate->format('d-m-Y (l)')}</th>
+                </tr>
+            ";
+
+
+            // Creates table with free timeslots (or existing 'booking')
+            foreach ($timeSlots as $timeSlot => $booking) {
+                $timeSlotEnd = DateTime::createFromFormat('H:i', $timeSlot)->modify('+15 minutes')->format('H:i');
+
+                // The timeslot is available
+                if ($booking == null) {
+                    // Creates array with info to put as parameter into the ajax function 'createBooking'
+                    $bookingTime = $startDate->format('d-m-Y ') . $timeSlot;
+                    $encodedBookingArray = json_encode([
+                        $bookingTime,
+                        $bookingsLocation
+                    ]);
+
+                    echo "
+                            <td class='available-timeSlot'>
+                                <i class='clock-icon fa-regular fa-clock'></i> $timeSlot-$timeSlotEnd
+                                <br>
+                                <i class='location-icon fa-regular fa-location-dot'></i> <i>$bookingsLocation</i>
+                                <br>
+                                <i class='fa-solid fa-user'></i> None
+                                <button class='table-button right-button' onclick='createTimeslotBooking($encodedBookingArray)'>
+                                    <i class='book-icon fa-solid fa-circle-plus'></i> Create
+                                </button>
+                            </td>
+                    ";
                 }
 
-                // Populates associative array with 'booking' or null if none exists for that time slot
-                while ($startHourMinute < $endHourMinute) {
-                    $days = DateTime::createFromFormat('d-m-Y H:i:s' , $startDate->format('d-m-Y'));
-                    $currentTimeSlot = $startHourMinute->format('H:i');
+                // The time slot already has a booking created by the tutor
+                elseif ($booking->getTutorId() == $_SESSION[SessionConst::USER_ID]) {
+                    // Fetches the booking info
+                    $bookingId = $booking->getBookingId();
+                    $studentId = $booking->getStudentId();
+                    $studentName = is_string(UserRepository::read($studentId)) ? 'None' : UserRepository::read($studentId)->getFirstName();
+                    $bookingLocation = $booking->getLocation();
 
-                    // Sets timeslots for each 15-minute interval from 08:00 to 23:45 to be 'booking' or null if the tutor does not have one existing
-                    $timeSlotBooking = array_key_exists($currentTimeSlot, $existingTutorBookings) ? $existingTutorBookings[$currentTimeSlot] : null;
-                    $timeSlots[$currentTimeSlot] = $timeSlotBooking;
-
-                    // Increment time by 15 minutes for next timeSlot
-                    $startHourMinute->modify('+15 minutes');
-                }
-
-                // Creates table headers with dates
-                echo "
-                    <tr>
-                        <th>{$startDate->format('d-m-Y (l)')}</th>
-                    </tr>
-                ";
-
-
-                // Creates table with free timeslots (or existing 'booking')
-                foreach ($timeSlots as $timeSlot => $booking) {
-                    $timeSlotEnd = DateTime::createFromFormat('H:i', $timeSlot)->modify('+15 minutes')->format('H:i');
-
-                    // The timeslot is available
-                    if ($booking == null) {
-                        // Creates array with info to put as parameter into the ajax function 'createBooking'
-                        $bookingTime = $startDate->format('d-m-Y ') . $timeSlot;
-                        $encodedBookingArray = json_encode([
-                            $bookingTime,
-                            $bookingsLocation
-                        ]);
-
-                        echo "
-                                <td class='available-timeSlot'>
+                    echo "
+                            <td class='user-booked-timeslot'>
                                     <i class='clock-icon fa-regular fa-clock'></i> $timeSlot-$timeSlotEnd
                                     <br>
-                                    <i class='location-icon fa-regular fa-location-dot'></i> <i>$bookingsLocation</i>
+                                    <i class='location-icon fa-regular fa-location-dot'></i> <i> $bookingLocation</i>
                                     <br>
-                                    <i class='fa-solid fa-user'></i> None
-                                    <button class='table-button right-button' onclick='createTimeslotBooking($encodedBookingArray)'>
-                                        <i class='book-icon fa-solid fa-circle-plus'></i> Create
+                                    <i class='fa-solid fa-user'></i> $studentName
+                                    <button class='table-button right-button' onclick='removeBooking($bookingId)'>
+                                        <i class='remove-icon fa-solid fa-circle-xmark'></i> Remove
                                     </button>
-                                </td>
-                        ";
-                    }
-
-                    // The time slot already has a booking created by the tutor
-                    elseif ($booking->getTutorId() == $_SESSION[SessionConst::USER_ID]) {
-                        // Fetches the booking info
-                        $bookingId = $booking->getBookingId();
-                        $studentId = $booking->getStudentId();
-                        $studentName = is_string(UserRepository::read($studentId)) ? 'None' : UserRepository::read($studentId)->getFirstName();
-                        $bookingLocation = $booking->getLocation();
-
-                        echo "
-                                <td class='user-booked-timeslot'>
-                                        <i class='clock-icon fa-regular fa-clock'></i> $timeSlot-$timeSlotEnd
-                                        <br>
-                                        <i class='location-icon fa-regular fa-location-dot'></i> <i> $bookingLocation</i>
-                                        <br>
-                                        <i class='fa-solid fa-user'></i> $studentName
-                                        <button class='table-button right-button' onclick='removeBooking($bookingId)'>
-                                            <i class='remove-icon fa-solid fa-circle-xmark'></i> Remove
-                                        </button>
-                                    
-                                </td>
-                        ";
-                    }
-
-                    echo "</tr>";
+                                
+                            </td>
+                    ";
                 }
 
+                echo "</tr>";
+            }
 
-                ?>
-            </table>
-        </form>
+
+            ?>
+        </table>
 
     </div>
 
