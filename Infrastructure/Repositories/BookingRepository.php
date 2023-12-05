@@ -242,7 +242,9 @@ class BookingRepository implements IBookingRepository
             JOIN User ON Booking.tutorId = User.userId
             WHERE 
                 (Booking.studentId = :studentId) AND
-                Booking.bookingTime >= :startDate;
+                Booking.bookingTime >= :startDate
+            ORDER BY
+                Booking.bookingTime ASC;
         ";
 
         // Prepares the SQL
@@ -291,7 +293,9 @@ class BookingRepository implements IBookingRepository
         LEFT JOIN User ON Booking.studentId = User.userId
         WHERE 
             Booking.tutorId = :tutorId AND
-            Booking.bookingTime >= :startDate;
+            Booking.bookingTime >= :startDate
+        ORDER BY
+            Booking.bookingTime ASC;
         ";
 
         // Prepares the SQL
