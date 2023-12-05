@@ -45,20 +45,27 @@ $formData = $_POST;
 // Checks if form was submitted
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = $_POST[Login::EMAIL];
-    if (Validator::isValid('email', $email)) {
+    if (Validator::isValid(Validator::EMAIL, $email) && isset($_POST[Login::PASSWORD])) {
         // Logs inn the user
         $loginSuccess = Auth::authenticate($_POST[Login::PASSWORD], $email);
         if ($loginSuccess) {
             header("Location: ../index.php");
             exit();
         } else {
-            echo "Wrong password, or email!";
+            HtmlRenderer::generateResponse("Wrong password, or email!", false);
             Auth::logOut(); // Logout the user TODO remove this
+
+            // Do not worry about this, it is just to make the form fields red or green
+            $formData[Login::EMAIL] = [$formData[Login::EMAIL], true];
+            $formData[Login::PASSWORD] = [$formData[Login::PASSWORD], false];
+
             Login::viewLogin($formData);
         }
     } else {
+        $formData[Login::EMAIL] = [$formData[Login::EMAIL], false];
+        $formData[Login::PASSWORD] = [$formData[Login::PASSWORD], false];
         // Submitted form was invalid
-        echo "Your email is invalid!";
+        HtmlRenderer::generateResponse("Your email or password is invalid!", false);
         Login::viewLogin($formData);
     }
 } else {
