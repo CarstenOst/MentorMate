@@ -38,9 +38,11 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
-            function confirmCancelation(bookingId) {
+        // Waits for page to load, then makes functions available globally
+        document.addEventListener("DOMContentLoaded", function () {
+            window.confirmCancellation = function confirmCancelation(bookingId) {
                 // Confirmation dialog before cancelling
-                var result = confirm("Are you sure you want cancel this booking?");
+                let result = confirm("Are you sure you want cancel this booking?");
 
                 // Use AJAX to call a PHP controller action
                 if (result) {
@@ -60,7 +62,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
             }
 
 
-            function messageUser(userId) {
+            window.messageUser = function messageUser(userId) {
                 // Use AJAX to call a PHP controller action
                 $.ajax({
                     type: "POST",
@@ -80,7 +82,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                 });
             }
 
-            function viewUser(userId) {
+            window.viewUser = function viewUser(userId) {
                 // Use AJAX to call a PHP controller action
                 $.ajax({
                     type: "POST",
@@ -89,13 +91,13 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                         action: "viewUser",
                         userId: userId,
                     },
-                    success: function(data) {
+                    success: function (data) {
                         const response = JSON.parse(data);
                         window.location.href = response.redirect;
                     }
                 });
             }
-
+        });
     </script>
 
 </head>
@@ -124,11 +126,11 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                 $date = new DateTime();
 
                 if ($isTutor) {
-                    $bookings = BookingRepository::getTutorBookings($date, $_SESSION[SessionConst::USER_ID]);
-                    $bookingHeaders = ["Booking date", "Location", "Student", "Cancel Timeslot", "Message", "Add to calendar"];
+                    list($bookings, $participant) = BookingRepository::getTutorBookings($date, $_SESSION[SessionConst::USER_ID]);
+                    $bookingHeaders = ["Booking date", "Location", "Student", "Cancel Timeslot", "Message"];
                 } else {
-                    $bookings = BookingRepository::getStudentBookings($date, $_SESSION[SessionConst::USER_ID]);
-                    $bookingHeaders = ["Booking date", "Location", "Tutor", "Cancel Timeslot", "Message", "Add to calendar"];
+                    list($bookings, $participant) = BookingRepository::getStudentBookings($date, $_SESSION[SessionConst::USER_ID]);
+                    $bookingHeaders = ["Booking date", "Location", "Tutor", "Cancel Timeslot", "Message"];
                 }
 
 
@@ -149,34 +151,33 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                     echo "</tr>";
 
                     // Populates table with booking rows
-                    foreach ($bookings as $booking) {
+                    $bookingsCount = count($bookings);
+                    for ($i = 0; $i < $bookingsCount; $i++) {
+                        $timeSlotEnd = $bookings[$i]->getBookingTime()->modify('+15 minutes')->format('H:i');
                         // Gets info about associated user (if there is one associated with the booking)
-                        $userId = $isTutor ? $booking->getStudentId() : $booking->getTutorId();
-                        $userName = $userId != null ? UserRepository::read($userId)->getFirstName() : '';
-                        $bookingId = $booking->getBookingId();
+                        $userId = $isTutor ? $bookings[$i]->getStudentId() : $bookings[$i]->getTutorId();
+                        $userName = $participant[$i];
+                        $bookingId = $bookings[$i]->getBookingId();
 
-                        if ($booking->getStudentId()) {
+                        if ($bookings[$i]->getStudentId()) {
                             echo "
                                 <tr>
                                     <td>
-                                        <i class='calendar-icon fa-regular fa-calendar'></i> {$booking->getBookingTime()->format('d-m-Y')}
+                                        <i class='calendar-icon fa-regular fa-calendar'></i> {$bookings[$i]->getBookingTime()->format('d-m-Y')}
                                         <br>
-                                        <i class='clock-icon fa-regular fa-clock'></i> {$booking->getBookingTime()->format('H:i')}
+                                        <i class='clock-icon fa-regular fa-clock'></i> {$bookings[$i]->getBookingTime()->format('H:i')}-$timeSlotEnd
                                     </td>
                                     <td>
-                                        <i class='location-icon fa-regular fa-location-dot'></i> {$booking->getLocation()}
+                                        <i class='location-icon fa-regular fa-location-dot'></i> {$bookings[$i]->getLocation()}
                                     </td>
                                     <td>
                                         <button class='table-button' onclick='viewUser($userId)'><i class='fa-solid fa-user'></i> $userName</button>
                                     </td>
                                     <td>
-                                        <button class='table-button' onclick='confirmCancelation($bookingId)'><i class='cancel-icon fa-solid fa-ban'></i> Cancel</button>
+                                        <button class='table-button' onclick='confirmCancellation($bookingId)'><i class='cancel-icon fa-solid fa-ban'></i> Cancel</button>
                                     </td>
                                     <td>
                                         <button class='table-button' onclick='messageUser($userId)'><i class='message-icon fa-solid fa-message'></i> Message</button>
-                                    </td>
-                                    <td>
-                                        <button class='table-button'><i class='calendar-icon fa-regular fa-calendar-plus'></i> Add boooking</button>
                                     </td>
                                 </tr>
                             ";
@@ -184,29 +185,25 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                             echo "
                                 <tr>
                                     <td>
-                                        <i class='calendar-icon fa-regular fa-calendar'></i> {$booking->getBookingTime()->format('d-m-Y')}
+                                        <i class='calendar-icon fa-regular fa-calendar'></i> {$bookings[$i]->getBookingTime()->format('d-m-Y')}
                                         <br>
-                                        <i class='clock-icon fa-regular fa-clock'></i> {$booking->getBookingTime()->format('H:i')}
+                                        <i class='clock-icon fa-regular fa-clock'></i> {$bookings[$i]->getBookingTime()->format('H:i')}-$timeSlotEnd
                                     </td>
                                     <td>
-                                        <i class='location-icon fa-regular fa-location-dot'></i> {$booking->getLocation()}
+                                        <i class='location-icon fa-regular fa-location-dot'></i> {$bookings[$i]->getLocation()}
                                     </td>
                                     <td>
                                         <i class='fa-solid fa-user'></i>
                                     </td>
                                     <td>
-                                        <button class='table-button' onclick='confirmCancelation($bookingId)'><i class='cancel-icon fa-solid fa-ban'></i> Cancel</button>
+                                        <button class='table-button' onclick='confirmCancellation($bookingId)'><i class='cancel-icon fa-solid fa-ban'></i> Cancel</button>
                                     </td>
                                     <td>
                                         
                                     </td>
-                                    <td>
-                                        <button class='table-button'><i class='calendar-icon fa-regular fa-calendar-plus'></i> Add boooking</button>
-                                    </td>
                                 </tr>
                             ";
                         }
-
                     }
 
                 }

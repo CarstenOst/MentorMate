@@ -104,8 +104,8 @@ if ($_SESSION['chat_last_receiver'] === null) {
                 // Fetch messages on page load
                 fetchMessages();
 
-                // Fetch messages every 30 seconds
-                setInterval(fetchMessages, 1000 * 30);
+                // Fetch messages every 5 seconds
+                setInterval(fetchMessages, 1000 * 5);
             });
         </script>
     </head>

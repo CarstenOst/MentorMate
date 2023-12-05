@@ -145,7 +145,7 @@ tr {
     overflow: auto;
     border-radius: 12px;
 }
-/*
+
 .message-button {
     background-color: var(--theme-blue);
     color: var(--theme-white);
@@ -153,12 +153,12 @@ tr {
     font-size: 16px;
     border: none;
     cursor: pointer;
-    border-radius: 5px;
+    border-radius: 12px;
 }
 .message-button:hover {
     background-color: #00506b;
 }
-*/
+
 
 
 
@@ -270,7 +270,7 @@ tr {
     position: sticky;
     top: 0;
     z-index: 1;
-    min-width: 155px;
+    min-width: 220px;
     background-color: var(--theme-blue);
     color: var(--theme-white);
     text-align: left;
@@ -279,11 +279,13 @@ tr {
 
 /* Empty time slot */
 .no-booking-cell {
+    min-width: 220px;
     font-size: 16px;
 }
 
 /* Un-booked time slot */
 .available-timeSlot {
+    min-width: 220px;
     font-size: 16px;
     background-color: var(--theme-light-green);
     color: #000000;
@@ -293,6 +295,7 @@ tr {
 
 /* Booked time slot */
 .unavailable-timeslot {
+    min-width: 220px;
     font-size: 16px;
     background-color: #d0d0d0;
     color: #000000;
@@ -303,6 +306,7 @@ tr {
 
 /* Time slot booked by the logged inn user */
 .user-booked-timeslot {
+    min-width: 220px;
     font-size: 16px;
     background-color: var(--theme-light-blue);
     color: #000000;
@@ -412,36 +416,6 @@ tr {
 
 
 /* Inbox conversations */
-/*
-.conversation {
-    border: 1px solid #ddd;
-    padding: 15px;
-    margin-bottom: 10px;
-    border-radius: 8px;
-}
-
-.unread {
-    background-color: #008CBA;
-    color: #fff;
-}
-
-.conversation-details {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.partner-info {
-    flex: 1;
-    margin-right: 15px;
-}
-
-.last-message-time {
-    font-size: 12px;
-    color: #777;
-}
-
- */
 .conversation-list {
     display: inline-block;
 }

@@ -101,9 +101,14 @@ class MessageRepository
     }
 
 
-
-
-    public static function getMessagesBetweenUsers(int $senderId, int $receiverId): array {
+    /**
+     * Get messages between two users, the sender and receiver.
+     *
+     * @param int $sender The ID of the user who sent the messages.
+     * @param int $receiver The ID of the user who received the messages.
+     * @return array An array of Message objects representing the messages between the users.
+     */
+    public static function getMessagesBetweenUsers(int $sender, int $receiver): array {
         $connection = DBConnector::getConnection();
 
         $sql = "SELECT * FROM Message WHERE 
@@ -115,8 +120,8 @@ class MessageRepository
 
         // Prepares the SQL
         $query = $connection->prepare($sql);
-        $query->bindValue(':senderId', $senderId);
-        $query->bindValue(':receiverId', $receiverId);
+        $query->bindValue(':senderId', $sender);
+        $query->bindValue(':receiverId', $receiver);
 
         // Executes the query
         $resultList = [];
@@ -138,7 +143,47 @@ class MessageRepository
     }
 
 
+    /**
+     * Mark messages from the sender as read in a conversation between two users.
+     *
+     * @param int $receiver The ID of the user who received the messages.
+     * @param int $sender The ID of the user who sent the messages.
+     * @return void
+     */
+    public static function markMessagesAsRead(int $receiver, int $sender): void {
+        $connection = DBConnector::getConnection();
 
+        $sql = "UPDATE Message 
+            SET isRead = 1
+            WHERE (senderId = :senderId AND receiverId = :receiverId AND isRead = 0);
+        ";
+
+        // Prepares the SQL
+        $query = $connection->prepare($sql);
+        $query->bindValue(':receiverId', $receiver);
+        $query->bindValue(':senderId', $sender);
+
+        // Executes the query to mark messages as read
+        try {
+            $query->execute();
+        } catch (PDOException $exception) {
+            echo "SQL Query fail: ";
+        }
+    }
+
+
+
+    /**
+     * Get user conversations with details.
+     *
+     * This function retrieves conversations for a given user, including information about
+     * the conversation partner, the last message time, and the last message text.
+     *
+     * @param int $userId The ID of the user for whom to retrieve conversations.
+     * @return array An array containing details of user conversations.
+     *               Each array includes: 'conversationPartnerId', 'firstName', 'lastName',
+ *                                        'lastMessageTime', 'lastMessageRead', 'lastMessage'
+     */
     static public function getUserConversations(int $userId): array {
         $connection = DBConnector::getConnection();
 
@@ -195,6 +240,16 @@ class MessageRepository
     }
 
 
+    /**
+     * Get the count of unread conversations for a specific user.
+     *
+     * This function retrieves the number of unread conversations for the given user.
+     * A conversation is considered unread if there are messages where the user is the receiver
+     * and the `isRead` attribute is set to 0.
+     *
+     * @param int $userId The ID of the user for whom to retrieve unread conversations.
+     * @return array An associative array containing the count of unread conversations.
+     */
     public static function getUnreadConversations(int $userId): array {
         $connection = DBConnector::getConnection();
 
@@ -235,14 +290,49 @@ class MessageRepository
         return $conversations;
     }
 
+
+
+
+
+
+    /**
+     * @param string $query
+     * @param $message
+     * @return PDOStatement
+     */
+    private static function getSql(string $query, Message $message): PDOStatement
+    {
+        $connection = DBConnector::getConnection();
+        $sql = $connection->prepare($query);
+
+        // Bind parameters using named parameters and bindValue
+        $sql->bindValue(':senderId', $message->getSenderId());
+        $sql->bindValue(':receiverId', $message->getReceiverId());
+        $sql->bindValue(':sentAt', $message->getSentAt());
+        $sql->bindValue(':messageText', $message->getMessageText());
+        $sql->bindValue(':isRead', $message->getIsRead());
+
+        return $sql;
+    }
+
+
+    /**
+     * Creates a Message object from a database row.
+     *
+     * @param array $row The associative array representing a database row.
+     * @return Message Returns a Message object created from the provided database row.
+     */
     private static function createMessageFromRow(array $row): Message
     {
-        return new Message($row['messageId'],
+        $message = new Message(
+            $row['messageId'],
             $row['senderId'],
             $row['receiverId'],
             new DateTime($row['sentAt']) ?? null,
             $row['messageText'],
             $row['isRead']
         );
+
+        return $message;
     }
 }

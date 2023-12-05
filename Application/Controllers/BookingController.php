@@ -51,8 +51,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 $booking->setTutorId($_SESSION[SessionConst::USER_ID]);
                 $booking->setBookingTime(new DateTime($_POST['bookingTime']));
                 $booking->setLocation($_POST['bookingLocation']);
-                BookingRepository::create($booking);
-                echo json_encode(['message' => "Successfully created the booking."]);
+                $bookingId = BookingRepository::create($booking);
+                echo json_encode(['message' => "Successfully created the booking.", "bookingId" => $bookingId]);
             } catch (Exception $error) {
                 http_response_code(400);
                 echo json_encode(['error' => "Failed to create the booking."]);
