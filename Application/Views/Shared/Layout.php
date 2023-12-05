@@ -22,6 +22,8 @@ class Layout
                     </li>
                     <li><a href='$bookUrl'>$bookText</a></li>
                     <li><a href='../../Views/Bookings/index.php'>Bookings</a></li>
+                    <li><a href='../../Views/AvailableTutors/index.php'>Available Tutors</a></li>
+                    <li><a href='../../Views/Students/index.php'>Students</a></li>                    
                     <li><a href='../../Views/Messages/index.php'>Messages</a></li>
                     <li><a href='?logout=1'>Log Out</a></li>
                 </ul>

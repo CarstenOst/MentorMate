@@ -91,6 +91,24 @@ class UserRepository implements IUserRepository
         }
     }
 
+    public static function getUsersByType(string $type): array
+    {
+        $query = "SELECT * FROM User WHERE userType=:userType";
+        $connection = DBConnector::getConnection();
+        $sql = $connection->prepare($query);
+        $sql->execute(['userType' => $type]);
+
+        $result = $sql->fetchAll(PDO::FETCH_ASSOC);
+        $users = [];
+        if ($result) {
+            foreach ($result as $row) {
+                $users[] = self::createUserFromRow($row);
+            }
+        }
+
+        return $users;
+    }
+
 
     /**
      * @param string $email
