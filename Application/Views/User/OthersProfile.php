@@ -202,7 +202,7 @@ class OthersProfile
     <script>
         // Waits for page to load, then makes functions available globally
         document.addEventListener("DOMContentLoaded", function () {
-            function confirmCancellation(bookingId) {
+            window.confirmCancellation = function confirmCancellation(bookingId) {
                 // Confirmation dialog before cancelling
                 var result = confirm("Are you sure you want cancel this booking?");
 
@@ -224,7 +224,7 @@ class OthersProfile
             }
 
 
-            function bookTimeslot(bookingId) {
+            window.bookTimeslot = function bookTimeslot(bookingId) {
                 // Use AJAX to call a PHP controller action
                 $.ajax({
                     type: "POST",
