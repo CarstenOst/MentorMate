@@ -4,13 +4,12 @@ namespace Application\Controllers\BookingController;
 
 require("../../autoloader.php");
 
-use Core\Entities\Booking;
 use DateTime;
 use Exception;
-use Application\Constants\SessionConst;
+use Core\Entities\Booking;
 use Application\Validators\Auth;
+use Application\Constants\SessionConst;
 use Infrastructure\Repositories\BookingRepository;
-use Infrastructure\Repositories\UserRepository;
 
 // Starts session, and checks if user is logged in. If not, redirects to login page
 if (!Auth::checkAuth()) {
@@ -87,6 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
         case 'cancelBooking':
             try {
+                // TODO Add safety check to see if the student is the one who booked the booking
                 $booking = BookingRepository::read($_POST['bookingId']);
                 $booking->setStudentId(null);
                 BookingRepository::update($booking);
