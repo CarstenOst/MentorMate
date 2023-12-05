@@ -40,7 +40,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
     <script>
         // Waits for page to load, then makes functions available globally
         document.addEventListener("DOMContentLoaded", function () {
-            window.confirmCancellation = function confirmCancelation(bookingId) {
+            window.confirmCancellation = function confirmCancellation(bookingId) {
                 // Confirmation dialog before cancelling
                 let result = confirm("Are you sure you want cancel this booking?");
 
@@ -56,6 +56,26 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                         error: function (data) {
                             let response = JSON.parse(data);
                             alert(response.error);
+                        }
+                    });
+                }
+            }
+
+            window.removeBooking = function removeBooking(bookingId) {
+                // Confirmation dialog before removing the booking
+                let result = confirm("Are you sure you want to cancel this booking? (This will remove the booking entirely)");
+
+                // Use AJAX to call a PHP controller action
+                if (result) {
+                    $.ajax({
+                        type: "POST",
+                        url: "../../Controllers/BookingController.php",
+                        data: {
+                            action: "removeBooking",
+                            bookingId: bookingId,
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            console.log(jqXHR.responseText);
                         }
                     });
                 }
