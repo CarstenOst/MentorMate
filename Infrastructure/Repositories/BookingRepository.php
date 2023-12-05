@@ -285,12 +285,13 @@ class BookingRepository implements IBookingRepository
         $connection = DBConnector::getConnection();
         // Sets start and end -Date to be the hour interval from 08:00:00 to 23:59:59
         $startDate = new DateTime($currentDate->format('Y-m-d') . ' 08:00:00');
-        $sql = "SELECT Booking.*, User.firstName AS studentFirstName
-            FROM Booking
-            JOIN User ON Booking.tutorId = User.userId
-            WHERE 
-                Booking.tutorId = :tutorId AND
-                Booking.bookingTime >= :startDate;
+        $sql = "SELECT Booking.*, 
+        CASE WHEN Booking.studentId IS NOT NULL THEN User.firstName ELSE NULL END AS studentFirstName
+        FROM Booking
+        LEFT JOIN User ON Booking.studentId = User.userId
+        WHERE 
+            Booking.tutorId = :tutorId AND
+            Booking.bookingTime >= :startDate;
         ";
 
         // Prepares the SQL
