@@ -20,21 +20,6 @@ class Login
     ];
 
     /**
-     * Validates the login credentials against the database values for authentication
-     * @param array $formData the form fields and values as an associated matrix
-     *
-     * @return boolean indicating the status of the query
-     * @throws Exception
-     */
-    public static function loginUser(array $formData): bool
-    {
-        // TODO replace this with data validation against database password
-        $validEmail = Validator::isValid('email', $formData['email']);
-        $validPassword = Validator::isValid('password', $formData['password']);
-        return $validEmail && $validPassword;
-    }
-
-    /**
      * Html component showing the login form
      * @param array $formData the form fields and values as an associated matrix
      *
