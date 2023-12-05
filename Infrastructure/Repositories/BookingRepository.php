@@ -39,7 +39,7 @@ class BookingRepository implements IBookingRepository
         try {
             // Execute the statement
             $sql->execute();
-            return $sql->fetch(PDO::FETCH_ASSOC) ?? -1 ;
+            return $connection->lastInsertId();
 
         } catch (PDOException $e) {
             // Handle other errors or rethrow the exception

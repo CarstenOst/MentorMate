@@ -80,13 +80,9 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
             }
 
 
-            window.removeBooking = function removeBooking(encodedBookingArray) {
+            window.removeBooking = function removeBooking(bookingTime, bookingLocation, bookingId) {
                 // Confirmation dialog before removing the booking
                 var result = confirm("Are you sure you want remove this booking?");
-                let bookingTime = encodedBookingArray[0];
-                let bookingLocation = encodedBookingArray[1];
-                let bookingId = encodedBookingArray[2];
-                let responseEncodedArray = JSON.stringify([bookingTime, bookingLocation, bookingId]);
 
                 // Use AJAX to call a PHP controller action
                 if (result) {
@@ -105,32 +101,28 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                                 if (timeslotElement) {
                                     timeslotElement.classList.remove('user-booked-timeslot');
                                     timeslotElement.classList.add('available-timeSlot');
-                                    // Finds and replaces the "cancel" button with "book" button
+                                    // Finds and replaces the "remove" button with "create" button
                                     let existingButton = timeslotElement.querySelector('.table-button');
-                                    existingButton.setAttribute('onclick', `createTimeslotBooking(${responseEncodedArray})`);
+                                    existingButton.setAttribute('onclick', `createTimeslotBooking(
+                                        ${JSON.stringify(String(bookingTime))},
+                                        ${JSON.stringify(String(bookingLocation))},
+                                        ${JSON.stringify(null)}
+                                    )`);
                                     existingButton.innerHTML = `
                                         <i class="book-icon fa-solid fa-circle-plus" aria-hidden="true"></i> Create
                                     `;
                                 }
                             }
                         },
-                        error: function (data) {
-                            let response = JSON.parse(data);
-                            alert(response.error);
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            console.log(jqXHR.responseText);
                         }
                     });
                 }
             }
 
 
-            window.createTimeslotBooking = function createTimeslotBooking(encodedBookingArray) {
-                // Extract values from the array
-                let bookingTime = encodedBookingArray[0];
-                let bookingLocation = encodedBookingArray[1];
-                let bookingId = encodedBookingArray[2];
-                let responseEncodedArray = JSON.stringify([bookingTime, bookingLocation, bookingId]);
-
-
+            window.createTimeslotBooking = function createTimeslotBooking(bookingTime, bookingLocation, bookingId) {
                 // Use AJAX to call a PHP controller action
                 $.ajax({
                     type: "POST",
@@ -148,11 +140,15 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                             if (timeslotElement) {
                                 timeslotElement.classList.remove('available-timeSlot');
                                 timeslotElement.classList.add('user-booked-timeslot');
-                                // Finds and replaces the "book" button with "cancel" button
+                                // Finds and replaces the "create" button with "remove" button
                                 let existingButton = timeslotElement.querySelector('.table-button');
-                                existingButton.setAttribute('onclick', `removeBooking(${responseEncodedArray})`);
+                                existingButton.setAttribute('onclick', `removeBooking(
+                                    ${JSON.stringify(String(bookingTime))},
+                                    ${JSON.stringify(String(bookingLocation))},
+                                    ${JSON.stringify(String(response.bookingId))}
+                                )`);
                                 existingButton.innerHTML = `
-                                    <i class="remove-icon fa-solid fa-circle-xmark" aria-hidden="true"></i> Cancel
+                                    <i class="remove-icon fa-solid fa-circle-xmark" aria-hidden="true"></i> Remove
                                 `;
                             }
                         }
@@ -273,7 +269,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                                 <i class='location-icon fa-regular fa-location-dot'></i> <i>$bookingsLocation</i>
                                 <br>
                                 <i class='fa-solid fa-user'></i> None
-                                <button class='table-button right-button' onclick='createTimeslotBooking($encodedBookingArray)'>
+                                <button class='table-button right-button' onclick='createTimeslotBooking(\"$bookingTime\", \"$bookingsLocation\", null)'>
                                     <i class='book-icon fa-solid fa-circle-plus'></i> Create
                                 </button>
                             </td>
@@ -300,7 +296,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                                     <i class='location-icon fa-regular fa-location-dot'></i> <i> $bookingLocation</i>
                                     <br>
                                     <i class='fa-solid fa-user'></i> $studentName
-                                    <button class='table-button right-button' onclick='removeBooking($encodedBookingArray)'>
+                                    <button class='table-button right-button' onclick='removeBooking(\"$bookingTime\", \"$bookingsLocation\", \"{$booking->getBookingId()}\")'>
                                         <i class='remove-icon fa-solid fa-circle-xmark'></i> Remove
                                     </button>
                                 
