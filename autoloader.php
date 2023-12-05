@@ -11,8 +11,7 @@ spl_autoload_register(function ($fullyQualifiedClassName) {
     if (file_exists($path)) {
         require $path;
     } else {
-        // TODO Silently make composer autoload it
-        echo "File not found: $path";  // TODO Remove before flight
+        echo "File not found: $path (this should of course not be in production)";  // TODO Remove before flight
     }
 });
 
