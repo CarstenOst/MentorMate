@@ -61,6 +61,26 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                 }
             }
 
+            window.removeBooking = function removeBooking(bookingId) {
+                // Confirmation dialog before removing the booking
+                let result = confirm("Are you sure you want to cancel this booking? (This will remove the booking entirely)");
+
+                // Use AJAX to call a PHP controller action
+                if (result) {
+                    $.ajax({
+                        type: "POST",
+                        url: "../../Controllers/BookingController.php",
+                        data: {
+                            action: "removeBooking",
+                            bookingId: bookingId,
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            console.log(jqXHR.responseText);
+                        }
+                    });
+                }
+            }
+
 
             window.messageUser = function messageUser(userId) {
                 // Use AJAX to call a PHP controller action
@@ -174,7 +194,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                                         <button class='table-button' onclick='viewUser($userId)'><i class='fa-solid fa-user'></i> $userName</button>
                                     </td>
                                     <td>
-                                        <button class='table-button' onclick='confirmCancellation($bookingId)'><i class='cancel-icon fa-solid fa-ban'></i> Cancel</button>
+                                        <button class='table-button' onclick='removeBooking($bookingId)'><i class='remove-icon fa-solid fa-circle-xmark'></i> Cancel</button>
                                     </td>
                                     <td>
                                         <button class='table-button' onclick='messageUser($userId)'><i class='message-icon fa-solid fa-message'></i> Message</button>
@@ -196,7 +216,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                                         <i class='fa-solid fa-user'></i>
                                     </td>
                                     <td>
-                                        <button class='table-button' onclick='confirmCancellation($bookingId)'><i class='cancel-icon fa-solid fa-ban'></i> Cancel</button>
+                                        <button class='table-button' onclick='removeBooking($bookingId)'><i class='remove-icon fa-solid fa-circle-xmark'></i> Cancel</button>
                                     </td>
                                     <td>
                                         
