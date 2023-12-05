@@ -3,7 +3,8 @@
   "description": "For students seeking help from tutors or mentors",
   "require": {
     "phpmailer/phpmailer": "^6.9",
-    "ext-mbstring": "*"
+    "ext-mbstring": "*",
+    "ext-pdo": "*"
   },
   "autoload": {
     "psr-4": {
