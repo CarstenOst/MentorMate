@@ -38,7 +38,9 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
-            function confirmCancelation(bookingId) {
+        // Waits for page to load, then makes functions available globally
+        document.addEventListener("DOMContentLoaded", function () {
+            window.confirmCancellation = function confirmCancelation(bookingId) {
                 // Confirmation dialog before cancelling
                 var result = confirm("Are you sure you want cancel this booking?");
 
@@ -60,7 +62,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
             }
 
 
-            function messageUser(userId) {
+            window.messageUser = function messageUser(userId) {
                 // Use AJAX to call a PHP controller action
                 $.ajax({
                     type: "POST",
@@ -80,7 +82,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                 });
             }
 
-            function viewUser(userId) {
+            window.viewUser = function viewUser(userId) {
                 // Use AJAX to call a PHP controller action
                 $.ajax({
                     type: "POST",
@@ -89,13 +91,13 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                         action: "viewUser",
                         userId: userId,
                     },
-                    success: function(data) {
+                    success: function (data) {
                         const response = JSON.parse(data);
                         window.location.href = response.redirect;
                     }
                 });
             }
-
+        });
     </script>
 
 </head>
