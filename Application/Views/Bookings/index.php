@@ -127,7 +127,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
 
                 if ($isTutor) {
                     list($bookings, $participant) = BookingRepository::getTutorBookings($date, $_SESSION[SessionConst::USER_ID]);
-                    $bookingHeaders = ["Booking date", "Location", "Student", "Reschedule", "Cancel Timeslot", "Message"];
+                    $bookingHeaders = ["Booking date", "Location", "Student", "Cancel Timeslot", "Message"];
                 } else {
                     list($bookings, $participant) = BookingRepository::getStudentBookings($date, $_SESSION[SessionConst::USER_ID]);
                     $bookingHeaders = ["Booking date", "Location", "Tutor", "Cancel Timeslot", "Message"];
