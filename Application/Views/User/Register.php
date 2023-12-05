@@ -23,7 +23,7 @@ class Register
 
     public const FORM_FIELDS = [
         self::FIRST_NAME => "First Name",
-        self::LAST_NAME => "Second Name",
+        self::LAST_NAME => "Last Name",
         self::EMAIL => "Email",
         self::PASSWORD => "Password",
         self::USER_TYPE => "User Type"
