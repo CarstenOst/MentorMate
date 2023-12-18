@@ -169,27 +169,39 @@ class MessageRepository
 
         $sql = "
             SELECT
-                IF(m.senderId = :userId, m.receiverId, m.senderId) AS conversationPartnerId,
-                u.firstName,
-                u.lastName,
-                MAX(m.sentAt) AS lastMessageTime,
-                MAX(m.isRead) AS lastMessageRead,
-                (SELECT messageText FROM Message 
-                        WHERE (senderId = conversationPartnerId AND receiverId = :userId) OR 
-                              (receiverId = conversationPartnerId AND senderId = :userId) 
-                        ORDER BY sentAt DESC LIMIT 1) AS lastMessage
+                conversationPartner.userId AS conversationPartnerId,
+                user.firstName,
+                user.lastName,
+                MAX(message.sentAt) AS lastMessageTime,
+                MAX(message.isRead) AS lastMessageRead,
+                message.messageText AS lastMessage
             FROM
-                Message m
-            JOIN
-                User u ON u.userId = IF(m.senderId = :userId, m.receiverId, m.senderId)
-            WHERE
-                m.senderId = :userId OR m.receiverId = :userId
+                (
+                    SELECT DISTINCT
+                        CASE
+                            WHEN senderId = :userId THEN receiverId
+                            WHEN receiverId = :userId THEN senderId
+                        END AS userId
+                    FROM
+                        Message
+                    WHERE
+                        senderId = :userId OR 
+                        receiverId = :userId
+                ) AS conversationPartner
+            JOIN User user ON 
+                conversationPartner.userId = user.userId
+            LEFT JOIN (
+                SELECT *
+                FROM Message
+                WHERE receiverId = :userId
+            ) message ON 
+                (message.senderId = :userId AND message.receiverId = conversationPartner.userId) OR 
+                (message.receiverId = :userId AND message.senderId = conversationPartner.userId)
             GROUP BY
-                conversationPartnerId
+                conversationPartner.userId
             ORDER BY
-                lastMessageRead ASC,
+                message.isRead ASC,
                 lastMessageTime DESC;
-
         ";
 
         // Prepares the SQL
