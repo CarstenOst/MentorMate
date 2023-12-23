@@ -173,7 +173,6 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                     // Populates table with booking rows
                     $bookingsCount = count($bookings);
                     for ($i = 0; $i < $bookingsCount; $i++) {
-                        $timeSlotEnd = $bookings[$i]->getBookingTime()->modify('+15 minutes')->format('H:i');
                         // Gets info about associated user (if there is one associated with the booking)
                         $userId = $isTutor ? $bookings[$i]->getStudentId() : $bookings[$i]->getTutorId();
                         $userName = $participant[$i];
@@ -185,7 +184,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                                     <td>
                                         <i class='calendar-icon fa-regular fa-calendar'></i> {$bookings[$i]->getBookingTime()->format('d-m-Y')}
                                         <br>
-                                        <i class='clock-icon fa-regular fa-clock'></i> {$bookings[$i]->getBookingTime()->format('H:i')}-$timeSlotEnd
+                                        <i class='clock-icon fa-regular fa-clock'></i> {$bookings[$i]->getBookingTime()->format('H:i')}-{$bookings[$i]->getBookingTime()->modify('+15 minutes')->format('H:i')}
                                     </td>
                                     <td>
                                         <i class='location-icon fa-regular fa-location-dot'></i> {$bookings[$i]->getLocation()}
@@ -207,7 +206,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                                     <td>
                                         <i class='calendar-icon fa-regular fa-calendar'></i> {$bookings[$i]->getBookingTime()->format('d-m-Y')}
                                         <br>
-                                        <i class='clock-icon fa-regular fa-clock'></i> {$bookings[$i]->getBookingTime()->format('H:i')}-$timeSlotEnd
+                                        <i class='clock-icon fa-regular fa-clock'></i> {$bookings[$i]->getBookingTime()->format('H:i')}-{$bookings[$i]->getBookingTime()->modify('+15 minutes')->format('H:i')}
                                     </td>
                                     <td>
                                         <i class='location-icon fa-regular fa-location-dot'></i> {$bookings[$i]->getLocation()}
